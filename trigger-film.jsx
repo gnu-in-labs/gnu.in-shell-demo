@@ -283,7 +283,7 @@ function ImageSprite({
 }
 
 // RectSprite: simple rectangle that animates position/size/color via props.
-// Useful demo primitive — takes a `render` fn for per-frame customization.
+// Useful preview primitive — takes a `render` fn for per-frame customization.
 function RectSprite({
   x = 0, y = 0,
   width = 100, height = 100,
@@ -865,7 +865,7 @@ function EngineSpine({ active = 4, t = 0 }) {
     { k: 'engine Rust', sub: 'gnuin-compose-core', c: GREEN2, bg: '#161b16' },
     { k: 'motion', sub: 'springs · GPUI', c: AMBER, bg: '#1c1b14' },
     { k: 'Gnu* composants', sub: '24·16·8', c: '#cbc5ca', bg: '#1c1b1c' },
-    { k: 'surface QML', sub: 'Quickshell · membrane', c: ORANGE2, bg: '#241a12' },
+    { k: 'surface shell', sub: 'host · membrane', c: ORANGE2, bg: '#241a12' },
   ];
   return (
     <div style={{ position: 'absolute', left: 90, right: 90, top: 560, display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -1095,7 +1095,7 @@ function SceneWhen() {
               </div>
             )}</Sprite>
             <Sprite start={11} end={63.5}>{({ progress }) => (
-              <Callout x={70} y={1560} w={W - 140} tag="100% RUST · GPUI RENDER-FIRST" title="Une source, descente unique" body="tokens.json → moteur Rust → motion → composants → surface QML. Le drift est fermé par construction." color={GREEN} appear={clamp(progress * 3, 0, 1)} />
+              <Callout x={70} y={1560} w={W - 140} tag="100% RUST · GPUI RENDER-FIRST" title="Une source, descente unique" body="tokens.json → moteur Rust → motion → composants → surface shell. Le drift est fermé par construction." color={GREEN} appear={clamp(progress * 3, 0, 1)} />
             )}</Sprite>
           </div>
         );
@@ -1175,7 +1175,7 @@ function SceneWhy() {
             <div style={{ position: 'absolute', left: 70, top: 1080, width: W - 140, opacity: clamp(progress * 3, 0, 1) }}>
               <div style={{ font: `700 24px ${MONO}`, color: ORANGE, letterSpacing: '0.16em' }}>VEILLE · LE SYSTÈME SE REPOSE</div>
               <div style={{ font: `700 64px ${SANS}`, color: '#f3eee9', letterSpacing: '-0.02em', lineHeight: 1.05, marginTop: 16 }}>Chaque trigger : un contrat,<br />borné, observable.</div>
-              <div style={{ font: `400 24px ${MONO}`, color: '#9aa0a8', marginTop: 28 }}>&gt;_ gnu.in-shell · v0.12.0</div>
+              <div style={{ font: `400 24px ${MONO}`, color: '#9aa0a8', marginTop: 28 }}>&gt;_ gnu.in-shell · v0.14.2</div>
             </div>
           </div>
         );

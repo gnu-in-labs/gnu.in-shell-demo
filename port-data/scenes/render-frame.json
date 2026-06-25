@@ -1,0 +1,24 @@
+{
+  "fixture": "render-frame",
+  "conforms_to": "gnuin_compose_core::render::{RenderFrame, Renderer} — see render_core.rs / src/render.rs",
+  "thesis": "E6 — a host holds a Renderer and never embeds a rasterizer. The renderer is a PURE CONSUMER of the scene model: it paints what reduce() produced, in z-order, from resolved tokens — never mutating the scene or consulting a peer. Swapping tiny-skia ↔ wgpu/vello changes nothing about Scene/ids/tokens/input/motion.",
+  "render_frame": {
+    "scene": "scenes/menu-vertical.json (+ Bar z200)",
+    "diff": "scenes/diff-damage.json case 'open menu' — Added Blob(Menu), Added MenuPanel",
+    "damage": { "x": 482.0, "y": 382.0, "w": 292.0, "h": 104.0 },
+    "motion": { "state": "Open", "raw_progress": 1.0, "curve_progress": 1.0, "visible_progress": 1.0 }
+  },
+  "recording_backend_draw_list": [
+    { "RoundedRect": { "z": 100, "node": "Blob(Menu)",   "rect": [482.0, 382.0, 292.0, 104.0], "radius": 12.0 } },
+    { "RoundedRect": { "z": 200, "node": "Bar",          "rect": [0.0, 0.0, 1920.0, 40.0],     "radius": 12.0 } },
+    { "RoundedRect": { "z": 300, "node": "MenuPanel",    "rect": [488.0, 388.0, 280.0, 92.0],  "radius": 12.0 } },
+    { "RoundedRect": { "z": 305, "node": "MenuRow(0,0)", "rect": [496.0, 392.0, 264.0, 28.0],  "radius": 12.0 } }
+  ],
+  "invariants": {
+    "paints_live_nodes_only": true,
+    "back_to_front_z_order": "100 < 200 < 300 < 305",
+    "blob_painted_below_the_chrome_it_backs": true,
+    "scene_unchanged_after_render": "E6 — pure consumer",
+    "backend_swap_changes_nothing": "ComposeInput/Scene/ids/tokens/input/motion identical across backends"
+  }
+}

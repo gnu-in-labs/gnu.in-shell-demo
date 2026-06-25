@@ -34,13 +34,23 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
 .cx-rng{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;background:#39363a;outline:none;cursor:pointer;}
 .cx-rng::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#e6e1e1;cursor:pointer;}
 .cx-rng::-moz-range-thumb{width:14px;height:14px;border:none;border-radius:50%;background:#e6e1e1;cursor:pointer;}
+/* ── accessibility ── */
+.cx-btn:focus-visible,[role="button"]:focus-visible,a:focus-visible,input:focus-visible,.cx-in:focus-visible,.cx-rng:focus-visible{outline:2px solid #9ecbff;outline-offset:2px;border-radius:6px;}
+.cx-btn:focus:not(:focus-visible){outline:none;}
+.cx-rng:focus-visible{outline-offset:4px;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.cx-skip{position:absolute;left:10px;top:-64px;z-index:9999;background:#141313;color:#f3eee9;border:1px solid #9ecbff;border-radius:8px;padding:9px 14px;font:600 12px 'Montreal',system-ui,sans-serif;text-decoration:none;transition:top .16s ease;}
+.cx-skip:focus{top:10px;}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}}
 </style>
 </helmet>
 
-<div style="height:100vh;width:100%;display:flex;flex-direction:column;background:#0a0c0f;color:#e6e1e1;font-family:'Montreal','Inter',system-ui,sans-serif;overflow:hidden;">
+<div ref="{{ rootRef }}" style="height:100vh;width:100%;display:flex;flex-direction:column;background:#0a0c0f;color:#e6e1e1;font-family:'Montreal','Inter',system-ui,sans-serif;overflow:hidden;">
+
+  <a href="#cx-monitor" class="cx-skip">Aller au compositeur</a>
 
   <!-- ══════════ HEADER ══════════ -->
-  <header style="flex:none;display:flex;align-items:center;gap:18px;padding:11px 20px;background:#0D1014;border-bottom:1px solid #20262E;">
+  <header role="banner" style="flex:none;display:flex;align-items:center;gap:18px;padding:11px 20px;background:#0D1014;border-bottom:1px solid #20262E;">
     <div style="display:flex;align-items:center;gap:11px;">
       <div style="width:30px;height:30px;border-radius:8px;background:#141313;border:1px solid #2a2829;display:grid;place-items:center;">
         <span style="width:9px;height:9px;border-radius:50%;background:{{ accent }};animation:cxPing 1500ms ease-out infinite;"></span>
@@ -58,6 +68,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
       <span class="ctl-mono" style="font-size:9.5px;color:#8DA982;padding:6px 10px;border:1px solid #2c3a2c;border-radius:7px;display:flex;align-items:center;gap:6px;"><span class="ms" style="font-size:13px;">memory</span>{{ rendererLabel }}</span>
       <span class="ctl-mono" style="font-size:9.5px;color:#cbc5ca;padding:6px 10px;border:1px solid #2b2a2a;border-radius:7px;">density · {{ densityLabel }}</span>
       <div class="cx-btn" onClick="{{ openSettingsBtn }}" style="display:flex;align-items:center;gap:6px;font-size:9.5px;font-weight:600;color:#cbc5ca;padding:6px 10px;border:1px solid #2b2a2a;border-radius:7px;"><span style="width:8px;height:8px;border-radius:2px;background:{{ accent }};"></span>seed · {{ accent }}<span class="ms" style="font-size:13px;color:#7c828a;">tune</span></div>
+      <div class="cx-btn" onClick="{{ toggleInspector }}" aria-label="{{ inspectorToggleLabel }}" title="{{ inspectorToggleLabel }}" style="display:grid;place-items:center;width:32px;height:32px;color:#cbc5ca;border:1px solid #2b2a2a;border-radius:7px;"><span class="ms" style="font-size:17px;">{{ inspectorToggleIcon }}</span></div>
     </div>
   </header>
 
@@ -68,7 +79,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
     <section style="flex:1;min-width:0;display:flex;flex-direction:column;padding:16px 18px;gap:13px;">
 
       <!-- control rail -->
-      <div style="flex:none;display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+      <div role="toolbar" aria-label="Émettre des surfaces" style="flex:none;display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
         <span class="ctl-mono" style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#5f656d;margin-right:4px;">émettre</span>
         <div class="cx-btn" onClick="{{ tLauncher }}" style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:7px 11px;border-radius:8px;background:{{ luBtnBg }};border:1px solid {{ luBtnBd }};color:{{ luBtnFg }};"><span class="ms" style="font-size:15px;">apps</span>Launcher</div>
         <div class="cx-btn" onClick="{{ spawnDefault }}" style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:7px 11px;border-radius:8px;background:#1c1b1c;border:1px solid #2b2a2a;color:#cbc5ca;"><span class="ms" style="font-size:15px;">web_asset</span>Window</div>
@@ -84,7 +95,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
 
       <!-- the monitor -->
       <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
-        <div ref="{{ monitorRef }}" onContextMenu="{{ onStageContext }}" onMouseMove="{{ onStageMove }}" onMouseDown="{{ onStageDown }}" onMouseLeave="{{ onStageLeave }}" style="position:relative;width:100%;max-height:100%;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:#141313;border:1px solid #2a2829;box-shadow:0 24px 60px rgba(0,0,0,0.55),inset 0 0 0 1px rgba(255,255,255,0.02);">
+        <div ref="{{ monitorRef }}" id="cx-monitor" tabindex="-1" role="application" aria-label="Compositeur live — clic-droit pour le menu contextuel" onContextMenu="{{ onStageContext }}" onMouseMove="{{ onStageMove }}" onMouseDown="{{ onStageDown }}" onMouseLeave="{{ onStageLeave }}" style="position:relative;width:100%;max-height:100%;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:#141313;border:1px solid #2a2829;box-shadow:0 24px 60px rgba(0,0,0,0.55),inset 0 0 0 1px rgba(255,255,255,0.02);">
 
           <!-- wallpaper backdrop (band 1) -->
           <div style="position:absolute;inset:0;background:radial-gradient(130% 120% at 72% 18%, {{ wallA }} 0%, {{ wallB }} 36%, #0c0a10 100%);filter:hue-rotate({{ wallHue }}deg) saturate(1.05);"></div>
@@ -344,6 +355,30 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
                           <sc-if value="{{ diffHasUpdated }}" hint-placeholder-val="{{ false }}">
                             <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;"><span class="ctl-mono" style="font-size:9px;color:#3D8DCC;width:60px;">~ Updated</span><sc-for list="{{ diffUpdated }}" as="a" hint-placeholder-count="1"><span class="ctl-mono" style="font-size:9px;color:#c8dcec;background:rgba(61,141,204,0.16);padding:2px 7px;border-radius:5px;">{{ a }}</span></sc-for></div>
                           </sc-if>
+                          <sc-if value="{{ diffHasMoved }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;"><span class="ctl-mono" style="font-size:9px;color:#8E7CC3;width:60px;">↔ Moved</span><sc-for list="{{ diffMoved }}" as="a" hint-placeholder-count="1"><span class="ctl-mono" style="font-size:9px;color:#d8d0ea;background:rgba(142,124,195,0.18);padding:2px 7px;border-radius:5px;">{{ a }}</span></sc-for></div>
+                          </sc-if>
+                          <div style="display:{{ dmgShow }};align-items:center;gap:9px;margin-top:3px;padding-top:8px;border-top:1px solid #232122;">
+                            <span class="ms" style="font-size:14px;color:{{ accent }};">crop_free</span>
+                            <span class="ctl-mono" style="font-size:8.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7c828a;">damage(prev,next)</span>
+                            <span class="ctl-mono" style="font-size:9px;color:#cbc5ca;">{{ dmgRectTxt }}</span>
+                            <span class="ctl-mono" style="font-size:9px;color:#5f656d;flex:1;">{{ dmgPct }}% écran</span>
+                            <span class="ctl-mono" style="font-size:8px;font-weight:700;color:{{ dmgProofFg }};">E5 · {{ dmgProof }}</span>
+                          </div>
+                          <div style="display:flex;align-items:center;gap:9px;margin-top:2px;">
+                            <span class="ms" style="font-size:14px;color:{{ cmMotionColor }};">animation</span>
+                            <span class="ctl-mono" style="font-size:8.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7c828a;">menu lifecycle</span>
+                            <span class="ctl-mono" style="font-size:10px;font-weight:700;color:{{ cmMotionColor }};">{{ cmMotionState }}</span>
+                            <span class="ctl-mono" style="font-size:8.5px;color:#5f656d;flex:1;">easeOut 220ms · advance_motion</span>
+                            <span class="ctl-mono" style="font-size:8px;font-weight:700;color:#8DA982;">interrupts {{ cmInterrupts }} · no-jump</span>
+                          </div>
+                          <div style="display:flex;align-items:center;gap:9px;margin-top:2px;">
+                            <span class="ms" style="font-size:14px;color:{{ wireColor }};">cable</span>
+                            <span class="ctl-mono" style="font-size:8.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7c828a;flex:none;">host wire (legacy)</span>
+                            <span class="ctl-mono" style="font-size:8px;color:#5f656d;flex:none;">{{ wireDirLabel }}</span>
+                            <span class="ctl-mono" style="font-size:8.5px;color:#cbc5ca;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ wireFrame }}</span>
+                            <span class="ctl-mono" style="font-size:8px;font-weight:700;color:{{ wireColor }};flex:none;">v1 · ndjson</span>
+                          </div>
                         </div>
 
                         <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -505,7 +540,40 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
                     <!-- DOCK -->
                     <sc-if value="{{ isSecDock }}" hint-placeholder-val="{{ false }}">
                       <div style="display:flex;flex-direction:column;gap:15px;max-width:680px;">
-                        <div class="ctl-mono" style="font-size:9px;color:#5f656d;line-height:1.6;">affordance native composée par le moteur · <span style="color:#cbc5ca;">deck of cards</span> · montée depuis un manifest asset-core, sans réécrire le runtime</div>
+                        <div class="ctl-mono" style="font-size:9px;color:#5f656d;line-height:1.6;">réglages réels du dock · <span style="color:#cbc5ca;">ShellSettingsService · DockService</span> (dockMode · reveal/hide · pin) — câblés en direct sur le compositeur</div>
+
+                        <div style="display:flex;flex-direction:column;gap:13px;background:#161516;border:1px solid #2b2a2a;border-radius:12px;padding:14px;">
+                          <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <div><div style="font-size:12px;font-weight:600;color:#e6e1e1;">Enabled</div><div class="ctl-mono" style="font-size:8.5px;color:#5f656d;">dockEnabled · dessine la surface du dock</div></div>
+                            <div class="cx-btn" onClick="{{ toggleDockEnabled }}" style="width:42px;height:24px;border-radius:13px;background:{{ dockEnabledBg }};position:relative;transition:background .15s;"><span style="position:absolute;top:3px;left:{{ dockEnabledX }};width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;"></span></div>
+                          </div>
+                          <div>
+                            <div class="ctl-mono" style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#7c828a;margin-bottom:7px;">dock mode · <span style="color:{{ accent }};">{{ dockModeLabel }}</span></div>
+                            <div style="display:flex;gap:5px;">
+                              <sc-for list="{{ dockModeSegs }}" as="m" hint-placeholder-count="4">
+                                <div class="cx-btn" onClick="{{ m.go }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 0;border-radius:9px;background:{{ m.bg }};border:1px solid {{ m.bd }};">
+                                  <span class="ms" style="font-size:17px;color:{{ m.fg }};">{{ m.icon }}</span>
+                                  <span class="ctl-mono" style="font-size:9px;font-weight:700;color:{{ m.fg }};">{{ m.label }}</span>
+                                </div>
+                              </sc-for>
+                            </div>
+                            <div class="ctl-mono" style="font-size:8.5px;color:#5f656d;margin-top:6px;">{{ dockModeDesc }}</div>
+                          </div>
+                          <div>
+                            <div style="display:flex;justify-content:space-between;font-size:10px;color:#cbc5ca;margin-bottom:6px;"><span>reveal delay</span><span class="ctl-mono" style="color:{{ accent }};">{{ dockRevealLabel }}</span></div>
+                            <input type="range" class="cx-rng" min="0" max="1000" step="50" value="{{ dockRevealDelay }}" onInput="{{ onDockReveal }}" />
+                          </div>
+                          <div>
+                            <div style="display:flex;justify-content:space-between;font-size:10px;color:#cbc5ca;margin-bottom:6px;"><span>hide delay</span><span class="ctl-mono" style="color:{{ accent }};">{{ dockHideLabel }}</span></div>
+                            <input type="range" class="cx-rng" min="0" max="1000" step="50" value="{{ dockHideDelay }}" onInput="{{ onDockHide }}" />
+                          </div>
+                          <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <div><div style="font-size:12px;font-weight:600;color:#e6e1e1;">Pinned</div><div class="ctl-mono" style="font-size:8.5px;color:#5f656d;">dock.togglePinned · réserve l’espace bas (reservedZone)</div></div>
+                            <div class="cx-btn" onClick="{{ toggleDockPin }}" style="width:42px;height:24px;border-radius:13px;background:{{ dockPinnedBg }};position:relative;transition:background .15s;"><span style="position:absolute;top:3px;left:{{ dockPinnedX }};width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;"></span></div>
+                          </div>
+                        </div>
+
+                        <div class="ctl-mono" style="font-size:8.5px;color:#5f656d;line-height:1.6;border-top:1px solid #20262E;padding-top:11px;">affordance <span style="color:#8DA982;">gnuin-dock</span> · plan <span style="color:#7c828a;">gnu.in.dock-affordance-plan.v1</span> · le « deck of cards » est planifié par asset-core et monté tel quel (distinct des clés ShellSettingsService ci-dessus, mais bien backend)</div>
 
                         <div>
                           <div class="ctl-mono" style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#7c828a;margin-bottom:8px;">deck style · <span style="color:{{ accent }};">{{ dockStyleLabel }}</span></div>
@@ -677,6 +745,48 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
                             </div>
                           </div>
                         </div>
+                        <!-- MOTION LAB · advance_motion / interrupt_motion live -->
+                        <div style="display:flex;flex-direction:column;gap:11px;background:#121111;border:1px solid #232122;border-radius:12px;padding:14px;">
+                          <div class="ctl-mono" style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#7c828a;display:flex;justify-content:space-between;align-items:center;">
+                            <span>motion lab · cycle de vie</span>
+                            <span style="color:#5f656d;text-transform:none;letter-spacing:0;">advance_motion · interrupt_motion · motion_core.rs</span>
+                          </div>
+                          <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:stretch;">
+                            <div style="flex:none;width:200px;height:150px;border-radius:11px;background:#0d1014;border:1px solid #232122;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                              <div style="width:128px;height:80px;border-radius:14px;background:linear-gradient(135deg, {{ accent }}, rgba(255,106,0,0.35));display:flex;align-items:center;justify-content:center;opacity:{{ mlOpacity }};transform:scale({{ mlScale }}) translateY({{ mlTransY }}px);box-shadow:0 12px 30px rgba(0,0,0,0.5);">
+                                <span class="ms" style="font-size:30px;color:#1a1207;">bolt</span>
+                              </div>
+                            </div>
+                            <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:9px;">
+                              <div style="display:flex;gap:7px;">
+                                <div class="cx-btn" onClick="{{ mlabOpen }}" style="flex:1;text-align:center;padding:7px;border-radius:8px;font-size:11px;font-weight:600;background:rgba(95,127,82,0.16);color:#cfe0c6;border:1px solid #34452f;">Open</div>
+                                <div class="cx-btn" onClick="{{ mlabClose }}" style="flex:1;text-align:center;padding:7px;border-radius:8px;font-size:11px;font-weight:600;background:rgba(142,124,195,0.16);color:#d8d0ea;border:1px solid #3b3556;">Close</div>
+                                <div class="cx-btn" onClick="{{ mlabInterrupt }}" style="flex:1;text-align:center;padding:7px;border-radius:8px;font-size:11px;font-weight:700;background:{{ accent }};color:#1a1207;">Interrupt</div>
+                              </div>
+                              <div style="display:flex;gap:5px;">
+                                <sc-for list="{{ mlEases }}" as="e" hint-placeholder-count="4">
+                                  <div class="cx-btn" onClick="{{ e.go }}" style="flex:1;text-align:center;padding:5px;border-radius:7px;font-size:9.5px;font-weight:600;background:{{ e.bg }};color:{{ e.fg }};border:1px solid {{ e.bd }};">{{ e.key }}</div>
+                                </sc-for>
+                              </div>
+                              <div style="display:flex;align-items:center;gap:8px;">
+                                <span class="ctl-mono" style="font-size:8.5px;color:#7c828a;width:46px;">state</span>
+                                <span class="ctl-mono" style="font-size:10px;font-weight:700;color:{{ mlStateColor }};background:rgba(255,255,255,0.04);padding:2px 9px;border-radius:5px;">{{ mlState }}</span>
+                              </div>
+                              <div style="display:flex;align-items:center;gap:8px;"><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;width:46px;">raw</span><span style="flex:1;height:6px;border-radius:3px;background:#201f20;position:relative;"><span style="position:absolute;left:0;top:0;bottom:0;width:{{ mlRawPct }}%;border-radius:3px;background:#5f656d;"></span></span><span class="ctl-mono" style="font-size:8.5px;color:#948f94;width:42px;text-align:right;">{{ mlRawPct }}%</span></div>
+                              <div style="display:flex;align-items:center;gap:8px;"><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;width:46px;">curve</span><span style="flex:1;height:6px;border-radius:3px;background:#201f20;position:relative;"><span style="position:absolute;left:0;top:0;bottom:0;width:{{ mlCurveBar }}%;border-radius:3px;background:{{ accent }};"></span></span><span class="ctl-mono" style="font-size:8.5px;color:{{ mlStateColor }};width:42px;text-align:right;">{{ mlCurvePct }}%</span></div>
+                              <div style="display:flex;align-items:center;gap:8px;"><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;width:46px;">visible</span><span style="flex:1;height:6px;border-radius:3px;background:#201f20;position:relative;"><span style="position:absolute;left:0;top:0;bottom:0;width:{{ mlVisPct }}%;border-radius:3px;background:#8DA982;"></span></span><span class="ctl-mono" style="font-size:8.5px;color:#948f94;width:42px;text-align:right;">{{ mlVisPct }}%</span></div>
+                              <sc-if value="{{ mlOvershoot }}" hint-placeholder-val="{{ false }}">
+                                <div class="ctl-mono" style="font-size:8.5px;color:#CE8E3F;display:flex;align-items:center;gap:5px;"><span class="ms" style="font-size:13px;">trending_up</span>curve overshoot &gt;100% — sûr pour scale/position, visible reste clampé</div>
+                              </sc-if>
+                              <div style="display:{{ mlIntShow }};align-items:center;gap:7px;padding:6px 9px;border-radius:7px;background:rgba(255,255,255,0.03);border:1px solid #232122;">
+                                <span class="ms" style="font-size:13px;color:{{ mlIntColor }};">sync_alt</span>
+                                <span class="ctl-mono" style="font-size:8.5px;color:#cbc5ca;flex:1;">{{ mlIntTxt }}</span>
+                                <span class="ctl-mono" style="font-size:8px;font-weight:700;color:{{ mlIntColor }};">{{ mlIntProof }}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="ctl-mono" style="font-size:8.5px;color:#5f656d;line-height:1.5;">▸ Open/Close anime le cycle (opening→open · closing→hidden) · Interrupt en plein vol retargete sans saut (visible_progress préservé via inverse_sample) · spring expose l'overshoot</div>
+                        </div>
                       </div>
                     </sc-if>
 
@@ -699,11 +809,11 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
                           </div>
                           <div style="background:#161516;border:1px solid #2b2a2a;border-radius:11px;padding:12px;display:flex;flex-direction:column;gap:9px;">
                             <div style="display:flex;align-items:baseline;gap:7px;"><span class="ctl-mono" style="font-size:9px;font-weight:700;color:{{ accent }};">C.04</span><span style="font-size:11px;font-weight:600;color:#e6e1e1;">GnuToggle</span></div>
-                            <div style="display:flex;justify-content:center;"><span class="cx-btn" onClick="{{ toggleDemo }}" style="width:38px;height:21px;border-radius:11px;background:{{ demoToggleTrack }};position:relative;display:block;"><span style="position:absolute;top:2px;left:{{ demoToggleKnob }}px;width:17px;height:17px;border-radius:50%;background:#fff;transition:left .16s;"></span></span></div>
+                            <div style="display:flex;justify-content:center;"><span class="cx-btn" onClick="{{ togglePreview }}" style="width:38px;height:21px;border-radius:11px;background:{{ previewToggleTrack }};position:relative;display:block;"><span style="position:absolute;top:2px;left:{{ previewToggleKnob }}px;width:17px;height:17px;border-radius:50%;background:#fff;transition:left .16s;"></span></span></div>
                           </div>
                           <div style="background:#161516;border:1px solid #2b2a2a;border-radius:11px;padding:12px;display:flex;flex-direction:column;gap:9px;">
                             <div style="display:flex;align-items:baseline;gap:7px;"><span class="ctl-mono" style="font-size:9px;font-weight:700;color:{{ accent }};">C.05</span><span style="font-size:11px;font-weight:600;color:#e6e1e1;">GnuSlider</span></div>
-                            <input type="range" class="cx-rng" min="0" max="100" value="{{ demoSlider }}" onInput="{{ onDemoSlider }}" style="accent-color:{{ accent }};margin-top:6px;" />
+                            <input type="range" class="cx-rng" min="0" max="100" value="{{ previewSlider }}" onInput="{{ onPreviewSlider }}" style="accent-color:{{ accent }};margin-top:6px;" />
                           </div>
                           <div style="background:#161516;border:1px solid #2b2a2a;border-radius:11px;padding:12px;display:flex;flex-direction:column;gap:9px;">
                             <div style="display:flex;align-items:baseline;gap:7px;"><span class="ctl-mono" style="font-size:9px;font-weight:700;color:{{ accent }};">C.06</span><span style="font-size:11px;font-weight:600;color:#e6e1e1;">GnuText</span></div>
@@ -848,7 +958,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
                             <div style="display:flex;align-items:center;gap:11px;padding:7px 11px;border-radius:8px;background:#141313;border:1px solid #232122;"><span class="ms" style="font-size:14px;color:#8DA982;">font_download</span><span class="ctl-mono" style="font-size:10.5px;color:#cbc5ca;flex:1;">IBM Plex Mono · Material Symbols Rounded</span><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;">cdn · block</span></div>
                             <div style="display:flex;align-items:center;gap:11px;padding:7px 11px;border-radius:8px;background:#141313;border:1px solid #232122;"><span class="ms" style="font-size:14px;color:{{ accent }};">wallpaper</span><span class="ctl-mono" style="font-size:10.5px;color:#cbc5ca;flex:1;">wallpaper · matugen scheme</span><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;">generative · runtime</span></div>
                             <div style="display:flex;align-items:center;gap:11px;padding:7px 11px;border-radius:8px;background:#141313;border:1px solid #232122;"><span class="ms" style="font-size:14px;color:#8DA982;">data_object</span><span class="ctl-mono" style="font-size:10.5px;color:#cbc5ca;flex:1;">port-data/scenes/*.json · tokens.json</span><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;">fixtures · generated</span></div>
-                            <div style="display:flex;align-items:center;gap:11px;padding:7px 11px;border-radius:8px;background:#141313;border:1px solid #232122;"><span class="ms" style="font-size:14px;color:{{ accent }};">widgets</span><span class="ctl-mono" style="font-size:10.5px;color:#cbc5ca;flex:1;">Sys.ter component</span><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;">component · ds</span></div>
+                            <div style="display:flex;align-items:center;gap:11px;padding:7px 11px;border-radius:8px;background:#141313;border:1px solid #232122;"><span class="ms" style="font-size:14px;color:{{ accent }};">widgets</span><span class="ctl-mono" style="font-size:10.5px;color:#cbc5ca;flex:1;">Syster.dc.html</span><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;">component · ds</span></div>
                           </div>
                         </div>
                       </div>
@@ -987,7 +1097,8 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
           </sc-if>
 
           <!-- dock (band 30) · affordance engine · Row / Stack / Fan deck composed live -->
-          <div style="position:absolute;top:{{ dockTop }};bottom:{{ dockBottom }};left:50%;transform:translateX(-50%);width:{{ dockBoxW }}px;height:{{ dockBoxH }}px;z-index:30;">
+          <sc-if value="{{ dockEnabled }}" hint-placeholder-val="{{ true }}">
+          <div onMouseLeave="{{ unrevealDock }}" style="position:absolute;top:{{ dockTop }};bottom:{{ dockBottom }};left:50%;transform:translateX(-50%) {{ dockWrapTf }};opacity:{{ dockWrapOp }};width:{{ dockBoxW }}px;height:{{ dockBoxH }}px;z-index:30;transition:transform .26s cubic-bezier(.16,1,.3,1),opacity .26s ease;">
             <sc-if value="{{ dockTrayShow }}" hint-placeholder-val="{{ true }}">
               <div style="position:absolute;left:0;right:0;bottom:0;height:{{ dockBoxH }}px;border-radius:15px;background:rgba(28,27,28,0.88);backdrop-filter:blur(14px);border:1px solid #2b2a2a;box-shadow:0 14px 30px rgba(0,0,0,0.45);"></div>
             </sc-if>
@@ -998,6 +1109,10 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
               </div>
             </sc-for>
           </div>
+          </sc-if>
+          <sc-if value="{{ dockStripShow }}" hint-placeholder-val="{{ false }}">
+            <div onMouseEnter="{{ revealDock }}" style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:120px;height:6px;border-radius:3px 3px 0 0;background:{{ accent }};opacity:0.5;z-index:31;cursor:pointer;"></div>
+          </sc-if>
 
           <!-- damage overlay (engine viz) -->
           <sc-if value="{{ showDamage }}" hint-placeholder-val="{{ false }}">
@@ -1026,7 +1141,9 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
     </section>
 
     <!-- ─────── INSPECTOR (Rust port data, parallel) ─────── -->
-    <aside style="flex:none;width:514px;display:flex;flex-direction:column;background:#0D1014;border-left:1px solid #20262E;min-height:0;">
+    <sc-if value="{{ inspectorOpen }}" hint-placeholder-val="{{ true }}">
+    <aside role="complementary" aria-label="Inspecteur · données pour le port Rust" style="position:relative;flex:none;width:{{ inspectorW }};min-width:0;overflow:hidden;background:#0D1014;border-left:1px solid #20262E;min-height:0;transition:width .22s cubic-bezier(0.16,1,0.3,1);">
+      <div style="position:absolute;top:0;right:0;width:514px;height:100%;display:flex;flex-direction:column;min-height:0;">
 
       <div style="flex:none;display:flex;padding:0 8px;border-bottom:1px solid #20262E;">
         <div class="cx-btn" onClick="{{ tabScene }}" style="padding:13px 11px 11px;font-size:11px;font-weight:700;letter-spacing:0.05em;color:{{ scTabFg }};border-bottom:2px solid {{ scTabBd }};">SCENE</div>
@@ -1159,7 +1276,9 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
         </sc-if>
 
       </div>
+      </div>
     </aside>
+    </sc-if>
   </main>
 
   <!-- ══════════ FRAME STRIP ══════════ -->
@@ -1189,7 +1308,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:800},&quot;accent&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;orange&quot;,&quot;beret&quot;,&quot;info&quot;,&quot;rust&quot;],&quot;default&quot;:&quot;orange&quot;,&quot;tsType&quot;:&quot;'orange'|'beret'|'info'|'rust'&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mouse&quot;,&quot;touch&quot;],&quot;default&quot;:&quot;mouse&quot;,&quot;tsType&quot;:&quot;'mouse'|'touch'&quot;},&quot;renderer&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;tiny-skia&quot;,&quot;gpui&quot;],&quot;default&quot;:&quot;tiny-skia&quot;,&quot;tsType&quot;:&quot;'tiny-skia'|'gpui'&quot;},&quot;reduceMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:800},&quot;accent&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;orange&quot;,&quot;beret&quot;,&quot;info&quot;,&quot;rust&quot;],&quot;default&quot;:&quot;orange&quot;,&quot;tsType&quot;:&quot;'orange'|'beret'|'info'|'rust'&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mouse&quot;,&quot;touch&quot;],&quot;default&quot;:&quot;mouse&quot;,&quot;tsType&quot;:&quot;'mouse'|'touch'&quot;},&quot;renderer&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;tiny-skia&quot;,&quot;gpui&quot;],&quot;default&quot;:&quot;gpui&quot;,&quot;tsType&quot;:&quot;'tiny-skia'|'gpui'&quot;},&quot;reduceMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
 class Component extends DCLogic {
   constructor(props){
     super(props);
@@ -1202,19 +1321,21 @@ class Component extends DCLogic {
       wallSource: 'matugen',
       nightShift: false,
       showDamage: false,
+      inspectorOpen: true,
       volume: 64, muted: false, workspace: 2, query: '',
       toggles: { wifi: true, bt: false, dnd: false },
-      settingsSection: 'general', radiusScale: 1, spacingScale: 1, demoToggle: true, demoSlider: 64,
+      settingsSection: 'general', radiusScale: 1, spacingScale: 1, previewToggle: true, previewSlider: 64,
       tbInput: '',
       taskbar: { edge:'top', visible:true, density:'regular',
         slots: { left:['workspaces'], center:['clock'], right:['network','bluetooth','audio','battery','tray','mascot'] },
         diag: null },
-      dock: { style:'row', size:42, arc:42, spread:1 },
+      dock: { style:'row', size:42, arc:42, spread:1, mode:'docked', enabled:true, revealDelay:200, hideDelay:500, pinned:true },
+      dockRevealed:false,
       menuStyle: 'list', perfTier: 'sdf',
       profiles: { settle:{stiff:170,damp:22}, snap:{stiff:260,damp:24}, wobbly:{stiff:200,damp:12} }
     };
     this.fires = {}; this.cmSub = null;
-    this.prevNodes = []; this.lastDiff = { added:[], removed:[], updated:[], reason:'init' };
+    this.prevNodes = []; this.lastDiff = { added:[], removed:[], moved:[], updated:[], reason:'init', damage:null };
     this.MENU_STYLES = {
       list:{label:'list',kind:'chrome',backed:true,render:'panel'},
       brand:{label:'brand',kind:'chrome',backed:true,render:'panel'},
@@ -1273,9 +1394,12 @@ class Component extends DCLogic {
     this.log = []; this.wallGen = 1; this.wallDirtyUntil = 0;
     this.frameMs = 16.6; this.damage = [];
     this.monitorRef = React.createRef();
+    this.rootRef = React.createRef();
     this.launchInputRef = React.createRef();
     this.volTrackRef = React.createRef();
     this._last = 0; this.running = false;
+    this.mlab = { state:'hidden', elapsed:0, dur:520, easing:'spring', sample:{state:'hidden',raw:1,curve:1,visible:0}, lastInterrupt:null };
+    this.cmMotion = { state:'hidden', elapsed:0 }; this.MENU_MOTION = { dur:220, easing:'easeOut' }; this._cmInterrupts = 0;
     this.osdAuto = false; this.osdHideAt = 0;
     this.auto = false; this.autoIx = 0; this.autoT = 0.8;
     this.SEQ = [
@@ -1332,12 +1456,50 @@ class Component extends DCLogic {
     this._raf = requestAnimationFrame(this.loop);
     this._onKey = this.onKey.bind(this);
     window.addEventListener('keydown', this._onKey);
+    this.setupA11y();
+    this.loadMoleculeSpecs();
   }
   componentWillUnmount(){
     this.running = false;
     if(this._raf) cancelAnimationFrame(this._raf);
     window.removeEventListener('keydown', this._onKey);
+    if(this._a11yObs) this._a11yObs.disconnect();
+    if(this._rmMq && this._onRm){ this._rmMq.removeEventListener ? this._rmMq.removeEventListener('change', this._onRm) : this._rmMq.removeListener(this._onRm); }
+    if(this.rootRef.current && this._onActivate) this.rootRef.current.removeEventListener('keydown', this._onActivate);
   }
+  // ── accessibility: reduced-motion adoption + keyboard activation ──
+  setupA11y(){
+    try {
+      const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if(mq.matches && !this.state.reduceMotion) this.setState({ reduceMotion:true });
+      this._rmMq = mq; this._onRm = (e)=>this.setState({ reduceMotion: !!e.matches });
+      mq.addEventListener ? mq.addEventListener('change', this._onRm) : mq.addListener(this._onRm);
+    } catch(e){}
+    const root = this.rootRef.current; if(!root) return;
+    const stamp = (el)=>{ if(el.nodeType===1 && el.classList && el.classList.contains('cx-btn')){
+      if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
+      if(!el.hasAttribute('role')) el.setAttribute('role','button');
+      if(!el.hasAttribute('aria-label')){ const t=(el.textContent||'').trim(); if(t) el.setAttribute('aria-label', t); }
+    } };
+    const scan = (node)=>{ if(node.nodeType!==1) return; stamp(node); if(node.querySelectorAll) node.querySelectorAll('.cx-btn').forEach(stamp); };
+    scan(root);
+    // childList-only observer: fires when structure changes (menu open, section switch),
+    // NOT on the 60fps inline-style updates — so no per-frame thrash.
+    this._a11yObs = new MutationObserver((muts)=>{ for(const m of muts){ if(m.addedNodes) m.addedNodes.forEach(scan); } });
+    this._a11yObs.observe(root, { childList:true, subtree:true });
+    this._onActivate = (e)=>{ if(e.key!=='Enter' && e.key!==' ') return; const t=e.target;
+      if(t && t.classList && t.classList.contains('cx-btn') && t.tagName!=='INPUT'){ e.preventDefault(); t.click(); } };
+    root.addEventListener('keydown', this._onActivate);
+  }
+  toggleInspector = () => this.setState(s=>({ inspectorOpen: !s.inspectorOpen }));
+  // ── host wire reflection (host_protocol.rs): the real Envelope frame for the live menu ──
+  pascalStyle(k){ return ({list:'List',brand:'Brand',trayaudio:'TrayAudio',traynetwork:'TrayNetwork',traybluetooth:'TrayBluetooth',traypower:'TrayPower',trayunified:'TrayUnified',bubble:'Bubble',bubbletree:'BubbleTree',radial:'Radial',radialpill:'RadialPill',nestedradialpill:'NestedRadialPill',radialdetached:'RadialDetached',concentric:'Concentric',megapanel:'MegaPanel',fractal:'Fractal',drill:'Drill',cascade:'Cascade',windowtilegrid:'WindowTileGrid',widgetcard:'WidgetCard',workspacecard:'WorkspaceCard',widgetpills:'WidgetPills',windowcompact:'WindowCompact'})[k]||'List'; }
+  menuWireFrame(){ const st=this.cmMotion.state, cm=this.surf.cmenu;
+    if(st==='hidden' && cm.p<0.004) return { dir:'idle', frame:'\u2014 in-process · le host lie compose-core directement (ni pont legacy, ni socket) —' };
+    if(st==='closing' || (!cm.open && cm.p>0.004)) return { dir:'close', frame:'{"version":1,"type":"close"}' };
+    const style=this.pascalStyle(this.state.menuStyle), rows=this.menuRowDefs().length;
+    const a=this.menuPanelRect(), ax=Math.round(a[0]), ay=Math.round(a[1]);
+    return { dir:'open', frame:'{"version":1,"type":"open","request":{"style":"'+style+'","groups":[{"head":"","items":['+rows+' rows]}],"anchor":['+ax+','+ay+'],"density":"Mouse","state":"Open"},"screen":"DP-1"}' }; }
 
   loop = () => {
     if(!this.running) return;
@@ -1364,6 +1526,15 @@ class Component extends DCLogic {
   openK(k, val){
     const s = this.surf[k]; if(!s) return;
     s.open = val;
+    if(k === 'cmenu'){
+      const m = this.cmMotion, target = val ? 'open' : 'hidden';
+      if(m.state==='opening' || m.state==='closing'){
+        // retarget the in-flight transition without a visual jump (interrupt_motion)
+        const it = this.interruptMotion(s.p, target, this.MENU_MOTION.dur, this.MENU_MOTION.easing);
+        m.state = it.state; m.elapsed = it.elapsed; this._cmInterrupts++;
+        this.pushLog('\u21BA', 'Motion{ menu interrupt \u2192 '+it.state+' } no-jump', this.accent());
+      } else { m.state = val ? 'opening' : 'closing'; m.elapsed = 0; }
+    }
     const label = { launcher:'Launcher', sidebar:'Sidebar', osd:'Osd', modal:'Modal', cmenu:'ContextMenu', settings:'Settings' }[k] || k;
     if(k === 'osd') this.osdAuto = false;
     if(k === 'cmenu') this.recordCompose(val ? 'menu.open' : 'menu.close');
@@ -1470,6 +1641,14 @@ class Component extends DCLogic {
   setRenderer(k){ this.setState({ renderer: k }); this.pushLog('\u25B8', 'Renderer{ '+k+' } v1', '#8DA982'); }
   emitDock(){ const d=this.state.dock; this.pushLog('\u25B8','Dock{ deck='+d.style+' arc='+d.arc+'\u00b0 size='+d.size+'px } v1', this.accent()); }
   setDockStyle(s){ this.setState(st=>({ dock: Object.assign({}, st.dock, { style:s }) }), ()=>this.emitDock()); }
+  setDockMode(m){ this.setState(st=>({ dock:Object.assign({},st.dock,{mode:m}), dockRevealed:false }), ()=>this.emitDockSettings()); }
+  toggleDockEnabled(){ this.setState(st=>({ dock:Object.assign({},st.dock,{enabled:!st.dock.enabled}) }), ()=>this.emitDockSettings()); }
+  toggleDockPin(){ this.setState(st=>({ dock:Object.assign({},st.dock,{pinned:!st.dock.pinned}) }), ()=>this.emitDockSettings()); }
+  setDockReveal = (e)=>{ const v=parseInt(e.target.value,10); this.setState(st=>({ dock:Object.assign({},st.dock,{revealDelay:v}) })); };
+  setDockHide = (e)=>{ const v=parseInt(e.target.value,10); this.setState(st=>({ dock:Object.assign({},st.dock,{hideDelay:v}) })); };
+  revealDock(){ const m=this.state.dock.mode; if(m==='autohide'||m==='dodge') this.setState({dockRevealed:true}); }
+  unrevealDock(){ const m=this.state.dock.mode; if(m==='autohide'||m==='dodge') this.setState({dockRevealed:false}); }
+  emitDockSettings(){ const d=this.state.dock; this.pushLog('◇','ShellSettings{ dockMode='+d.mode+' enabled='+d.enabled+' reveal='+d.revealDelay+'ms hide='+d.hideDelay+'ms pinned='+d.pinned+' }', this.accent()); }
   setDockSize = (e)=>{ const v=parseInt(e.target.value,10); this.setState(st=>({ dock: Object.assign({}, st.dock, { size:v }) })); };
   setDockArc = (e)=>{ const v=parseInt(e.target.value,10); this.setState(st=>({ dock: Object.assign({}, st.dock, { arc:v }) })); };
   setDockSpread = (e)=>{ const v=parseFloat(e.target.value); this.setState(st=>({ dock: Object.assign({}, st.dock, { spread:v }) })); };
@@ -1486,8 +1665,8 @@ class Component extends DCLogic {
   setSection = (s) => this.setState({ settingsSection: s });
   setRadiusScaleE = (e) => this.setState({ radiusScale: parseFloat(e.target.value) });
   setSpacingScaleE = (e) => this.setState({ spacingScale: parseFloat(e.target.value) });
-  toggleDemo = () => this.setState(s=>({ demoToggle: !s.demoToggle }));
-  onDemoSlider = (e) => this.setState({ demoSlider: parseInt(e.target.value,10) });
+  togglePreview = () => this.setState(s=>({ previewToggle: !s.previewToggle }));
+  onPreviewSlider = (e) => this.setState({ previewSlider: parseInt(e.target.value,10) });
   setProfile(name, field, val){
     this.setState(s=>{ const p=Object.assign({},s.profiles); p[name]=Object.assign({},p[name],{[field]:val}); return { profiles:p }; }, ()=>this.applyProfiles());
     this.pushLog('\u25B8','Motion{ '+name+' '+field+'='+val+' }', this.accent());
@@ -1499,6 +1678,67 @@ class Component extends DCLogic {
     for(const n of this.notifs){ n.stiff=P.wobbly.stiff; n.damp=P.wobbly.damp; }
   }
   firePreview(name){ if(name==='wobbly'){ this.makeNotif(); return; } const k = name==='snap' ? 'osd' : 'sidebar'; this.openK(k,true); setTimeout(()=>{ this.running && this.openK(k,false); }, 820); }
+
+  // ── motion engine · JS mirror of motion_core.rs (advance_motion / interrupt_motion) ──
+  _clampU(v){ return v<0?0:v>1?1:v; }
+  easeSample(easing, t){ t=this._clampU(t);
+    if(easing==='linear') return t;
+    if(easing==='easeOut') return 1-Math.pow(1-t,3);
+    if(easing==='easeInOut') return t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+    if(easing==='spring') return this._springSample(320,0.82,t);
+    return t; }
+  _springSample(response,damping,t){ if(t<=0)return 0; if(t>=1)return 1;
+    const cycles=Math.min(2.5,Math.max(0.75,420/Math.max(1,response)));
+    const d=Math.min(1.6,Math.max(0.15,damping));
+    return 1 - Math.exp(-d*6*t)*Math.cos(t*cycles*Math.PI*2); }
+  easeInverse(easing,p){ p=this._clampU(p);
+    if(easing==='spring'||easing==='linear') return p;
+    let lo=0,hi=1; for(let i=0;i<24;i++){ const m=(lo+hi)/2; if(this.easeSample(easing,m)<p) lo=m; else hi=m; } return (lo+hi)/2; }
+  advanceMotion(state, elapsed, durMs, easing){
+    const run=(running,terminal)=>{
+      if(durMs===0 || elapsed>=durMs) return { state:terminal, raw:1, curve:1, visible: terminal==='hidden'?0:1 };
+      const raw=this._clampU(elapsed/durMs), curve=this.easeSample(easing,raw);
+      const visible = running==='closing' ? 1-this._clampU(curve) : this._clampU(curve);
+      return { state:running, raw, curve, visible };
+    };
+    if(state==='opening') return run('opening','open');
+    if(state==='closing') return run('closing','hidden');
+    if(state==='hidden') return { state:'hidden', raw:1, curve:1, visible:0 };
+    return { state:'open', raw:1, curve:1, visible:1 };
+  }
+  interruptMotion(curVisible, target, durMs, easing){
+    const v=this._clampU(curVisible);
+    if(durMs===0){ const term=(target==='hidden'||target==='closing')?'hidden':'open'; return { state:term, elapsed:0, visible: term==='hidden'?0:1 }; }
+    let state, curveTarget;
+    if(target==='hidden'||target==='closing'){ if(v<=0) return {state:'hidden',elapsed:durMs,visible:0}; state='closing'; curveTarget=1-v; }
+    else { if(v>=1) return {state:'open',elapsed:durMs,visible:1}; state='opening'; curveTarget=v; }
+    const raw=this.easeInverse(easing,curveTarget);
+    return { state, elapsed: Math.min(durMs, Math.round(raw*durMs)), visible:v };
+  }
+  advanceMlab(ms){ const m=this.mlab;
+    if(m.state==='opening'||m.state==='closing') m.elapsed += ms;
+    m.sample = this.advanceMotion(m.state, m.elapsed, this.state.reduceMotion?0:m.dur, m.easing);
+    if((m.state==='opening'||m.state==='closing') && (m.sample.state==='open'||m.sample.state==='hidden')) m.state=m.sample.state;
+  }
+  // context menu runs on the motion engine (advance_motion); cm.p IS visible_progress
+  advanceCmMotion(ms){ const m=this.cmMotion;
+    if(m.state==='opening'||m.state==='closing') m.elapsed += ms;
+    const smp = this.advanceMotion(m.state, m.elapsed, this.state.reduceMotion?0:this.MENU_MOTION.dur, this.MENU_MOTION.easing);
+    if((m.state==='opening'||m.state==='closing') && (smp.state==='open'||smp.state==='hidden')) m.state=smp.state;
+    this.surf.cmenu.p = smp.visible; this.surf.cmenu.v = 0;
+  }
+  mlabOpen = () => { this.mlab.state='opening'; this.mlab.elapsed=0; this.mlab.lastInterrupt=null; };
+  mlabClose = () => { this.mlab.state='closing'; this.mlab.elapsed=0; this.mlab.lastInterrupt=null; };
+  mlabSetEase = (e) => { this.mlab.easing=e; this.forceUpdate(); };
+  mlabInterrupt = () => { const m=this.mlab;
+    if(m.state==='open'){ this.mlabClose(); return; }
+    if(m.state==='hidden'){ this.mlabOpen(); return; }
+    const target = m.state==='opening' ? 'closing' : 'opening';
+    const fromState = m.state, before = m.sample.visible;
+    const it=this.interruptMotion(before, target, m.dur, m.easing);
+    m.state=it.state; m.elapsed=it.elapsed;
+    m.lastInterrupt={ from: fromState, to:it.state, vBefore:before, vAfter:it.visible };
+  };
   cmHoverNew = () => { this.cmSub = 'new'; this.recordCompose('submenu.open'); };
   cmSubLeave = () => { this.cmSub = null; this.recordCompose('submenu.close'); };
 
@@ -1519,8 +1759,31 @@ class Component extends DCLogic {
     return this.clampInside([sx, p[1]+58, sw, sh], wa, 8); }
   setMenuStyle(k){ const s=this.MENU_STYLES[k]; if(!s) return; this.setState({ menuStyle:k }, ()=>this.recordCompose('menu.style='+k)); this.pushLog('\u25B8','Compose{ menu.style='+k+' backed='+(s.backed?'blob':'self')+' }', this.accent()); }
   setPerfTier(k){ this.setState({ perfTier:k }, ()=>this.recordCompose('blob.renderer='+k)); this.pushLog('\u25B8','Compose{ blob.renderer='+k+' }', '#8DA982'); }
-  // canonical hittable menu rows (model view — mirrors the engine's MenuRow nodes)
-  menuRowDefs(){ return [
+  // single source of truth: hydrate the engine-mirror menu rows from port-data/molecule_specs.json
+  loadMoleculeSpecs(){
+    fetch('./port-data/molecule_specs.json').then(r=>r.json()).then(spec=>{
+      const map={};
+      const rowsOf=(m)=>{
+        const md=m.model||{}, out=[];
+        const add=(r,accent)=>{ if(!r||r.kind==='separator') return; out.push({ id:r.id||('r'+out.length), label:r.label||r.title||'', kind:(r.kind==='submenu'?'submenu':(r.kind||'item')), accent:!!(accent||r.accent) }); };
+        if(md.groups) md.groups.forEach(g=>(g.rows||[]).forEach(r=>add(r)));
+        if(md.ring) md.ring.forEach((r,i)=>add(r,i===0));
+        if(md.pills) md.pills.forEach(r=>add(r));
+        if(md.bar) md.bar.forEach(r=>add(r));
+        if(md.targets) md.targets.forEach(r=>add(r));
+        return out;
+      };
+      (spec.molecules||[]).forEach(m=>{ if(map[m.style]) return; const rs=rowsOf(m); if(rs.length) map[m.style]=rs; });
+      this.molRows=map; this.molSpecCount=Object.keys(map).length;
+      if(this.mounted!==false) this.forceUpdate();
+      this.pushLog('\u25C7','Specs{ molecule_specs.json } \u2192 '+this.molSpecCount+' styles hydrat\u00e9s', this.accent());
+    }).catch(()=>{ /* offline: keep the hardcoded fallback */ });
+  }
+  // canonical hittable menu rows (model view — sourced from molecule_specs.json, hardcoded fallback)
+  menuRowDefs(){
+    const m = this.molRows && this.molRows[this.state.menuStyle];
+    if(m && m.length) return m;
+    return [
     {id:'new', label:'New', kind:'submenu', accent:true},
     {id:'terminal', label:'Open terminal', kind:'item'},
     {id:'wallpaper', label:'Change wallpaper', kind:'item'},
@@ -1551,13 +1814,25 @@ class Component extends DCLogic {
       if(sub) ns.push({id:'menu.sub'}); }
     return ns;
   }
+  rectEq(a,b){ return !!a && !!b && a[0]===b[0] && a[1]===b[1] && a[2]===b[2] && a[3]===b[3]; }
+  // snapshot the composed scene with the fields diff() compares (rect + non-geometry)
+  snapNodes(){ return this.composeCore().nodes.map(n=>({ id:n.id, rect:n.rect.slice(), z:n.z, st:n.st, backed:!!n.backed, renderer:n.renderer||'', style:n.style||'' })); }
   recordCompose(reason){
-    const cur=this.logicalNodes(), prev=this.prevNodes||[];
-    const pIds=prev.map(n=>n.id), cIds=cur.map(n=>n.id);
-    const added=cur.filter(n=>pIds.indexOf(n.id)<0).map(n=>n.id);
-    const removed=prev.filter(n=>cIds.indexOf(n.id)<0).map(n=>n.id);
-    const updated=[]; cur.forEach(n=>{ const p=prev.find(x=>x.id===n.id); if(p && JSON.stringify(p)!==JSON.stringify(n)) updated.push(n.id); });
-    this.lastDiff={ added, removed, updated, reason:reason||'recompose' }; this.prevNodes=cur;
+    const cur=this.snapNodes(), prev=this.prevNodes||[];
+    const pById={}, cById={}; prev.forEach(n=>pById[n.id]=n); cur.forEach(n=>cById[n.id]=n);
+    const added=[], removed=[], moved=[], updated=[];
+    let dmg=null; const grow=(r)=>{ dmg = dmg ? this.unionR(dmg, r) : r.slice(); };
+    // faithful to diff.rs: Removed first (prev\cur), then per-next Added | (Moved on rect change) + (Updated on non-geometry); both can fire.
+    prev.forEach(p=>{ if(!cById[p.id]){ removed.push(p.id); grow(p.rect); } });
+    cur.forEach(n=>{ const p=pById[n.id];
+      if(!p){ added.push(n.id); grow(n.rect); return; }
+      const movedF = !this.rectEq(p.rect, n.rect);
+      const updatedF = p.st!==n.st || p.z!==n.z || p.backed!==n.backed || p.renderer!==n.renderer || p.style!==n.style;
+      if(movedF){ moved.push(n.id); grow(n.rect); grow(p.rect); }   // Moved damages old + new footprint (E5)
+      if(updatedF){ updated.push(n.id); grow(n.rect); }
+    });
+    this.lastDiff={ added, removed, moved, updated, reason:reason||'recompose', damage:dmg };
+    this.prevNodes=cur;
     if(this.mounted!==false) this.forceUpdate();
   }
   composeCore(){
@@ -1725,11 +2000,13 @@ class Component extends DCLogic {
   step(dt, now){
     const ms = dt * 1000;
     this.frameMs = this.frameMs * 0.9 + ms * 0.1;
+    this.advanceMlab(ms);
     if(this.auto) this.tickAuto(dt);
     if(this.osdAuto && now > this.osdHideAt){ this.surf.osd.open = false; this.osdAuto = false; }
     const dmg = [];
     for(const k in this.surf){
       const s = this.surf[k];
+      if(k === 'cmenu'){ this.advanceCmMotion(ms); if(this.cmMotion.state==='opening'||this.cmMotion.state==='closing'||s.p>0.004) dmg.push('context-menu'); continue; }
       const tgt = s.open ? 1 : 0;
       this.spring(s, tgt, dt);
       if(Math.abs(s.v) > 0.0007 || Math.abs(s.p - tgt) > 0.003) dmg.push(k === 'cmenu' ? 'context-menu' : k);
@@ -1831,6 +2108,7 @@ class Component extends DCLogic {
       beh('sys','Dock affordance','CC · deck style','bloom',st.dock.style!=='row',cf('Dock{'),true),
       beh('eng','Damage diff','per frame','—',this.damage.length>0,this.damage.length,false),
       beh('eng','Compose-core','menu · style · perf','snap',this.surf.cmenu.open,cf('Compose{'),true),
+      beh('eng','Menu lifecycle','advance · interrupt','easeOut',this.cmMotion.state!=='hidden',this._cmInterrupts,true),
       beh('eng','Token resolve','per render','—',true,'∞',false),
       beh('eng','Protocol envelope','per event','—',this.log.length>0,this.log.length,false),
       beh('eng','Motion tick','per frame','—',true,String(st.frame),false),
@@ -1880,6 +2158,11 @@ class Component extends DCLogic {
     const _h=eng.hit;
     const engHitId = _h ? _h.id : '\u2014', engHitKind = _h ? _h.kind : '', engHitZ = _h ? ('z'+_h.z) : '';
     const engHitShow = eng.menuLive ? 'flex' : 'none';
+    const cmMotionState = this.cmMotion.state, cmInterrupts = this._cmInterrupts;
+    const cmMotionColor = {hidden:'#5f656d',opening:'#CE8E3F',open:'#8DA982',closing:'#8E7CC3'}[cmMotionState]||'#948f94';
+    const _wire=this.menuWireFrame();
+    const wireFrame=_wire.frame, wireColor={open:'#8DA982',close:'#CE8E3F',idle:'#5f656d'}[_wire.dir]||'#948f94';
+    const wireDirLabel=_wire.dir==='idle'?'in-process':'legacy · pré-cutover';
     // ── input · cursor focus + click-intent matrix ──
     const cur=this.cursor, lc=this.lastClick||{kind:null};
     const curShow = cur.x>=0 ? 'flex' : 'none';
@@ -1901,10 +2184,36 @@ class Component extends DCLogic {
     const focusSel = this.focusNode ? (this.liveHitNodes().find(n=>n.id===this.focusNode)||null) : null;
     const selId = focusSel ? focusSel.id : '\u2014', selKind = focusSel ? focusSel.kind : '', selShow = focusSel ? 'flex' : 'none';
     const dff=this.lastDiff;
-    const diffEmpty=(dff.added.length+dff.removed.length+dff.updated.length)===0;
+    const diffEmpty=(dff.added.length+dff.removed.length+dff.moved.length+dff.updated.length)===0;
+    // canonical damage(prev,next): union of changed rects — the E5 dirty-region contract
+    const _dr=dff.damage; const _scrA=1280*800;
+    const dmgShow=_dr?'flex':'none';
+    const dmgRectTxt=_dr?_dr.map(v=>Math.round(v)).join('  '):'\u2014';
+    const dmgPct=_dr?((_dr[2]*_dr[3])/_scrA*100).toFixed(1):'0.0';
+    const dmgFull=_dr?((_dr[2]*_dr[3])>=_scrA*0.985):false;
+    const dmgProofFg=dmgFull?'#CE8E3F':'#8DA982';
+    const dmgProof=_dr?(dmgFull?'plein \u00e9cran':'r\u00e9gion seule \u00b7 pas de repaint complet'):'rien \u00e0 redessiner';
     const setPerfSdf=()=>this.setPerfTier('sdf'), setPerfStatic=()=>this.setPerfTier('static');
     const perfSdfBg = st.perfTier==='sdf'?ac:'transparent', perfSdfFg = st.perfTier==='sdf'?'#1a1207':'#948f94';
     const perfStaticBg = st.perfTier==='static'?ac:'transparent', perfStaticFg = st.perfTier==='static'?'#1a1207':'#948f94';
+
+    // motion lab view-data (exercises the motion engine live)
+    const ml=this.mlab, mls=ml.sample;
+    const mlScale=(0.66 + 0.4*mls.curve).toFixed(3);
+    const mlOpacity=this._clampU(mls.visible).toFixed(3);
+    const mlTransY=((1-mls.visible)*18).toFixed(1);
+    const mlRawPct=Math.round(mls.raw*100), mlCurvePct=Math.round(mls.curve*100), mlVisPct=Math.round(mls.visible*100);
+    const mlCurveBar=Math.min(100,Math.round(this._clampU(mls.curve)*100));
+    const mlOvershoot = mls.curve>1.001;
+    const mlStateColor = {hidden:'#5f656d',opening:'#CE8E3F',open:'#8DA982',closing:'#8E7CC3'}[mls.state]||'#948f94';
+    const mlEases=['linear','easeOut','easeInOut','spring'].map(e=>({ key:e, sel:ml.easing===e, go:()=>this.mlabSetEase(e), bg:ml.easing===e?ac:'#161516', fg:ml.easing===e?'#1a1207':'#cbc5ca', bd:ml.easing===e?ac:'#2b2a2a' }));
+    const mlAnimating=(mls.state==='opening'||mls.state==='closing');
+    const mlInt=ml.lastInterrupt;
+    const mlIntShow = mlInt ? 'flex':'none';
+    const mlIntTxt = mlInt ? (mlInt.from+' \u2192 '+mlInt.to+' \u00b7 visible '+Math.round(mlInt.vBefore*100)+'% \u2192 '+Math.round(mlInt.vAfter*100)+'%') : '';
+    const mlIntOk = mlInt ? (Math.abs(mlInt.vBefore-mlInt.vAfter)<0.02) : false;
+    const mlIntColor = mlIntOk ? '#8DA982' : '#CE8E3F';
+    const mlIntProof = mlInt ? (mlIntOk ? 'pas de saut' : 'saut') : '';
 
     return {
       navItems,
@@ -1912,14 +2221,20 @@ class Component extends DCLogic {
       radiusScale: st.radiusScale, spacingScale: st.spacingScale, onRadius: this.setRadiusScaleE, onSpacing: this.setSpacingScaleE,
       radiusLabel: st.radiusScale.toFixed(2)+'×', spacingLabel: st.spacingScale.toFixed(2)+'×', rDemo, rDemoInner, sDemo,
       motionEditors, motionCatalogA, motionCatalogM, motionDurations, motionEases, mascotStates,
-      demoToggleTrack: st.demoToggle?ac:'#39363a', demoToggleKnob: st.demoToggle?19:2, toggleDemo: this.toggleDemo, demoSlider: st.demoSlider, onDemoSlider: this.onDemoSlider,
+      mlScale, mlOpacity, mlTransY, mlRawPct, mlCurvePct, mlVisPct, mlCurveBar, mlOvershoot, mlState: mls.state, mlStateColor,
+      mlEases, mlAnimating, mlInt, mlIntShow, mlIntTxt, mlIntColor, mlIntProof,
+      mlabOpen: this.mlabOpen, mlabClose: this.mlabClose, mlabInterrupt: this.mlabInterrupt,
+      previewToggleTrack: st.previewToggle?ac:'#39363a', previewToggleKnob: st.previewToggle?19:2, togglePreview: this.togglePreview, previewSlider: st.previewSlider, onPreviewSlider: this.onPreviewSlider,
       behaviors, behWired, behActive,
       menuRadius, cmItems, subItems, cmSubOpen, subLeftPct, subTopPct, cmHoverNew: this.cmHoverNew, cmSubLeave: this.cmSubLeave,
       isSecEngine: sec==='engine', engNodes, engStyleChrome, engStyleBespoke, engNodeCount: eng.nodes.length, engRowCount: eng.rowCount,
       engHitId, engHitKind, engHitZ, engHitShow,
+      cmMotionState, cmMotionColor, cmInterrupts,
+      wireFrame, wireColor, wireDirLabel,
       setPerfSdf, setPerfStatic, perfSdfBg, perfSdfFg, perfStaticBg, perfStaticFg,
-      diffAdded: dff.added, diffRemoved: dff.removed, diffUpdated: dff.updated, diffEmpty, diffReason: dff.reason,
-      diffHasAdded: dff.added.length>0, diffHasRemoved: dff.removed.length>0, diffHasUpdated: dff.updated.length>0,
+      diffAdded: dff.added, diffRemoved: dff.removed, diffMoved: dff.moved, diffUpdated: dff.updated, diffEmpty, diffReason: dff.reason,
+      diffHasAdded: dff.added.length>0, diffHasRemoved: dff.removed.length>0, diffHasMoved: dff.moved.length>0, diffHasUpdated: dff.updated.length>0,
+      dmgShow, dmgRectTxt, dmgPct, dmgProof, dmgProofFg,
       engMenuLive: eng.menuLive, engClosedHintShow: eng.menuLive?'none':'block', engInputCount: eng.inputCount, engBlobExcluded: eng.blobExcluded,
       curShow, curX, curY, curOnKind, curOnId, curOnZ, inputCols, inputGrid, selId, selKind, selShow
     };
@@ -2082,6 +2397,18 @@ class Component extends DCLogic {
     const dockTrayShow = dk.style==='row';
     const dStyleSeg = (s)=>({ bg: dk.style===s?ac:'#141313', fg: dk.style===s?'#1a1207':'#cbc5ca' });
     const dockStyleRow=dStyleSeg('row'), dockStyleStack=dStyleSeg('stack'), dockStyleFan=dStyleSeg('fan');
+    // real backend dock model (ShellSettingsService / DockService) — wired live
+    const DMODE=[['docked','Docked','dock_to_bottom','toujours visible, reserve la barre du bas (reservedZone)'],['floating','Floating','bottom_panel_open','visible, souleve, sans zone reservee'],['autohide','Autohide','keyboard_double_arrow_down','cache, revele au survol du bord bas'],['dodge','Dodge','pip','cache seulement quand une fenetre chevauche']];
+    const dockModeSegs = DMODE.map(m=>({ key:m[0], label:m[1], icon:m[2], go:()=>this.setDockMode(m[0]), bg: dk.mode===m[0]?ac:'#141313', bd: dk.mode===m[0]?ac:'#2b2a2a', fg: dk.mode===m[0]?'#1a1207':'#cbc5ca' }));
+    const _dm = DMODE.find(m=>m[0]===dk.mode)||DMODE[0];
+    const dockModeLabel = _dm[1], dockModeDesc = _dm[3];
+    const dockAnyWin = this.windows.some(w=>w.open && w.ws===st.workspace);
+    const dockHidden = (dk.mode==='autohide' && !st.dockRevealed) || (dk.mode==='dodge' && dockAnyWin && !st.dockRevealed);
+    const dockWrapTf = dockHidden ? ('translateY('+(this.dockHpx()+22)+'px)') : (dk.mode==='floating' ? 'translateY(-8px)' : 'translateY(0)');
+    const dockWrapOp = dockHidden ? '0' : '1';
+    const dockStripShow = dk.enabled && ((dk.mode==='autohide') || (dk.mode==='dodge' && dockAnyWin)) && !st.dockRevealed;
+    const dockEnabledBg = dk.enabled ? ac : '#3a3a3a', dockEnabledX = dk.enabled ? '21px' : '3px';
+    const dockPinnedBg = dk.pinned ? ac : '#3a3a3a', dockPinnedX = dk.pinned ? '21px' : '3px';
     const dockStyleLabel = {row:'Row \u00b7 tray',stack:'Stack \u00b7 pile',fan:'Fan \u00b7 deck of cards'}[dk.style];
     const dockJson = '{\n  "$schema": "gnu.in/dock-affordance-1",\n  "surface": "dock", "output": "eDP-1",\n  "deck_style": "'+({row:'Row',stack:'Stack',fan:'Fan'}[dk.style])+'",\n  "card_px": '+dk.size+', "fan_arc_deg": '+dk.arc+', "spread": '+dk.spread.toFixed(2)+',\n  "items": '+dN+', "mounted_from": "asset-core://manifest"\n}';
     const appTiles = filtered.map((a,i)=>({ name:a.name, icon:a.icon, bg: i===0?'rgba(255,106,0,0.12)':'#201f20', bd: i===0?'rgba(255,142,64,0.3)':'#2b2a2a', fg: i===0?'#FF8E40':'#cbc5ca', go: ()=>{ this.spawnWindow(a.name,a.icon); this.openK('launcher',false); this.setState({query:''}); } }));
@@ -2213,6 +2540,12 @@ class Component extends DCLogic {
       query: st.query, filteredCount: filtered.length, appTiles, noMatch: filtered.length===0,
       barWorkspaces, dockCards, dockBoxW, dockBoxH, dockTrayShow,
       dockStyleRow, dockStyleStack, dockStyleFan, setDockRow: ()=>this.setDockStyle('row'), setDockStack: ()=>this.setDockStyle('stack'), setDockFan: ()=>this.setDockStyle('fan'),
+      dockEnabled: dk.enabled, dockModeSegs, dockModeLabel, dockModeDesc,
+      dockRevealDelay: dk.revealDelay, dockHideDelay: dk.hideDelay, onDockReveal: this.setDockReveal, onDockHide: this.setDockHide,
+      dockRevealLabel: dk.revealDelay+'ms', dockHideLabel: dk.hideDelay+'ms',
+      toggleDockEnabled: ()=>this.toggleDockEnabled(), toggleDockPin: ()=>this.toggleDockPin(),
+      dockEnabledBg, dockEnabledX, dockPinnedBg, dockPinnedX,
+      dockWrapTf, dockWrapOp, dockStripShow, revealDock: ()=>this.revealDock(), unrevealDock: ()=>this.unrevealDock(),
       dockSize: dk.size, dockArc: dk.arc, dockSpread: dk.spread, onDockSize: this.setDockSize, onDockArc: this.setDockArc, onDockSpread: this.setDockSpread,
       dockSizeLabel: dk.size+'px', dockArcLabel: dk.arc+'\u00b0', dockSpreadLabel: dk.spread.toFixed(2)+'\u00d7', dockStyleLabel, dockJson, dockIsFan: dk.style==='fan',
       sbToggles, workspace: st.workspace,
@@ -2258,6 +2591,11 @@ class Component extends DCLogic {
       autoBg: this.auto ? 'rgba(255,106,0,0.16)' : '#1c1b1c', autoBd: this.auto ? ac : '#2b2a2a', autoFg: this.auto ? '#FF8E40' : '#cbc5ca', autoIcon: this.auto ? 'pause' : 'play_arrow',
       copyBg: st.copied ? 'rgba(95,127,82,0.16)' : '#1c1b1c', copyFg: st.copied ? '#8DA982' : '#cbc5ca', copyIcon: st.copied ? 'check' : 'content_copy', copyLabel: st.copied ? 'copié' : 'copier',
       monitorRef: this.monitorRef, onStageContext: this.onStageContext,
+      rootRef: this.rootRef, toggleInspector: this.toggleInspector,
+      inspectorW: this.state.inspectorOpen ? '514px' : '0px',
+      inspectorOpen: this.state.inspectorOpen,
+      inspectorToggleIcon: this.state.inspectorOpen ? 'right_panel_close' : 'left_panel_open',
+      inspectorToggleLabel: this.state.inspectorOpen ? "Masquer l'inspecteur" : "Afficher l'inspecteur",
       onStageMove: this.onStageMove, onStageDown: this.onStageDown, onStageLeave: this.onStageLeave,
       focusRingShow, frL, frT, frW, frH, frColor, selRingShow, srL, srT, srW, srH, curDotShow, curDotL, curDotT,
       tLauncher: this.tLauncher, tSidebar: this.tSidebar, tOsd: this.tOsd, tModal: this.tModal,

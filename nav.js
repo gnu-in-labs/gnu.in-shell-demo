@@ -10,12 +10,19 @@
     { label: "Handoff", file: "Gnu.In-Shell - Handoff.dc.html", step: "05" }
   ];
 
+  var MENU_SURFACES = [
+    { label: "Contextes", file: "Gnu.In Context Menus.dc.html", step: "27" },
+    { label: "Renderer", file: "Molecule Renderer.dc.html", step: "MR" }
+  ];
+
   var SURFACES = [
     { label: "Index", file: "Gnu.In-Shell - Index.dc.html", home: true },
-    { label: "Atlas", file: "Gnu.In-Shell - Atlas Unifié.dc.html", children: WIREFRAME_SURFACES },
+    { label: "Atlas", file: "Gnu.In-Shell - Atlas Unifié.dc.html", children: WIREFRAME_SURFACES, menuTitle: "Atlas / wireframe", menuHint: "Fondations -> Handoff" },
     { sep: true },
     { label: "Central", file: "Central.dc.html" },
+    { label: "Menus", file: "Gnu.In Context Menus.dc.html", children: MENU_SURFACES, menuTitle: "Menus / context.spec", menuHint: "27 molecules" },
     { label: "Animations", file: "Animations.dc.html" },
+    { label: "Film", file: "Trigger Film.dc.html" },
     { label: "Roadmap", file: "Roadmap.dc.html" },
     { label: "Syster kit", file: "Sys.ter Mascot Kit.dc.html" },
     { label: "GitHub", href: "https://github.com/gnu-in-labs/gnu.in-shell-docs", external: true },
@@ -386,6 +393,10 @@
     var stage = viewport ? viewport.querySelector("#gid-canvas-stage") : null;
     var host = stage ? stage.querySelector(".sc-host") : root.querySelector(":scope > .sc-host");
     if (!host || !host.querySelector("[data-screen-label]")) return false;
+    if (host.querySelector("[data-film-root]")) {
+      if (viewport) unwrapCanvas(root, viewport, stage, host);
+      return false;
+    }
 
     var vp = document.documentElement.dataset.gidVp || "desktop";
     if (!viewport) {
@@ -497,6 +508,7 @@
     var group = document.createElement("span");
     group.className = "gid-nav-group";
     if (surface.file === current || hasCurrentChild(surface)) group.classList.add("gid-parent-active");
+    var menuId = "gid-menu-" + slug(surface.label || surface.file);
 
     var primary = document.createElement("a");
     primary.href = encodeURIComponent(surface.file);
@@ -508,23 +520,23 @@
     trigger.type = "button";
     trigger.className = "gid-nav-trigger";
     trigger.textContent = "v";
-    trigger.setAttribute("aria-label", "Menu wireframe Atlas");
+    trigger.setAttribute("aria-label", "Menu " + surface.label);
     trigger.setAttribute("aria-expanded", "false");
-    trigger.setAttribute("aria-controls", "gid-atlas-menu");
+    trigger.setAttribute("aria-controls", menuId);
     group.appendChild(trigger);
 
     var menu = document.createElement("div");
-    menu.id = "gid-atlas-menu";
+    menu.id = menuId;
     menu.className = "gid-menu";
     menu.setAttribute("role", "menu");
-    menu.setAttribute("aria-label", "Wireframe Atlas");
+    menu.setAttribute("aria-label", "Menu " + surface.label);
 
     var title = document.createElement("div");
     title.className = "gid-menu-title";
     var label = document.createElement("span");
-    label.textContent = "Atlas / wireframe";
+    label.textContent = surface.menuTitle || (surface.label + " / surfaces");
     var hint = document.createElement("span");
-    hint.textContent = "Fondations -> Handoff";
+    hint.textContent = surface.menuHint || "";
     title.appendChild(label);
     title.appendChild(hint);
     menu.appendChild(title);
@@ -546,7 +558,7 @@
 
       var copy = document.createElement("span");
       copy.className = "gid-menu-copy";
-      copy.textContent = "ouvrir";
+      copy.textContent = child.copy || "ouvrir";
       a.appendChild(copy);
 
       menu.appendChild(a);

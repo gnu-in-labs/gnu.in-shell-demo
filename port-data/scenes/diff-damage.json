@@ -1,0 +1,60 @@
+{
+  "fixture": "diff-damage",
+  "conforms_to": "gnuin_compose_core::{diff, damage, SceneDiff, NodeChange} — see compose_core.rs / src/diff.rs",
+  "thesis": "retained-mode reactivity: state → reduce → new Scene → diff → targeted host updates. The host keeps the previous Scene and applies only the change set; damage() gives the dirty region so a motion-only restyle never forces a full-screen repaint (E5).",
+  "rules": {
+    "Added": "id in next, not in prev",
+    "Removed": "id in prev, not in next",
+    "Moved": "same id, rect changed",
+    "Updated": "same id, same rect, but state/z/tokens/payload changed",
+    "move_plus_restyle": "reports BOTH Moved and Updated (separate entries)",
+    "damage": "union of changed rects — next rect, plus prev rect when moved or removed; Rect::ZERO when nothing changed"
+  },
+  "cases": [
+    {
+      "name": "open menu (chrome) over a bar",
+      "prev": ["Bar@(0,0,1920,40)"],
+      "next": ["Bar@(0,0,1920,40)", "Blob(Menu)@(482,382,292,104)", "MenuPanel@(488,388,280,92)"],
+      "diff": [ { "Added": "Blob(Menu)" }, { "Added": "MenuPanel" } ],
+      "damage": { "x": 482.0, "y": 382.0, "w": 292.0, "h": 104.0 }
+    },
+    {
+      "name": "close menu",
+      "prev": ["Bar", "Blob(Menu)", "MenuPanel"],
+      "next": ["Bar"],
+      "diff": [ { "Removed": "Blob(Menu)" }, { "Removed": "MenuPanel" } ],
+      "damage_covers": "the old Blob+MenuPanel footprint"
+    },
+    {
+      "name": "move menu (200,200)→(900,600)",
+      "prev": ["MenuPanel@(200,388,280,92)"],
+      "next": ["MenuPanel@(900,388,280,92)"],
+      "diff": [ { "Moved": "MenuPanel" } ],
+      "damage_covers": "BOTH old (200,388,280,92) and new (900,388,280,92) footprints",
+      "note": "no Added/Removed — same id on both sides"
+    },
+    {
+      "name": "perf tier flip Sdf→Static (same rect)",
+      "prev": ["Blob(Menu)@(482,382,292,104) tokens=Sdf"],
+      "next": ["Blob(Menu)@(482,382,292,104) tokens=Static"],
+      "diff": [ { "Updated": "Blob(Menu)" } ],
+      "damage": { "x": 482.0, "y": 382.0, "w": 292.0, "h": 104.0 },
+      "note": "Updated, NOT Moved — motion/restyle in place; damage is the node rect, far smaller than the 1920×1080 screen (E5)"
+    },
+    {
+      "name": "move + restyle together",
+      "prev": ["MenuPanel@(200,388,280,92) z=300"],
+      "next": ["MenuPanel@(900,388,280,92) z=305"],
+      "diff": [ { "Moved": "MenuPanel" }, { "Updated": "MenuPanel" } ],
+      "note": "both changes reported as separate entries"
+    }
+  ],
+  "invariants": {
+    "identical_scenes_empty_diff_zero_damage": true,
+    "move_is_not_add_remove": true,
+    "restyle_in_place_is_updated_not_moved": true,
+    "move_plus_restyle_reports_both": true,
+    "motion_only_damage_smaller_than_screen": true,
+    "moved_damage_unions_old_and_new": true
+  }
+}

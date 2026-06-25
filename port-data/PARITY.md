@@ -122,6 +122,117 @@ bled past the border — globally, because the clamp was globally missing.
   rings are intersected with each node's `clip`. Golden fixture
   `scenes/edge-aware.json`; 6 `edge_tests`.
 
+## Diff / damage · retained-mode reactivity
+
+Aligned Central + port to the crate's `diff.rs`. The loop is
+state → `reduce` → new `Scene` → `diff` → targeted host updates; `damage` gives
+the dirty region so a motion-only restyle never repaints the whole screen (E5).
+
+- **Was (Central):** `recordCompose` lumped any change into "updated" via a
+  JSON-stringify compare — no `Moved`, and damage was an ad-hoc per-frame array.
+- **Now (faithful to `diff.rs`):** `diff` reports **Removed** (prev\\next) first,
+  then per-next **Added** | **Moved** (rect changed) + **Updated** (state/z/
+  tokens/payload changed) — a move + restyle reports **both**. `damage` is the
+  union of changed rects (next rect; + prev rect when moved/removed), `ZERO`
+  when nothing changed.
+- **Central:** `recordCompose` snapshots the composed scene (`snapNodes`) and
+  computes the same change set; the Engine → SceneDiff block gains a **Moved**
+  row and a live **`damage(prev,next)`** readout (rect + % of screen + the E5
+  "région seule, pas de repaint complet" proof). Open a chrome submenu → the
+  blob grows (`Moved blob.menu`) while `menu.sub` is `Added`.
+- **Port:** `compose_core.rs` implements `NodeChange`/`SceneDiff`/`diff`/`damage`
+  with **10 `diff_tests`**; golden fixture `scenes/diff-damage.json` (5 cases).
+
+## Motion · curves, springs, interruption
+
+`motion_core.rs` mirrors `src/motion.rs` (the non-rendering half of the motion
+engine) — distinct from `motion.spec.json`, which is the legacy **design**
+language (durations/eases/atoms/molecules). The engine motion model:
+
+- `Easing { Linear, EaseOutCubic, EaseInOutCubic, Spring }`; `Spring{ response_ms,
+  damping_ratio }` (`soft` = 320 / 0.82). `MotionSpec` default `ease_out(240)`.
+- `MotionSample` separates `curve_progress` (springs may overshoot >1.0 for
+  scale/position) from `visible_progress` (input/opacity-safe 0..1, inverted on
+  close) — the contract Central's preview spring approximates.
+- `advance_motion` (Opening→Open, Closing→Hidden), `interrupt_motion` (retarget
+  in-flight with no visible jump via `inverse_sample`), reduced-motion snaps to
+  terminal (`effective_duration_ms` = 0). 6 tests. **Wired live** into Central's
+  Motion section as a **Motion Lab**: Open/Close drives the lifecycle, an easing
+  picker (linear/easeOut/easeInOut/spring), live `raw`/`curve`/`visible` bars,
+  and **Interrupt** retargets mid-flight showing `visible_progress` preserved.
+  Verified: spring open shows `curve 111%` overshoot while `visible` stays 100%
+  (clamped); mid-flight interrupt reports `closing → opening · pas de saut`.
+  (`anim.rs` — the thin linear compat shim over `motion.rs` — is mirrored only
+  in spirit by Central's per-surface spring driver; not a separate port file.)
+
+### Menu lifecycle wired onto the motion engine
+
+The **context menu** is now driven by the motion engine instead of the physical
+spring: `cm.p` IS `advance_motion`'s `visible_progress` (easeOut 220 ms), and
+`openK('cmenu', …)` retargets an in-flight transition via `interrupt_motion` —
+so **closing mid-open reverses smoothly** (no restart) and reopening mid-close
+does likewise. Each interrupt logs `Motion{ menu interrupt → … } no-jump`; the
+Engine section shows a live `menu lifecycle: <state> · interrupts N` line and a
+`Menu lifecycle` behaviour row. The other surfaces keep the physical spring
+solver (velocity-carrying, also interruption-smooth) — both approaches coexist.
+
+## Render · backend abstraction (E6 / M5)
+
+`render_core.rs` mirrors `src/render.rs`: a host holds a `Renderer` and never
+embeds a rasterizer, so **swapping a backend changes nothing** about
+`ComposeInput`, `Scene`, ids, tokens, input regions, or motion — the E6 exit
+criterion. The renderer is a pure consumer: it paints what `reduce` produced.
+
+- `RenderFrame { scene, diff, damage, motion }` bundles a frame's inputs so a
+  new input is additive, not a breaking signature change. `trait Renderer {
+  type Target; render(&mut self, frame, target); }`.
+- Illustrative `RecordingRenderer → DrawList[DrawCmd::RoundedRect]` shows the
+  consumption pattern (real backends bring tiny-skia / wgpu, host-side): one
+  primitive per live node, back-to-front by z (blob 100 < bar 200 < panel 300 <
+  row 305), scene unchanged after render. 3 tests; fixture
+  `scenes/render-frame.json`. With this, every core crate module
+  (compose · menu · layout · tokens · diff · motion · render) is mirrored;
+  `anim.rs` is the only one folded in by reference rather than file.
+
+## Hosts · gnuin-compose-host (sctk / tiny-skia)
+
+With the engine fully mirrored, the port now reaches the **host** — the thin
+Operator-built shell that ticks the engine and does the Wayland work. Two
+Wayland-free host modules are mirrored (both unit-tested in sandbox):
+
+- **`host_motion_driver.rs`** (← `src/motion_driver.rs`) — `MotionDriver{ open,
+  dismiss, tick(dt), sample, is_animating, set_reduced_motion }`, the per-surface
+  frame-tick adoption of the engine motion: `open`/`dismiss` retarget via
+  `interrupt_motion` (dismiss mid-open never jumps), `tick` settles
+  Opening→Open / Closing→Hidden. **This is exactly what Central wires onto its
+  context menu** (`cmMotion` + `advanceCmMotion` + `openK` interrupt; `cm.p` IS
+  `sample().visible_progress`). 5 tests.
+- **`host_menu_state.rs`** (← `src/menu_state.rs`) — the pure overlay lifecycle
+  state machine enforcing **at-most-one surface**: `open` replaces (never
+  accumulates, reports `previous_surface_torn_down`), `configure` promotes
+  pending→current and is a no-op after dismiss (no stale-configure resurrection),
+  `dismiss` zeros every field, `on_hit` maps `MenuRow→Action` /
+  `MenuPanel|Blob→KeepOpen` / `None→Dismiss` (the same mapping as Central's
+  input-model click intents), and `surface_action` decides Reuse (same output)
+  vs Recreate. 8 tests covering the three bug classes (double / stuck / stale).
+- **`host_protocol.rs`** (← `src/protocol.rs`) — the legacy UI/Rust IPC wire:
+  newline-delimited JSON over a Unix socket. `HostMessage{ Open{request,screen} |
+  Close }` (client→host), `HostEvent{ Action{id} }` (host→client), and a versioned
+  `Envelope{ version, #[flatten] message }` whose unknown versions are *detected*
+  (`is_supported`) rather than mis-parsed. Canonical wire frames (the
+  cross-language contract legacy UI must match) are pinned in
+  `scenes/wire-protocol.json`. **Transitional only** — this bridge exists for the
+  per-surface bridge cutover; the destination is **bridge-free and in-process** (the
+  host links `gnuin_compose_core` directly and bypasses the socket entirely, per
+  the module's own doc). Central reflects this: the inspector's "host wire"
+  readout is labelled *legacy · pre-cutover*, and reads *in-process* when idle.
+
+Still host-side and not yet mirrored: `scene_builder.rs` (glue), `render.rs`
+(tiny-skia paint of the trait from `render_core.rs`), and `main.rs` (the
+calloop/Wayland event loop — the only display-coupled file). These are the
+next host slices.
+
+
 ## Test coverage (in-crate, in-sandbox)
 
 `gnuin-compose-core` carries the load-bearing invariants as unit tests:

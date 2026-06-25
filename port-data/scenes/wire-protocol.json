@@ -1,0 +1,27 @@
+{
+  "fixture": "wire-protocol",
+  "conforms_to": "gnuin_compose_host::protocol::{HostMessage, Envelope, HostEvent} — see host_protocol.rs / src/protocol.rs",
+  "transport": "newline-delimited JSON over a Unix domain socket (one message per line, '\\n' terminated)",
+  "thesis": "the legacy UI/Rust IPC contract. legacy UI serializes a menu request → host calls reduce() + redraws; host sends one line back when a row is clicked. An Envelope version is DETECTED (is_supported), never mis-parsed — so surfaces version-negotiate onto the unified socket instead of a flag-day cutover.",
+  "serde_conventions": {
+    "HostMessage / HostEvent": "#[serde(tag=\"type\", rename_all=\"snake_case\")] → \"open\"/\"close\"/\"action\"",
+    "Envelope.message": "#[serde(flatten)] → {\"version\":1,\"type\":\"open\",...} (superset of the bare message)",
+    "MenuStyle / RowKind / Density / NodeState": "no rename → PascalCase: \"List\", \"Item\", \"Mouse\", \"Open\""
+  },
+  "frames": {
+    "client_to_host_open": "{\"type\":\"open\",\"request\":{\"style\":\"List\",\"groups\":[{\"head\":\"Actions\",\"sub\":\"\",\"items\":[{\"id\":\"copy\",\"kind\":\"Item\",\"label\":\"Copy\",\"group\":\"\",\"on\":false,\"accent\":false,\"danger\":false,\"disabled\":false,\"mascot\":false,\"submenu\":[]},{\"id\":\"paste\",\"kind\":\"Item\",\"label\":\"Paste\",\"group\":\"\",\"on\":false,\"accent\":false,\"danger\":false,\"disabled\":false,\"mascot\":false,\"submenu\":[]}]}],\"anchor\":[320.0,240.0],\"anchor_origin\":[12.0,12.0],\"density\":\"Mouse\",\"content_size\":[200.0,150.0],\"state\":\"Open\"},\"screen\":\"DP-1\"}",
+    "client_to_host_close": "{\"type\":\"close\"}",
+    "enveloped_open": "{\"version\":1,\"type\":\"open\",\"request\":{ … },\"screen\":\"DP-1\"}",
+    "enveloped_close": "{\"version\":1,\"type\":\"close\"}",
+    "host_to_client_action": "{\"type\":\"action\",\"id\":\"copy\"}",
+    "future_version_detected": "{\"version\":999,\"type\":\"close\"} → parses structurally, is_supported()==false"
+  },
+  "invariants": {
+    "one_message_per_line": true,
+    "every_line_newline_terminated": true,
+    "open_screen_optional": "null = focused/default output",
+    "envelope_inner_flattens": "wire stays {\"version\":1,\"type\":...} — legacy bare message is a subset",
+    "unknown_version_detected_not_misparsed": true,
+    "host_dismisses_before_action": "legacy UI never sees Action while the menu is still live"
+  }
+}

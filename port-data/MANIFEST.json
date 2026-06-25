@@ -100,17 +100,36 @@
     "scenes/dock-affordance.json",
     "scenes/menu-vertical.json",
     "scenes/input-focus.json",
-    "scenes/edge-aware.json"
+    "scenes/edge-aware.json",
+    "scenes/diff-damage.json",
+    "scenes/render-frame.json",
+    "scenes/wire-protocol.json"
   ],
   "files": {
     "types": "scene_types.rs",
     "tokens": "tokens.json",
     "motion": "motion.spec.json",
     "taskbar": "taskbar_registry.rs",
-    "dock": "dock_affordance.rs",
+    "dock_affordance": "dock_affordance.rs",
+    "dock_settings": "dock_settings.rs",
+    "shell_settings": "shell_settings.json",
     "compose": "compose_core.rs",
+    "motion_core": "motion_core.rs",
+    "render_core": "render_core.rs",
+    "host_motion_driver": "host_motion_driver.rs",
+    "host_menu_state": "host_menu_state.rs",
+    "host_protocol": "host_protocol.rs",
+    "molecules": "molecule_specs.json",
     "parity": "PARITY.md",
     "manifest": "MANIFEST.json"
+  },
+  "host": {
+    "source": "gnu.in-os/engine/gnuin-compose-host (sctk/tiny-skia, Branch-H gnuin-bar pattern)",
+    "files": { "motion_driver": "host_motion_driver.rs", "menu_state": "host_menu_state.rs", "protocol": "host_protocol.rs" },
+    "motion_driver": "per-surface frame-tick adoption of the engine motion: MotionDriver{ open/dismiss (retarget via interrupt_motion), tick(dt), sample(), is_animating() } — exactly Central's menu-lifecycle wiring; 5 tests",
+    "menu_state": "pure overlay lifecycle SM enforcing AT-MOST-ONE surface: open(replace)/configure(promote;no-op-if-dismissed)/dismiss(zero-all)/on_hit(MenuRow->Action,Panel/Blob->KeepOpen,None->Dismiss)/surface_action(Reuse same-output|Recreate) — 8 tests",
+    "protocol": "newline-delimited JSON over a Unix socket (legacy UI ContextMenuService ↔ Rust host): HostMessage{Open{request,screen}|Close} · Envelope{version,#[flatten] message} (version-negotiated, is_supported) · HostEvent{Action{id}}; canonical wire frames in scenes/wire-protocol.json (TRANSITIONAL — bridge cutover bridge; the destination is in-process: the host links compose-core directly, no bridge / no socket)",
+    "ties_to_central": "MotionDriver == cmMotion + advanceCmMotion + openK-interrupt; MenuState.on_hit == Central input-model click intents; surface_action == per-output Reuse/Recreate"
   },
   "compose_engine": {
     "spec": "COMPOSITION_ENGINE_SPEC.md (menus first)",
@@ -145,6 +164,49 @@
       "api": "Rect::intersect(parent) · Rect::clamp_inside(area, margin) · submenu_rect(panel, area, size, margin)->(Rect, Side{Left|Right})",
       "fixture": "scenes/edge-aware.json",
       "proof": "row ring never exceeds panel · submenu flips left at the right edge · panel shifted not shrunk · 6 edge_tests in compose_core.rs"
+    },
+    "diff_damage": {
+      "thesis": "retained-mode reactivity — state → reduce → new Scene → diff → targeted host updates; damage() gives the dirty region so a motion-only restyle never forces a full-screen repaint (E5).",
+      "types": "NodeChange{ Added|Removed|Moved|Updated }(NodeId) · SceneDiff{ changes }",
+      "diff": "diff(prev,next)->SceneDiff — Removed first, then per-next Added | (Moved on rect change) + (Updated on state/z/tokens/payload); a move+restyle reports BOTH",
+      "damage": "damage(prev,next)->Rect — union of changed rects (next rect; + prev rect when moved/removed); Rect::ZERO when nothing changed",
+      "fixture": "scenes/diff-damage.json",
+      "proof": "identical=empty/zero · move≠add/remove · restyle-in-place=Updated not Moved · move+restyle=both · motion-only damage < screen · moved damage unions old+new · 10 diff_tests in compose_core.rs"
+    },
+    "motion": {
+      "mirror": "motion_core.rs (port of src/motion.rs) — the non-rendering half of the motion engine",
+      "types": "Easing{ Linear|EaseOutCubic|EaseInOutCubic|Spring(Spring) } · Spring{ response_ms, damping_ratio } (soft=320/0.82) · MotionSpec{ duration_ms, easing, reduced_motion } (default ease_out 240) · MotionSample{ state, raw_progress, curve_progress, visible_progress }",
+      "advance": "advance_motion(state, elapsed_ms, spec) — Opening→Open, Closing→Hidden; spring curve may overshoot >1.0 while visible_progress stays input/opacity-safe 0..1",
+      "interrupt": "interrupt_motion(current, target, spec) — retarget in-flight WITHOUT a visible jump (monotonic easings preserve visible_progress via inverse_sample)",
+      "reduced_motion": "effective_duration_ms()=0 → snap to terminal state",
+      "proof": "6 motion tests (overshoot-safe, reduced-snap, closing-inverse, both interruption directions)"
+    },
+    "render": {
+      "mirror": "render_core.rs (port of src/render.rs) — the renderer abstraction (E6/M5)",
+      "thesis": "a host holds a Renderer and never embeds a rasterizer; the renderer is a PURE CONSUMER of the scene model (paints what reduce produced, in z-order, from resolved tokens). Swapping tiny-skia ↔ wgpu/vello changes nothing about Scene/ids/tokens/input/motion.",
+      "types": "RenderFrame{ scene, diff, damage, motion } · trait Renderer{ type Target; render(&mut self, frame, target) }",
+      "illustrative_backend": "RecordingRenderer → DrawList[DrawCmd::RoundedRect] — host-side pattern (real backends bring tiny-skia/wgpu); emits one primitive per live node in back-to-front z-order",
+      "fixture": "scenes/render-frame.json",
+      "proof": "paints live nodes only · back-to-front z (100<200<300<305) · blob below the chrome it backs · scene unchanged after render · 3 render tests"
+    },
+    "menu_lifecycle_wired": {
+      "note": "Central's context menu is driven by the motion engine (advance_motion) — cm.p IS visible_progress; openK retargets in-flight via interrupt_motion so closing mid-open reverses without a jump (easeOut 220ms). Other surfaces keep the physical spring solver (velocity-carrying, also interruption-smooth)."
+    }
+  },
+  "dock": {
+    "note": "the dock has two real, orthogonal backend layers — both kept, neither subsumes the other",
+    "visibility_layer": {
+      "owner": "ShellSettingsService + DockService (ShellIpc dock.*)",
+      "file": "dock_settings.rs",
+      "model": "DockSettings { enabled, archived, mode, reveal_delay_ms, hide_delay_ms, pinned }",
+      "modes": ["docked", "floating", "autohide", "dodge"],
+      "resolve": "resolve(DockContext{ window_overlaps, edge_hovered, pointer_in_dock }) -> DockResolution{ painted, visible, reserves_zone, reveal_strip }",
+      "proof": "docked reserves / floating does not · autohide hidden until edge-hover · dodge hides only under overlap · pinned always visible+reserves · 6 tests"
+    },
+    "layout_layer": {
+      "owner": "gnuin-dock::affordance (plan gnu.in.dock-affordance-plan.v1, planned by asset-core)",
+      "file": "dock_affordance.rs",
+      "model": "DockAffordanceConfig { deck_style: Row|Stack|Fan, card_px, fan_arc_deg, spread, items }"
     }
   },
   "dock_affordance": {

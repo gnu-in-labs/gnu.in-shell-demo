@@ -1,0 +1,89 @@
+{
+  "source": "gnu-in-labs/gnu.in-shell · components/settings/pages/Shell settings page + services/ShellSettingsService + DockService (ShellIpc)",
+  "note": "Authoritative shell settings schema as exposed by the legacy Rust backend (ShellSettingsService getters/setters + ShellIpc dock.* methods). This is the single source of truth Central's Control Center and the docs mirror. Each control names its real backend key, type, and option set verbatim.",
+  "groups": [
+    {
+      "id": "panel_family",
+      "title": "PANEL FAMILY",
+      "controls": [
+        { "key": "shellMode", "label": "Shell Mode", "desc": "gnosis-engine visual family", "type": "select", "options_ref": "shellModeFamilies", "setter": "setShellMode" }
+      ]
+    },
+    {
+      "id": "compositor_profile",
+      "title": "COMPOSITOR PROFILE",
+      "desc": "Backend-owned Hyprland plugin profile",
+      "controls": [
+        { "key": "hyprlandPluginProfile", "label": "Plugin Profile", "type": "select", "options": ["stable", "visual-focus", "gesture-lab", "capture-lab", "workspace-lab"], "setter": "setHyprlandPluginProfile" },
+        { "key": "hyprlandPluginExperimentalEnabled", "label": "Experimental Plugins", "desc": "Allow non-stable profile candidates", "type": "toggle", "setter": "setHyprlandPluginExperimentalEnabled" },
+        { "key": "hyprlandPluginReloadOnStartup", "label": "Reload On Startup", "desc": "Request backend reload during compositor startup", "type": "toggle", "setter": "setHyprlandPluginReloadOnStartup" },
+        { "key": "hyprlandPluginFocusFeedback", "label": "Focus Feedback", "desc": "Compositor-level focus/depth candidate", "type": "select", "options": ["off", "hyprfocus", "borders-plus-plus", "official-focus"], "setter": "setHyprlandPluginFocusFeedback" },
+        { "key": "hyprlandPluginEdgeGestures", "label": "Edge Gestures", "desc": "Gesture or hot-edge profile candidate", "type": "select", "options": ["off", "hyprgrass", "hypr-hot-edge", "combined"], "setter": "setHyprlandPluginEdgeGestures" },
+        { "key": "hyprlandPluginCaptureProvider", "label": "Capture Provider", "desc": "Capture workflow provider preference", "type": "select", "options": ["builtin", "hyprcapture"], "setter": "setHyprlandPluginCaptureProvider" },
+        { "key": "hyprlandPortalSessionHealth", "label": "Portal Session", "desc": "Required for portal-backed capture and permissions", "type": "readonly", "states": ["healthy", "dependency-failed", "inactive-graphical-session", "portal-unowned", "unknown"] }
+      ]
+    },
+    {
+      "id": "dock",
+      "title": "DOCK",
+      "ipc": ["dock.stateJson", "dock.togglePinned", "dock.pin", "dock.unpin", "dock.reveal"],
+      "controls": [
+        { "key": "dockEnabled", "label": "Enabled", "desc": "Draw the bottom dock surface", "type": "toggle", "setter": "setDockEnabled" },
+        { "key": "dockArchived", "label": "Archived", "desc": "Disabled by source policy", "type": "toggle", "setter": "setDockArchived" },
+        { "key": "dockMode", "label": "Dock Mode", "desc": "Bottom surface behavior", "type": "select", "options": ["docked", "floating", "autohide", "dodge"], "setter": "setDockMode", "semantics": { "docked": "always visible, reserves bottom space", "floating": "visible, no reserved zone", "autohide": "hidden, reveals on bottom hover strip", "dodge": "hidden only when a window overlaps (DockGeometryService.dockOverlaps)" } },
+        { "key": "dockRevealDelay", "label": "Reveal Delay", "desc": "Edge hover delay before reveal", "type": "slider", "from": 0, "to": 1000, "step": 50, "unit": "ms", "setter": "setDockRevealDelay" },
+        { "key": "dockHideDelay", "label": "Hide Delay", "desc": "Delay before the dock hides", "type": "slider", "from": 0, "to": 1000, "step": 50, "unit": "ms", "setter": "setDockHideDelay" },
+        { "key": "dockPinned", "label": "Pinned", "desc": "Jillarious pin keeps the dock visible and reserves space", "type": "toggle", "ipc": "dock.togglePinned" }
+      ],
+      "pending_parity": ["window preview popups", "grouped app indicators", "persistent app pin/unpin", "separators / shadows / elevation margins"]
+    },
+    {
+      "id": "topbar",
+      "title": "TOPBAR",
+      "controls": [
+        { "key": "topbarEdge", "label": "Edge", "desc": "Monitor edge used by the shell bar", "type": "select", "options": ["top", "bottom"], "setter": "setTopbarEdge" },
+        { "key": "topbarDensity", "label": "Density", "desc": "Topbar height and spacing", "type": "select", "options": ["normal", "compact"], "setter": "setTopbarDensity" },
+        { "key": "topbarBackgroundVisible", "label": "Background", "desc": "Draw the bar backing surface", "type": "toggle", "setter": "setTopbarBackgroundVisible" },
+        { "key": "topbarCornerStyle", "label": "Corner Style", "desc": "Rounding model for bar and screen corners", "type": "select", "options": ["rounded", "screen", "square"], "setter": "setTopbarCornerStyle" },
+        { "key": "topbarGroupStyle", "label": "Group Style", "desc": "Surface treatment for topbar widget groups", "type": "select", "options": ["capsules", "borderless", "solid"], "setter": "setTopbarGroupStyle" },
+        { "key": "topbarFloatingShadow", "label": "Floating Shadow", "desc": "Shadow for floating bar treatment", "type": "toggle", "setter": "setTopbarFloatingShadow" },
+        { "key": "topbarAutoHide", "label": "Auto Hide", "desc": "Hide bar until an explicit reveal", "type": "toggle", "setter": "setTopbarAutoHide" },
+        { "key": "topbarSuperReveal", "label": "Super Reveal", "desc": "Reveal bar while the Super key is active", "type": "toggle", "setter": "setTopbarSuperReveal" },
+        { "key": "topbarAppStripMaxApps", "label": "App Strip", "desc": "Visible app chips before overflow", "type": "number", "from": 1, "to": 12, "setter": "setTopbarAppStripMaxApps" },
+        { "key": "topbarAppStripMaxAppsShortened", "label": "Compact App Strip", "desc": "Visible app chips on narrow monitors", "type": "number", "from": 1, "to": 12, "setter": "setTopbarAppStripMaxAppsShortened" },
+        { "key": "clockFormat", "label": "Clock Format", "desc": "Displayed time pattern", "type": "text", "placeholder": "HH:mm", "setter": "setClockFormat" },
+        { "key": "showBarTooltips", "label": "Bar Tooltips", "desc": "Hover labels for topbar widgets", "type": "toggle", "setter": "setShowBarTooltips" }
+      ]
+    },
+    {
+      "id": "widgets",
+      "title": "WIDGETS",
+      "desc": "Topbar widget enablement (ShellSettingsService.widgetEnabled / setWidgetEnabled)",
+      "controls": [
+        { "key": "sidebar-left", "label": "Left Sidebar", "type": "widget-toggle" },
+        { "key": "active-window", "label": "Active Window", "type": "widget-toggle" },
+        { "key": "resources", "label": "Resources", "type": "widget-toggle" },
+        { "key": "media", "label": "Media", "type": "widget-toggle" },
+        { "key": "workspaces", "label": "Workspaces", "type": "widget-toggle" },
+        { "key": "clock", "label": "Clock", "type": "widget-toggle" },
+        { "key": "gnosis-app", "label": "Gnosis", "type": "widget-toggle" },
+        { "key": "notifications", "label": "Notifications", "type": "widget-toggle" },
+        { "key": "wifi", "label": "Wi-Fi", "type": "widget-toggle" },
+        { "key": "bluetooth", "label": "Bluetooth", "type": "widget-toggle" },
+        { "key": "weather", "label": "Weather", "type": "widget-toggle" },
+        { "key": "audio", "label": "Audio", "type": "widget-toggle" }
+      ]
+    },
+    {
+      "id": "sidebar_booru",
+      "title": "SIDEBAR BOORU",
+      "controls": [
+        { "key": "sidebarBooruDefaultProvider", "label": "Provider", "desc": "Backend-owned default provider", "type": "select", "options": ["yandere", "zerochan", "danbooru", "gelbooru", "waifu.im", "t.alcy.cc"], "setter": "setSidebarBooruDefaultProvider" },
+        { "key": "sidebarBooruAllowNsfw", "label": "NSFW Gate", "desc": "Content-safety switch", "type": "toggle", "setter": "setSidebarBooruAllowNsfw" },
+        { "key": "sidebarBooruLimit", "label": "Limit", "desc": "Maximum responses", "type": "slider", "from": 1, "to": 100, "step": 1, "setter": "setSidebarBooruLimit" },
+        { "key": "sidebarBooruZerochanUsername", "label": "Zerochan User", "desc": "Request identity", "type": "text", "placeholder": "[unset]", "setter": "setSidebarBooruZerochanUsername" }
+      ]
+    }
+  ],
+  "settings_pages": ["Appearance", "Developer", "Displays", "Gnosis", "Input", "Services", "Shell", "Surfaces"]
+}

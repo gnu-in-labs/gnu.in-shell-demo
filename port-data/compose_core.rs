@@ -61,7 +61,7 @@ pub mod layer {
     }
 }
 
-/// Blob inflation around each backed element (QML `panelEdgeMargin`).
+/// Blob inflation around each backed element (legacy UI `panelEdgeMargin`).
 pub const DEFAULT_EDGE_MARGIN: f64 = 6.0;
 // geometry_px: bar_radius 14, menu_radius 12, blob_radius 12, bar_height 40
 pub const MENU_RADIUS: f64 = 12.0;
@@ -260,14 +260,138 @@ impl Scene {
     }
 }
 
+// ── Diff / damage — retained-mode reactivity (faithful port of diff.rs) ──
+// state → reduce → new Scene → diff → targeted host updates. The host keeps the
+// previous Scene and applies only what changed — no surface lifecycle by hand.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum NodeChange { Added(NodeId), Removed(NodeId), Moved(NodeId), Updated(NodeId) }
+impl NodeChange {
+    pub fn id(self) -> NodeId {
+        match self { NodeChange::Added(i) | NodeChange::Removed(i) | NodeChange::Moved(i) | NodeChange::Updated(i) => i }
+    }
+}
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct SceneDiff { pub changes: Vec<NodeChange> }
+impl SceneDiff {
+    pub fn is_empty(&self) -> bool { self.changes.is_empty() }
+    pub fn len(&self) -> usize { self.changes.len() }
+}
+
+/// Minimal change set turning `prev` into `next`, keyed by NodeId. A node in
+/// both with a different rect yields Moved; if its non-geometry fields (state,
+/// z, tokens, payload) also differ it ADDITIONALLY yields Updated — a move +
+/// restyle reports both, exactly as the crate.
+pub fn diff(prev: &Scene, next: &Scene) -> SceneDiff {
+    let mut changes = Vec::new();
+    for p in &prev.nodes { if next.get(p.id).is_none() { changes.push(NodeChange::Removed(p.id)); } }
+    for n in &next.nodes {
+        match prev.get(n.id) {
+            None => changes.push(NodeChange::Added(n.id)),
+            Some(p) => {
+                if p.rect != n.rect { changes.push(NodeChange::Moved(n.id)); }
+                if p.state != n.state || p.z != n.z || p.tokens != n.tokens || p.payload != n.payload {
+                    changes.push(NodeChange::Updated(n.id));
+                }
+            }
+        }
+    }
+    SceneDiff { changes }
+}
+
+/// The dirty region (E5 contract): union of every changed node's rect — its
+/// next rect, plus its prev rect when it moved or was removed. Rect::ZERO when
+/// nothing changed, so a motion-only restyle damages just that node and never
+/// forces a full-screen repaint.
+pub fn damage(prev: &Scene, next: &Scene) -> Rect {
+    let mut region = Rect::ZERO;
+    for p in &prev.nodes { if next.get(p.id).is_none() { region = region.union(&p.rect); } }
+    for n in &next.nodes {
+        match prev.get(n.id) {
+            None => region = region.union(&n.rect),
+            Some(p) => {
+                let changed = p.rect != n.rect || p.state != n.state || p.z != n.z
+                    || p.tokens != n.tokens || p.payload != n.payload;
+                if changed {
+                    region = region.union(&n.rect);
+                    if p.rect != n.rect { region = region.union(&p.rect); }
+                }
+            }
+        }
+    }
+    region
+}
+
+#[cfg(test)]
+mod diff_tests {
+    use super::*;
+    fn tk() -> TokenBundle { TokenBundle { surface: DARK_NEO_ELEV_2, border: FG3_DARK, border_px: 1.0, radius: 12.0, opacity: 1.0, motion_ms: 240 } }
+    fn nd(id: NodeId, kind: NodeKind, rect: Rect, z: i32, st: NodeState) -> Node { Node { id, kind, rect, z, state: st, tokens: tk(), payload: NodePayload::None } }
+    fn scr() -> Rect { Rect::new(0.0, 0.0, 1920.0, 1080.0) }
+    fn bar() -> Node { nd(NodeId::Bar, NodeKind::Bar, Rect::new(0.0, 0.0, 1920.0, 40.0), 200, NodeState::Open) }
+    fn panel_at(x: f64) -> Node { nd(NodeId::MenuPanel, NodeKind::MenuPanel, Rect::new(x, 388.0, 280.0, 92.0), 300, NodeState::Open) }
+
+    #[test] fn identical_scenes_have_no_diff() { let a = Scene { screen: scr(), nodes: vec![bar()] }; assert!(diff(&a, &a).is_empty()); }
+    #[test] fn opening_adds_panel() {
+        let a = Scene { screen: scr(), nodes: vec![bar()] };
+        let b = Scene { screen: scr(), nodes: vec![bar(), panel_at(488.0)] };
+        assert!(diff(&a, &b).changes.contains(&NodeChange::Added(NodeId::MenuPanel)));
+    }
+    #[test] fn closing_removes_panel() {
+        let a = Scene { screen: scr(), nodes: vec![bar(), panel_at(488.0)] };
+        let b = Scene { screen: scr(), nodes: vec![bar()] };
+        assert!(diff(&a, &b).changes.contains(&NodeChange::Removed(NodeId::MenuPanel)));
+    }
+    #[test] fn moving_reports_moved_not_add_remove() {
+        let a = Scene { screen: scr(), nodes: vec![panel_at(200.0)] };
+        let b = Scene { screen: scr(), nodes: vec![panel_at(900.0)] };
+        let d = diff(&a, &b);
+        assert!(d.changes.contains(&NodeChange::Moved(NodeId::MenuPanel)));
+        assert!(!d.changes.iter().any(|c| matches!(c, NodeChange::Added(_) | NodeChange::Removed(_))));
+    }
+    #[test] fn restyle_in_place_is_updated_not_moved() {
+        let a = Scene { screen: scr(), nodes: vec![panel_at(488.0)] };
+        let mut p2 = panel_at(488.0); p2.state = NodeState::Closing; // same rect, different state
+        let b = Scene { screen: scr(), nodes: vec![p2] };
+        let d = diff(&a, &b);
+        assert!(d.changes.contains(&NodeChange::Updated(NodeId::MenuPanel)));
+        assert!(!d.changes.iter().any(|c| matches!(c, NodeChange::Moved(_))));
+    }
+    #[test] fn move_and_restyle_reports_both() {
+        let a = Scene { screen: scr(), nodes: vec![panel_at(200.0)] };
+        let mut p2 = panel_at(900.0); p2.z = 305; // moved AND non-geometry change
+        let b = Scene { screen: scr(), nodes: vec![p2] };
+        let d = diff(&a, &b);
+        assert!(d.changes.contains(&NodeChange::Moved(NodeId::MenuPanel)));
+        assert!(d.changes.contains(&NodeChange::Updated(NodeId::MenuPanel)));
+    }
+    #[test] fn identical_scenes_zero_damage() { let a = Scene { screen: scr(), nodes: vec![panel_at(488.0)] }; assert_eq!(damage(&a, &a), Rect::ZERO); }
+    #[test] fn adding_damages_only_that_rect() {
+        let a = Scene { screen: scr(), nodes: vec![] };
+        let b = Scene { screen: scr(), nodes: vec![bar()] };
+        assert_eq!(damage(&a, &b), Rect::new(0.0, 0.0, 1920.0, 40.0));
+    }
+    #[test] fn motion_only_restyle_damages_node_not_screen() {
+        let a = Scene { screen: scr(), nodes: vec![panel_at(488.0)] };
+        let mut p2 = panel_at(488.0); p2.state = NodeState::Closing;
+        let b = Scene { screen: scr(), nodes: vec![p2] };
+        let r = damage(&a, &b);
+        assert!(!r.is_empty() && (r.w < scr().w || r.h < scr().h));
+    }
+    #[test] fn moving_damages_old_and_new_footprints() {
+        let a = Scene { screen: scr(), nodes: vec![panel_at(200.0)] };
+        let b = Scene { screen: scr(), nodes: vec![panel_at(900.0)] };
+        let r = damage(&a, &b);
+        assert!(r.union(&a.get(NodeId::MenuPanel).unwrap().rect) == r); // covers old
+        assert!(r.union(&b.get(NodeId::MenuPanel).unwrap().rect) == r); // covers new
+    }
+}
+
 // ── Reducer / diff (signatures; bodies in the crate) ──────────────────────────
 // pub fn reduce(input: &ComposeInput) -> Scene
 //   one ordered pass: optional dock(+blob), exactly-one bar(+blob), menu →
 //   blob FIRST (chrome only) then MenuPanel then one MenuRow per hittable row.
 //   blob.rect = layout::blob_rect(element_rect, edge_margin) = rect.inflate(6).
-// pub fn diff(prev: &Scene, next: &Scene) -> SceneDiff   // {changes: Vec<NodeChange>}
-//   NodeChange = Added|Removed|Moved|Updated (by NodeId).
-// pub fn damage(prev: &Scene, next: &Scene) -> Rect      // union of changed rects.
+// (diff / damage are implemented for real below — faithful to diff.rs.)
 //
 // ComposeInput { screen, perf, transparency, contrast, bar:Option<BarRequest>,
 //   dock:Option<DockRequest>, menu:Option<MenuRequest>, edge_margin }
