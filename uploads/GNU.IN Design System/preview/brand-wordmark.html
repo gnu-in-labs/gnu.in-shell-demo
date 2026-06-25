@@ -1,0 +1,130 @@
+<!doctype html>
+<!-- @dsCard group="Brand" name="Wordmark" subtitle="gnu.in.OS lockup · orange + green dots" viewport="700x260" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Wordmark</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .lockup {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 4px 0 8px;
+  }
+  .mark {
+    font-family: var(--font-sans);
+    font-size: 64px;
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    color: var(--fg1);
+    display: flex;
+    align-items: baseline;
+  }
+  .mark .dot     { color: var(--gnu-orange); }
+  .mark .dot2    { color: var(--gnu-beret); }
+  .mark .os      { color: var(--fg1); }
+
+  .endorse {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: 18px;
+    border-left: 2px solid var(--gnu-beret);
+    align-self: stretch;
+    justify-content: center;
+  }
+  .endorse .by {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--gnu-beret);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .endorse .by .pip {
+    width: 6px; height: 6px; border-radius: 999px;
+    background: var(--gnu-beret);
+    display: inline-block;
+  }
+  .endorse .lab {
+    font-family: var(--font-sans);
+    font-size: 20px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+    color: var(--fg1);
+  }
+  .endorse .lab .dot  { color: var(--gnu-orange); }
+  .endorse .lab .dot2 { color: var(--gnu-beret); }
+
+  .alt {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--line-2);
+  }
+  .alt .quiet {
+    font-family: var(--font-sans);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--fg1);
+    letter-spacing: -0.01em;
+  }
+  .alt .quiet .dot   { color: var(--gnu-orange); }
+  .alt .quiet .dot2  { color: var(--gnu-beret); }
+  .alt .quiet .os    { color: var(--fg1); }
+  .alt .note {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--fg3);
+    line-height: 1.5;
+    max-width: 36ch;
+  }
+
+  .tag {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg3);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+  .tag .lede { color: var(--gnu-orange); font-family: var(--font-mono); font-weight: 400; letter-spacing: 0; }
+</style>
+</head>
+<body>
+<div class="card">
+  <span class="tag"><span class="lede">▸</span>Primary lockup</span>
+
+  <div class="lockup">
+    <div class="mark">
+      gnu<span class="dot">.</span>in<span class="dot2">.</span><span class="os">OS</span>
+    </div>
+    <div class="endorse">
+      <span class="by"><span class="pip"></span>by</span>
+      <span class="lab">gnu<span class="dot">.</span>in<span class="dot2">.</span>lab</span>
+    </div>
+  </div>
+
+  <div class="alt">
+    <div class="quiet">
+      gnu<span class="dot">.</span>in<span class="dot2">.</span><span class="os">OS</span>
+    </div>
+    <div class="note">
+      <strong style="color:var(--fg1);font-weight:600">gnu.in.OS</strong> is the product · <strong style="color:var(--fg1);font-weight:600">gnu.in.lab</strong> is the maker. Orange first dot, beret-green second dot, ink wordmark — the lockup at every scale.
+    </div>
+  </div>
+</div>
+</body>
+</html>

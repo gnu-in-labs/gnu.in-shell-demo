@@ -1,0 +1,39 @@
+<!doctype html>
+<!-- @dsCard group="Spacing" name="Motion Tokens" subtitle="Expressive springs (chrome) + standard/snap (identity) + pulse" viewport="700x280" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Motion · easing & duration</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .row { display: grid; grid-template-columns: 130px 1fr 90px; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line-2); }
+  .row:last-child { border-bottom: none; }
+  .label { font-size: 12px; font-weight: 600; }
+  .v { font-family: var(--font-mono); font-size: 11px; color: var(--fg3); text-align: right; }
+  .track { position: relative; height: 16px; background: var(--gnu-soft); border-radius: 999px; overflow: hidden; }
+  .ball  { position:absolute; top:2px; width: 12px; height: 12px; border-radius: 999px; background: var(--gnu-orange); animation: glide 2400ms infinite; }
+  .ball.snap     { animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  .ball.standard { animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .ball.emphatic { animation-timing-function: cubic-bezier(0.18, 0.9, 0.22, 1.1); }
+  .ball.expressive      { animation-timing-function: cubic-bezier(0.38, 1.21, 0.22, 1.00); }
+  .ball.expressive-fast { animation-timing-function: cubic-bezier(0.42, 1.67, 0.21, 0.90); }
+  @keyframes glide { 0%,15% { left: 2px } 60%,100% { left: calc(100% - 14px) } }
+  .pulse-row { display:flex; gap: 22px; align-items:center; padding: 6px 0 0; }
+  .pulse { width: 10px; height: 10px; border-radius: 999px; background: var(--gnu-orange); box-shadow: 0 0 0 0 rgba(255,106,0,0.6); animation: pulse 1400ms infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,106,0,0.6); } 70% { box-shadow: 0 0 0 12px rgba(255,106,0,0); } 100% { box-shadow: 0 0 0 0 rgba(255,106,0,0);} }
+  .pulse-label { font-size: 12px; color: var(--fg2); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row"><span class="label">Expressive</span><div class="track"><div class="ball expressive"></div></div><span class="v">500ms · chrome</span></div>
+  <div class="row"><span class="label">Expressive&nbsp;fast</span><div class="track"><div class="ball expressive-fast"></div></div><span class="v">350ms · chrome</span></div>
+  <div class="row"><span class="label">Standard</span><div class="track"><div class="ball standard"></div></div><span class="v">200ms · identity</span></div>
+  <div class="row"><span class="label">Snap</span><div class="track"><div class="ball snap"></div></div><span class="v">120ms</span></div>
+  <div class="pulse-row">
+    <span class="pulse"></span>
+    <span class="pulse-label">Listening pulse · 1400ms cadence</span>
+  </div>
+</div>
+</body>
+</html>

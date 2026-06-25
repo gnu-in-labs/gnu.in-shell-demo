@@ -1,0 +1,16 @@
+[package]
+name = "blobin-golden"
+version = "0.14.0"
+edition = "2021"
+description = "blob.in golden-image harness — material parity (Rust raster vs. reference PNGs) with pixel-diff gate + SSIM signal (plan §8 Q4)."
+license = "GPL-3.0-or-later"
+
+[dependencies]
+blobin-core = { path = "../blobin-core" }
+
+[dev-dependencies]
+png = "0.17"
+
+[[test]]
+name = "material_parity"
+path = "tests/material_parity.rs"

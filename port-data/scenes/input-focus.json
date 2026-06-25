@@ -1,0 +1,61 @@
+{
+  "fixture": "input-focus",
+  "conforms_to": "gnuin_compose_core::{CursorState, ClickIntent, resolve_click} — see compose_core.rs",
+  "model": "rapport = (cursor_pos + cursor_focus_data_node) × {click-awareness, click-away, click-select, click-unfocus}",
+  "note": "The engine hot-tracks the pointer, resolves the topmost INTERACTIVE node every move (Scene::hit — blobs/backings excluded), and classifies each press into exactly one ClickIntent. Precedence: away > select > unfocus > awareness. Scene below is the list menu from menu-vertical.json with a bar.",
+  "scene_ref": "scenes/menu-vertical.json (+ Bar z200)",
+  "cases": [
+    {
+      "name": "awareness · hot-track over row",
+      "cursor_pos": [600.0, 406.0],
+      "open_transient": null,
+      "has_focus": false,
+      "cursor_focus_data_node": "MenuRow{group:0,row:0} @ z305",
+      "note": "blob z100 sits under the point but is excluded from hit-testing",
+      "intent": { "Awareness": { "over": "MenuRow{group:0,row:0}" } }
+    },
+    {
+      "name": "click-select · commit focus to row",
+      "cursor_pos": [600.0, 406.0],
+      "open_transient": "Menu",
+      "has_focus": false,
+      "intent": { "Select": { "node": "MenuRow{group:0,row:0}" } }
+    },
+    {
+      "name": "click-away · press outside open menu",
+      "cursor_pos": [1200.0, 800.0],
+      "open_transient": "Menu",
+      "has_focus": false,
+      "intent": { "Away": { "surface": "Menu" } }
+    },
+    {
+      "name": "click-unfocus · bare ground with held focus",
+      "cursor_pos": [1200.0, 800.0],
+      "open_transient": null,
+      "has_focus": true,
+      "intent": "Unfocus"
+    },
+    {
+      "name": "awareness · bare ground, nothing held",
+      "cursor_pos": [1200.0, 800.0],
+      "open_transient": null,
+      "has_focus": false,
+      "intent": { "Awareness": { "over": null } }
+    },
+    {
+      "name": "blob skirt never absorbs a press",
+      "cursor_pos": [485.0, 384.0],
+      "open_transient": "Menu",
+      "has_focus": false,
+      "note": "inside blob inflate(6) skirt but outside panel/row — membrane is input-transparent",
+      "intent": { "Away": { "surface": "Menu" } }
+    }
+  ],
+  "invariants": {
+    "exactly_one_intent_per_press": true,
+    "precedence": "away > select > unfocus > awareness",
+    "blobs_excluded_from_hit": true,
+    "selectable_kinds": ["MenuRow", "Bar", "Dock", "Launcher"],
+    "engine_owns_focus_and_dismissal": "no surface toggles a peer's visibility"
+  }
+}

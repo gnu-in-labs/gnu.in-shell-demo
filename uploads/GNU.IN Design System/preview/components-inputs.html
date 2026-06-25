@@ -1,0 +1,72 @@
+<!doctype html>
+<!-- @dsCard group="Components" name="Inputs" subtitle="Text fields, focus, error" viewport="700x280" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Inputs</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .field { display:flex; flex-direction: column; gap: 6px; }
+  .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--fg2); }
+  .input {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    border: 1px solid var(--line-1);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #FFF;
+    color: var(--fg1);
+    outline: none;
+    transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+  }
+  .input::placeholder { color: var(--fg3); }
+  .input:hover { border-color: var(--fg2); }
+  .input.focus { border-color: var(--gnu-orange); box-shadow: 0 0 0 4px rgba(255,106,0,0.18); }
+  .input.error { border-color: #E5484D; box-shadow: 0 0 0 4px rgba(229,72,77,0.14); }
+  .err-msg { font-size: 12px; color: #E5484D; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cmd {
+    font-family: var(--font-mono);
+    background: #0D1014;
+    color: #F7F3ED;
+    border: 1px solid #2B3037;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    display:flex;
+    align-items:center;
+    gap: 8px;
+  }
+  .cmd .orange { color: var(--gnu-orange); }
+  .cmd .cursor { display:inline-block; width: 8px; height: 14px; background: var(--gnu-orange); animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0 } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row">
+    <div class="field">
+      <span class="label">Workspace name</span>
+      <input class="input" placeholder="e.g. main"/>
+    </div>
+    <div class="field">
+      <span class="label">Theme token</span>
+      <input class="input focus" value="anthracite-default"/>
+    </div>
+    <div class="field">
+      <span class="label">Hyprland config</span>
+      <input class="input error" value="path/with-error.conf"/>
+      <span class="err-msg">File not found at this path.</span>
+    </div>
+    <div class="field">
+      <span class="label">Disabled</span>
+      <input class="input" disabled value="locked"/>
+    </div>
+  </div>
+  <div class="field">
+    <span class="label">Agent command bus</span>
+    <div class="cmd"><span class="orange">>_</span> tile workspace --workspace main --layout dwindle<span class="cursor"></span></div>
+  </div>
+</div>
+</body>
+</html>

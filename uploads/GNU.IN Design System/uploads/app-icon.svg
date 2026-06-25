@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">GNU6-shell app icon</title>
+  <desc>Application icon tile. No shadow; transparent outside the rounded rectangle.</desc>
+  <rect id="app-tile" x="18" y="18" width="220" height="220" rx="44" fill="#F7F8FA" stroke="#E6E8EB" stroke-width="3"></rect>
+  <g id="mark" transform="translate(12 22) scale(0.80)">
+    <g id="app-cube-dialogue-symbol">
+      <path id="app-dialogue-frame" d="M 194 52 H 256 Q 268 52 268 64 V 178 Q 268 190 256 190 H 184 L 160 214 V 190 H 146" fill="none" stroke="#FF6A00" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+      <g id="app-cube-terminal">
+      <polygon id="app-cube-top" points="66,66 128,32 190,66 128,100" fill="#FF6A00"></polygon>
+      <polygon id="app-cube-left" points="60,78 122,113 122,181 60,146" fill="#FF6A00"></polygon>
+      <polygon id="app-terminal-face" points="134,113 196,78 196,146 134,181" fill="#111418"></polygon>
+      <g id="app-prompt" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+        <polyline id="app-prompt-chevron" points="151,115 166,130 151,145"></polyline>
+        <line id="app-prompt-cursor" x1="167" y1="153" x2="184" y2="153"></line>
+      </g>
+    </g>
+    </g>
+  </g>
+
+</svg>

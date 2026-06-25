@@ -1,0 +1,70 @@
+{
+  "fixture": "menu-vertical",
+  "conforms_to": "gnuin_compose_core::Scene (serde feature) — gnu.in-os/engine/gnuin-compose-core v0.14.2",
+  "produced_by": "reduce(ComposeInput::new(1920x1080).with_menu(MenuRequest::open(MenuStyle::List, groups, (500,400))))",
+  "axes": { "perf": "Sdf", "transparency": "Opaque", "contrast": "Standard", "density": "Mouse", "edge_margin": 6.0 },
+  "note": "Golden scene for the menus-first vertical. Emission order = blob → panel → rows (rows z305 > panel z300 > blob z100). Blob.rect = MenuPanel.rect.inflate(6) — engine-derived in one pass, never chased. Layer z, radii, colours and density metrics are the canonical generated values from blob.in/tokens.json (E1). This file deserializes with Scene::from_json and equals reduce(input).",
+  "scene": {
+    "screen": { "x": 0.0, "y": 0.0, "w": 1920.0, "h": 1080.0 },
+    "nodes": [
+      {
+        "id": { "Blob": "Menu" },
+        "kind": "Blob",
+        "rect": { "x": 482.0, "y": 382.0, "w": 292.0, "h": 104.0 },
+        "z": 100,
+        "state": "Open",
+        "tokens": { "surface": { "r": 15, "g": 17, "b": 21, "a": 255 }, "border": { "r": 0, "g": 0, "b": 0, "a": 0 }, "border_px": 0.0, "radius": 12.0, "opacity": 1.0, "motion_ms": 240 },
+        "payload": { "Blob": { "backs": "MenuPanel" } }
+      },
+      {
+        "id": "MenuPanel",
+        "kind": "MenuPanel",
+        "rect": { "x": 488.0, "y": 388.0, "w": 280.0, "h": 92.0 },
+        "z": 300,
+        "state": "Open",
+        "tokens": { "surface": { "r": 26, "g": 32, "b": 38, "a": 255 }, "border": { "r": 124, "g": 130, "b": 138, "a": 102 }, "border_px": 1.0, "radius": 12.0, "opacity": 1.0, "motion_ms": 240 },
+        "payload": { "Menu": { "style": "List", "groups": [ { "head": "", "sub": "", "items": [
+          { "id": "terminal", "kind": "Item", "label": "Open terminal", "group": "", "on": false, "accent": false, "danger": false, "disabled": false, "mascot": false, "submenu": [] },
+          { "id": "wallpaper", "kind": "Item", "label": "Change wallpaper", "group": "", "on": false, "accent": false, "danger": false, "disabled": false, "mascot": false, "submenu": [] },
+          { "id": "settings", "kind": "Item", "label": "Display settings", "group": "", "on": false, "accent": false, "danger": false, "disabled": false, "mascot": false, "submenu": [] }
+        ] } ] } }
+      },
+      {
+        "id": { "MenuRow": { "group": 0, "row": 0 } },
+        "kind": "MenuRow",
+        "rect": { "x": 496.0, "y": 392.0, "w": 264.0, "h": 28.0 },
+        "z": 305,
+        "state": "Open",
+        "tokens": { "surface": { "r": 0, "g": 0, "b": 0, "a": 0 }, "border": { "r": 0, "g": 0, "b": 0, "a": 0 }, "border_px": 0.0, "radius": 6.0, "opacity": 1.0, "motion_ms": 120 },
+        "payload": { "MenuRow": { "label": "Open terminal", "kind": "Item", "danger": false, "accent": false, "disabled": false } }
+      },
+      {
+        "id": { "MenuRow": { "group": 0, "row": 1 } },
+        "kind": "MenuRow",
+        "rect": { "x": 496.0, "y": 420.0, "w": 264.0, "h": 28.0 },
+        "z": 305,
+        "state": "Open",
+        "tokens": { "surface": { "r": 0, "g": 0, "b": 0, "a": 0 }, "border": { "r": 0, "g": 0, "b": 0, "a": 0 }, "border_px": 0.0, "radius": 6.0, "opacity": 1.0, "motion_ms": 120 },
+        "payload": { "MenuRow": { "label": "Change wallpaper", "kind": "Item", "danger": false, "accent": false, "disabled": false } }
+      },
+      {
+        "id": { "MenuRow": { "group": 0, "row": 2 } },
+        "kind": "MenuRow",
+        "rect": { "x": 496.0, "y": 448.0, "w": 264.0, "h": 28.0 },
+        "z": 305,
+        "state": "Open",
+        "tokens": { "surface": { "r": 0, "g": 0, "b": 0, "a": 0 }, "border": { "r": 0, "g": 0, "b": 0, "a": 0 }, "border_px": 0.0, "radius": 6.0, "opacity": 1.0, "motion_ms": 120 },
+        "payload": { "MenuRow": { "label": "Display settings", "kind": "Item", "danger": false, "accent": false, "disabled": false } }
+      }
+    ]
+  },
+  "invariants": {
+    "exactly_one_menu_panel": true,
+    "at_most_one_menu_blob": true,
+    "blob_rect": "MenuPanel.rect.inflate(6)",
+    "blob_payload_backs": "MenuPanel",
+    "input_region_excludes_blob": true,
+    "hit_at_row_center_returns_MenuRow": true,
+    "ordering_back_to_front": "blob(100) < dock(150) < bar(200) < panel(300) < row(305)"
+  }
+}

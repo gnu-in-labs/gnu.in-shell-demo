@@ -1,0 +1,27 @@
+<!doctype html>
+<!-- @dsCard group="Type" name="Type Scale" subtitle="Display → micro, hierarchy classes" viewport="700x380" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Type scale</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .row { display: grid; grid-template-columns: 88px 1fr 96px; gap: 14px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line-2); }
+  .row:last-child { border-bottom: none; }
+  .label { font-family: var(--font-mono); font-size: 11px; color: var(--fg3); }
+  .meta  { font-family: var(--font-mono); font-size: 11px; color: var(--fg3); text-align: right; }
+  .sample { color: var(--fg1); font-family: var(--font-sans); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row"><div class="label">display</div><div class="sample" style="font-size:48px; line-height:1.05; letter-spacing:-0.02em; font-weight:700;">Aa terminal-grade clarity</div><div class="meta">700 · 48</div></div>
+  <div class="row"><div class="label">h1</div><div class="sample" style="font-size:36px; line-height:1.15; letter-spacing:-0.015em; font-weight:700;">Atomic-age warmth</div><div class="meta">700 · 36</div></div>
+  <div class="row"><div class="label">h2</div><div class="sample" style="font-size:28px; line-height:1.2; font-weight:700;">One mascot, two scales</div><div class="meta">700 · 28</div></div>
+  <div class="row"><div class="label">h3</div><div class="sample" style="font-size:20px; line-height:1.25; font-weight:600;">Right-click contract</div><div class="meta">600 · 20</div></div>
+  <div class="row"><div class="label">body</div><div class="sample" style="font-size:16px; line-height:1.45;">Local agent ready. Open shell editor to configure context.</div><div class="meta">400 · 16</div></div>
+  <div class="row"><div class="label">small</div><div class="sample" style="font-size:14px; line-height:1.45; color:var(--fg2);">Quickshell-driven visual runtime · live design contracts.</div><div class="meta">400 · 14</div></div>
+  <div class="row"><div class="label">micro</div><div class="sample" style="font-size:12px; line-height:1.4; color:var(--fg3);">v3 · 2026 · Gnu.in Labs Inc · Montreal</div><div class="meta">500 · 12</div></div>
+</div>
+</body>
+</html>

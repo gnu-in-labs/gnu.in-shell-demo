@@ -1,0 +1,19 @@
+# blob.in — Cargo workspace.
+# Ties the engine, generator and (future) golden-test crates together so
+# `cargo test` / `cargo run -p blobin-gen` work from the blob.in root.
+
+[workspace]
+resolver = "2"
+members = [
+    "blobin-core",
+    "blobin-gen",
+    "blobin-golden",
+    "blobin-bench",
+    "blobin-cxxqt",
+]
+
+[workspace.package]
+version = "0.4.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/gnu-in-labs/blob.in"

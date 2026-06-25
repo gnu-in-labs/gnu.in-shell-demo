@@ -1,0 +1,57 @@
+<!doctype html>
+<!-- @dsCard group="Components" name="Cards" subtitle="Light UI + dark TUI bezel cards" viewport="700x320" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Cards</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  body { background: var(--gnu-soft); }
+  .row { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .surface-light {
+    background: #FFFFFF;
+    border: 1px solid var(--line-2);
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 4px rgba(17,20,24,0.06), 0 6px 12px rgba(17,20,24,0.08);
+  }
+  .surface-tui {
+    background: #1A1F26;
+    color: #F7F3ED;
+    border: 1px solid #2B3037;
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 2px 4px rgba(0,0,0,0.4);
+  }
+  .head {
+    display:flex; align-items:center; gap: 10px;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600;
+  }
+  .head .accent { color: var(--gnu-orange); }
+  h4 { margin: 8px 0 4px; font-size: 18px; font-weight: 700; line-height: 1.2; }
+  p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--fg2); }
+  .surface-tui p { color: #B6BCC4; }
+  .surface-tui .head { color: #F7F3ED; }
+  .meta { font-family: var(--font-mono); font-size: 11px; color: var(--fg3); margin-top: 12px; }
+  .surface-tui .meta { color: #98A2B3; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row">
+    <div class="surface-light">
+      <div class="head"><span class="accent">●</span> CARD · LIGHT</div>
+      <h4>Right-click contract</h4>
+      <p>Menus are shell contracts, not loose popups. Dense for mouse, expanded for touch.</p>
+      <div class="meta">elev1 · 1px line · shadow-2</div>
+    </div>
+    <div class="surface-tui">
+      <div class="head"><span class="accent">●</span> CARD · TUI</div>
+      <h4>local agent ready</h4>
+      <p>Inset bezel, hairline border, monoline header. Same radius as the light card.</p>
+      <div class="meta">tui-2 · 1px bezel · inset highlight</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

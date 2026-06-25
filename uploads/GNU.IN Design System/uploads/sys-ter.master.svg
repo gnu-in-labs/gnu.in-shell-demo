@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<svg class="state-idle" xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+<title id="title">GNU.IN OS Sys.ter master source rig v5</title>
+<desc id="desc">GNU.IN OS Sys.ter mascot source rig v5. Physical z-order layers, real screen surface, dynamic shell glyphs, no foreground preservation hack.</desc>
+
+<defs>
+  <linearGradient id="orangeShell" x1="180" y1="300" x2="740" y2="860" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FF7A12"></stop>
+    <stop offset="0.45" stop-color="#FF6A00"></stop>
+    <stop offset="1" stop-color="#D95400"></stop>
+  </linearGradient>
+  <linearGradient id="orangeSide" x1="700" y1="330" x2="840" y2="860" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F68B28"></stop>
+    <stop offset="0.55" stop-color="#FF6A00"></stop>
+    <stop offset="1" stop-color="#D95400"></stop>
+  </linearGradient>
+  <linearGradient id="screenSurface" x1="260" y1="410" x2="685" y2="805" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#01050A"></stop>
+    <stop offset="0.55" stop-color="#0B1118"></stop>
+    <stop offset="1" stop-color="#171C23"></stop>
+  </linearGradient>
+  <linearGradient id="beretFelt" x1="260" y1="200" x2="850" y2="510" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#6D8A58"></stop>
+    <stop offset="0.44" stop-color="#4D6B3F"></stop>
+    <stop offset="1" stop-color="#3D5B34"></stop>
+  </linearGradient>
+  <linearGradient id="beretBand" x1="240" y1="360" x2="820" y2="500" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#161B1F"></stop>
+    <stop offset="0.55" stop-color="#262C32"></stop>
+    <stop offset="1" stop-color="#080B0E"></stop>
+  </linearGradient>
+  <linearGradient id="metalRod" x1="738" y1="215" x2="795" y2="640" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFFFFF"></stop>
+    <stop offset="0.22" stop-color="#E5E8EA"></stop>
+    <stop offset="0.5" stop-color="#FAFAF7"></stop>
+    <stop offset="1" stop-color="#9DA4AB"></stop>
+  </linearGradient>
+  <linearGradient id="metalDark" x1="725" y1="530" x2="805" y2="670" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EEF0F1"></stop>
+    <stop offset="0.35" stop-color="#AEB5BA"></stop>
+    <stop offset="1" stop-color="#5B646C"></stop>
+  </linearGradient>
+  <filter id="softDrop" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.22"></feDropShadow>
+  </filter>
+  <filter id="screenGlow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#F7F3ED" flood-opacity="0.12"></feDropShadow>
+  </filter>
+  <filter id="greenGlow" x="-60%" y="-60%" width="220%" height="220%">
+    <feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="#8CE05A" flood-opacity="0.70"></feDropShadow>
+  </filter>
+  <filter id="redGlow" x="-60%" y="-60%" width="220%" height="220%">
+    <feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="#E5484D" flood-opacity="0.72"></feDropShadow>
+  </filter>
+  <clipPath id="screenClip">
+    <rect x="250" y="392" width="475" height="430" rx="76"></rect>
+  </clipPath>
+</defs>
+
+
+
+
+
+<g id="sys-ter-source-rig">
+
+<g id="00-shadow" class="rig-layer">
+  <ellipse id="ground-shadow" cx="512" cy="886" rx="315" ry="34" fill="#111418" opacity="0.18"></ellipse>
+</g>
+
+<g id="10-body-back" class="rig-layer" filter="url(#softDrop)">
+  <path id="side-plane" d="M674 342 C758 352 817 413 824 500 L824 746 C824 825 769 868 696 858 L625 842 C679 808 708 761 708 690 L708 413 C708 374 696 351 674 342 Z" fill="url(#orangeSide)" stroke="#0A0C0E" stroke-width="10" stroke-linejoin="round"></path>
+  <path id="side-inner-shadow" d="M726 376 C770 410 790 453 790 512 L790 738 C790 793 760 829 712 834 C737 791 750 744 750 688 L750 442 C750 411 742 389 726 376 Z" fill="#B84B00" opacity="0.34"></path>
+</g>
+
+<g id="20-orange-shell" class="rig-layer" filter="url(#softDrop)">
+  <rect id="front-shell" x="186" y="356" width="555" height="512" rx="91" fill="url(#orangeShell)" stroke="#0A0C0E" stroke-width="10"></rect>
+  <path id="front-shell-highlight" d="M235 378 H652 C698 378 719 405 721 450" fill="none" stroke="#FFB05F" stroke-width="8" stroke-linecap="round" opacity="0.75"></path>
+  <path id="front-bottom-shade" d="M232 800 C267 839 322 848 386 848 H632 C688 848 724 818 728 770 C693 810 648 826 588 826 H340 C292 826 256 818 232 800 Z" fill="#D95400" opacity="0.35"></path>
+</g>
+
+<g id="30-side-plane-and-vents" class="rig-layer">
+  <g id="side-vents" fill="none" stroke="#0A0C0E" stroke-width="10" stroke-linecap="round">
+    <path d="M743 721 L807 657"></path>
+    <path d="M743 776 L810 709"></path>
+    <path d="M742 831 L807 766"></path>
+  </g>
+</g>
+
+<g id="40-screen-system" class="rig-layer">
+  <g id="screen-shell">
+    <rect id="screen-bezel-outer" x="250" y="392" width="475" height="430" rx="76" fill="#0A0C0E" stroke="#0A0C0E" stroke-width="16"></rect>
+    <rect id="screen-surface" x="270" y="412" width="435" height="390" rx="58" fill="url(#screenSurface)"></rect>
+    <path id="screen-glass-sheen" d="M282 790 L700 420 V790 Z" fill="#FFFFFF" opacity="0.035"></path>
+    <path id="screen-top-highlight" d="M294 430 H628 C660 430 685 455 688 488" fill="none" stroke="#F7F3ED" stroke-width="6" stroke-linecap="round" opacity="0.82"></path>
+    <path id="screen-inner-bottom" d="M302 785 H658 C684 785 699 770 699 748" fill="none" stroke="#F7F3ED" stroke-width="4" stroke-linecap="round" opacity="0.28"></path>
+  </g>
+  <g id="41-screen-glyphs" clip-path="url(#screenClip)">
+    <g id="glyph-idle" class="screen-state-glyph">
+      <path d="M350 502 L462 612 L350 722" fill="none" stroke="#F7F3ED" stroke-width="44" stroke-linecap="round" stroke-linejoin="round" filter="url(#screenGlow)"></path>
+      <line x1="512" y1="712" x2="616" y2="712" stroke="#F7F3ED" stroke-width="40" stroke-linecap="round" filter="url(#screenGlow)"></line>
+    </g>
+    <g id="glyph-listening" class="screen-state-glyph">
+      <path d="M350 502 L462 612 L350 722" fill="none" stroke="#F7F3ED" stroke-width="44" stroke-linecap="round" stroke-linejoin="round" filter="url(#screenGlow)"></path>
+      <circle cx="526" cy="713" r="15" fill="#F7F3ED"></circle>
+      <circle cx="574" cy="713" r="15" fill="#F7F3ED"></circle>
+      <circle cx="622" cy="713" r="15" fill="#F7F3ED"></circle>
+    </g>
+    <g id="glyph-thinking-1" class="screen-state-glyph">
+      <path d="M350 502 L462 612 L350 722" fill="none" stroke="#F7F3ED" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"></path>
+      <circle cx="526" cy="713" r="15" fill="#F7F3ED"></circle>
+    </g>
+    <g id="glyph-thinking-2" class="screen-state-glyph">
+      <path d="M350 502 L462 612 L350 722" fill="none" stroke="#F7F3ED" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"></path>
+      <circle cx="526" cy="713" r="15" fill="#F7F3ED"></circle>
+      <circle cx="574" cy="713" r="15" fill="#F7F3ED"></circle>
+    </g>
+    <g id="glyph-thinking-3" class="screen-state-glyph">
+      <path d="M350 502 L462 612 L350 722" fill="none" stroke="#F7F3ED" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"></path>
+      <circle cx="526" cy="713" r="15" fill="#F7F3ED"></circle>
+      <circle cx="574" cy="713" r="15" fill="#F7F3ED"></circle>
+      <circle cx="622" cy="713" r="15" fill="#F7F3ED"></circle>
+    </g>
+    <g id="glyph-success" class="screen-state-glyph">
+      <path d="M350 502 L462 612 L350 722" fill="none" stroke="#F7F3ED" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"></path>
+      <line x1="512" y1="712" x2="616" y2="712" stroke="#8CE05A" stroke-width="40" stroke-linecap="round" filter="url(#greenGlow)"></line>
+      <g id="success-glint" fill="none" stroke="#8CE05A" stroke-width="8" stroke-linecap="round" opacity="0.9">
+        <path d="M625 500 V535"></path>
+        <path d="M675 540 L650 565"></path>
+        <path d="M690 612 H655"></path>
+      </g>
+    </g>
+    <g id="glyph-error" class="screen-state-glyph">
+      <path d="M362 520 L450 608" fill="none" stroke="#E5484D" stroke-width="38" stroke-linecap="round" filter="url(#redGlow)"></path>
+      <path d="M450 520 L362 608" fill="none" stroke="#E5484D" stroke-width="38" stroke-linecap="round" filter="url(#redGlow)"></path>
+      <line x1="512" y1="712" x2="616" y2="712" stroke="#E5484D" stroke-width="40" stroke-linecap="round" filter="url(#redGlow)"></line>
+    </g>
+  </g>
+</g>
+
+<g id="50-beret" class="rig-layer">
+  <path id="beret-band-shadow" d="M249 366 C306 347 399 356 523 385 C631 411 741 446 831 437 C825 464 788 489 728 496 C628 508 535 462 431 429 C347 404 274 405 249 366 Z" fill="#05080C" opacity="0.35"></path>
+  <path id="beret-band" d="M246 357 C306 341 407 348 535 381 C642 408 736 435 834 427 C821 455 789 476 733 485 C628 500 535 455 431 421 C345 394 272 398 246 357 Z" fill="url(#beretBand)" stroke="#0A0C0E" stroke-width="9" stroke-linejoin="round"></path>
+  <path id="beret-body" d="M253 346 C263 278 343 226 470 205 C616 181 761 217 827 318 C891 417 847 493 735 495 C621 496 535 448 433 417 C348 391 278 393 253 346 Z" fill="url(#beretFelt)" stroke="#0A0C0E" stroke-width="10" stroke-linejoin="round"></path>
+  <path id="beret-slouch-fold" d="M278 342 C355 313 474 314 590 342 C679 363 745 398 817 386" fill="none" stroke="#2C4128" stroke-width="12" stroke-linecap="round" opacity="0.35"></path>
+  <path id="beret-highlight" d="M312 306 C425 238 588 225 722 262" fill="none" stroke="#9EB58C" stroke-width="8" stroke-linecap="round" opacity="0.48"></path>
+  <path id="beret-felt-soft" d="M330 286 C442 221 631 217 760 306 C686 274 564 255 430 285 C376 297 342 312 294 335 C302 314 314 297 330 286 Z" fill="#FFFFFF" opacity="0.035"></path>
+  <path id="beret-stem" d="M733 217 C750 190 767 175 781 180 C793 185 793 207 778 233 L758 265 L720 248 Z" fill="#47663B" stroke="#0A0C0E" stroke-width="10" stroke-linejoin="round"></path>
+  <path id="beret-stem-highlight" d="M760 194 C770 190 774 194 765 210 L747 238" fill="none" stroke="#8FAE7B" stroke-width="6" stroke-linecap="round" opacity="0.55"></path>
+</g>
+
+<g id="51-beret-badge" class="rig-layer">
+  <g id="badge" filter="url(#softDrop)">
+    <path id="badge-shadow" d="M597 323 C612 303 638 292 667 292 C697 292 722 304 738 323 L737 371 C737 411 709 442 667 452 C625 442 598 411 598 371 Z" fill="#0A0C0E" opacity="0.25"></path>
+    <path id="badge-shield" d="M592 318 C607 299 633 288 662 288 C692 288 717 300 733 318 L732 366 C732 407 704 437 662 447 C620 437 593 407 593 366 Z" fill="#2D4729" stroke="#E5B44B" stroke-width="8" stroke-linejoin="round"></path>
+    <path id="fleur" d="M662 316 C676 331 680 352 670 365 C686 362 700 374 699 390 C697 407 680 419 666 422 L666 402 C673 399 679 394 679 387 C679 381 674 377 668 378 C665 380 664 382 662 384 C660 382 659 380 656 378 C650 377 645 381 645 387 C645 394 651 399 658 402 L658 422 C644 419 627 407 625 390 C624 374 638 362 654 365 C644 352 648 331 662 316 Z M653 381 H671 M662 366 V429 M645 430 H679" fill="none" stroke="#E5B44B" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+    <path id="badge-highlight" d="M606 318 C622 303 641 298 656 297" fill="none" stroke="#FFF0B8" stroke-width="4" stroke-linecap="round" opacity="0.62"></path>
+  </g>
+</g>
+
+<g id="60-antenna-mount" class="rig-layer">
+  <rect id="antenna-recess" x="726" y="405" width="76" height="244" rx="38" fill="#0A0C0E" opacity="0.88"></rect>
+  <path id="antenna-cable-shadow" d="M740 505 V641" stroke="#0A0C0E" stroke-width="16" stroke-linecap="round" opacity="0.8"></path>
+  <circle id="antenna-side-joint" cx="742" cy="656" r="42" fill="#A1A6AD" stroke="#0A0C0E" stroke-width="10"></circle>
+  <circle id="antenna-side-joint-inner" cx="754" cy="645" r="28" fill="#D7DADF" stroke="#5B646C" stroke-width="6"></circle>
+</g>
+
+<g id="61-antenna-rod" class="rig-layer">
+  <circle id="antenna-tip" cx="770" cy="249" r="32" fill="#F7F3ED" stroke="#0A0C0E" stroke-width="10"></circle>
+  <circle id="antenna-tip-highlight" cx="760" cy="238" r="11" fill="#FFFFFF" opacity="0.7"></circle>
+  <rect id="antenna-rod" x="753" y="278" width="34" height="305" rx="15" fill="url(#metalRod)" stroke="#0A0C0E" stroke-width="9"></rect>
+  <path id="antenna-rod-highlight" d="M776 300 V556" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity="0.72"></path>
+  <rect id="antenna-collar" x="731" y="568" width="79" height="42" rx="16" fill="url(#metalDark)" stroke="#0A0C0E" stroke-width="9"></rect>
+  <rect id="antenna-capsule" x="739" y="602" width="62" height="96" rx="30" fill="url(#metalRod)" stroke="#0A0C0E" stroke-width="9"></rect>
+  <path id="antenna-capsule-highlight" d="M758 622 V672" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" opacity="0.76"></path>
+</g>
+
+<g id="80-motion-fx" class="rig-layer">
+  <g id="fx-listening-rings" class="fx-group">
+    <circle cx="770" cy="249" r="42" fill="none" stroke="#FF6A00" stroke-width="8" opacity="0.88"></circle>
+    <circle cx="770" cy="249" r="66" fill="none" stroke="#FF6A00" stroke-width="6" opacity="0.50"></circle>
+    <circle cx="770" cy="249" r="90" fill="none" stroke="#FF6A00" stroke-width="4" opacity="0.25"></circle>
+  </g>
+  <g id="fx-error-ticks" class="fx-group" stroke="#E5484D" stroke-width="8" stroke-linecap="round">
+    <path d="M750 194 L742 174"></path>
+    <path d="M770 188 L770 162"></path>
+    <path d="M791 194 L802 174"></path>
+  </g>
+</g>
+
+</g>
+</svg>

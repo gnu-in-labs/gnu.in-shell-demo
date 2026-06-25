@@ -1,0 +1,55 @@
+<!doctype html>
+<!-- @dsCard group="Components" name="Badges & Pills" subtitle="Status pills, counters, state pips" viewport="700x240" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Badges & status pips</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .row { display:flex; gap: 10px; flex-wrap: wrap; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line-2); }
+  .row:last-child { border-bottom: none; }
+  .label { font-family: var(--font-mono); font-size: 11px; color: var(--fg3); width: 70px; }
+  .badge {
+    display:inline-flex; align-items:center; gap:6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .pip { width: 8px; height: 8px; border-radius: 999px; }
+  .b-orange { background: rgba(255,106,0,0.12); color: #C95400; }
+  .b-green  { background: rgba(95,127,82,0.14); color: #455F3D; }
+  .b-warn   { background: rgba(245,165,36,0.18); color: #8C5A0A; }
+  .b-red    { background: rgba(229,72,77,0.12); color: #B23036; }
+  .b-mono   { background: var(--gnu-soft); color: var(--fg2); border: 1px solid var(--line-2); font-family: var(--font-mono); letter-spacing: 0; text-transform: none; }
+  .b-tui    { background: #0D1014; color: #F7F3ED; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row">
+    <span class="label">state</span>
+    <span class="badge b-orange"><span class="pip" style="background:#FF6A00"></span>Listening</span>
+    <span class="badge b-green"><span class="pip" style="background:#5F7F52"></span>Stable</span>
+    <span class="badge b-warn"><span class="pip" style="background:#F5A524"></span>Stress</span>
+    <span class="badge b-red"><span class="pip" style="background:#E5484D"></span>Breach</span>
+    <span class="badge b-mono">Idle</span>
+  </div>
+  <div class="row">
+    <span class="label">tag</span>
+    <span class="badge b-tui">v3 · 2026</span>
+    <span class="badge b-mono">main</span>
+    <span class="badge b-mono">arch / hyprland</span>
+    <span class="badge b-orange">agent · ready</span>
+  </div>
+  <div class="row">
+    <span class="label">count</span>
+    <span class="badge b-orange" style="padding:2px 7px; min-width: 20px; justify-content:center">3</span>
+    <span class="badge b-red" style="padding:2px 7px; min-width: 20px; justify-content:center">12</span>
+    <span class="badge b-mono" style="padding:2px 7px; min-width: 20px; justify-content:center">99+</span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+[package]
+name = "blobin-bench"
+version = "0.4.0"
+edition = "2021"
+description = "blob.in frame-budget benchmarks (P5 readiness gate R7)."
+
+[dependencies]
+blobin-core = { path = "../blobin-core" }
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "frame_budget"
+harness = false
+
+[[bench]]
+name = "scheduler_throughput"
+harness = false

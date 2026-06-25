@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<svg class="state-idle" xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+<title id="title">Sys.ter layer 50-beret.svg</title>
+<desc id="desc">GNU.IN OS Sys.ter mascot source rig v5. Physical z-order layers, real screen surface, dynamic shell glyphs, no foreground preservation hack.</desc>
+
+<defs>
+  <linearGradient id="orangeShell" x1="180" y1="300" x2="740" y2="860" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FF7A12"></stop>
+    <stop offset="0.45" stop-color="#FF6A00"></stop>
+    <stop offset="1" stop-color="#D95400"></stop>
+  </linearGradient>
+  <linearGradient id="orangeSide" x1="700" y1="330" x2="840" y2="860" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F68B28"></stop>
+    <stop offset="0.55" stop-color="#FF6A00"></stop>
+    <stop offset="1" stop-color="#D95400"></stop>
+  </linearGradient>
+  <linearGradient id="screenSurface" x1="260" y1="410" x2="685" y2="805" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#01050A"></stop>
+    <stop offset="0.55" stop-color="#0B1118"></stop>
+    <stop offset="1" stop-color="#171C23"></stop>
+  </linearGradient>
+  <linearGradient id="beretFelt" x1="260" y1="200" x2="850" y2="510" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#6D8A58"></stop>
+    <stop offset="0.44" stop-color="#4D6B3F"></stop>
+    <stop offset="1" stop-color="#3D5B34"></stop>
+  </linearGradient>
+  <linearGradient id="beretBand" x1="240" y1="360" x2="820" y2="500" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#161B1F"></stop>
+    <stop offset="0.55" stop-color="#262C32"></stop>
+    <stop offset="1" stop-color="#080B0E"></stop>
+  </linearGradient>
+  <linearGradient id="metalRod" x1="738" y1="215" x2="795" y2="640" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFFFFF"></stop>
+    <stop offset="0.22" stop-color="#E5E8EA"></stop>
+    <stop offset="0.5" stop-color="#FAFAF7"></stop>
+    <stop offset="1" stop-color="#9DA4AB"></stop>
+  </linearGradient>
+  <linearGradient id="metalDark" x1="725" y1="530" x2="805" y2="670" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EEF0F1"></stop>
+    <stop offset="0.35" stop-color="#AEB5BA"></stop>
+    <stop offset="1" stop-color="#5B646C"></stop>
+  </linearGradient>
+  <filter id="softDrop" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.22"></feDropShadow>
+  </filter>
+  <filter id="screenGlow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#F7F3ED" flood-opacity="0.12"></feDropShadow>
+  </filter>
+  <filter id="greenGlow" x="-60%" y="-60%" width="220%" height="220%">
+    <feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="#8CE05A" flood-opacity="0.70"></feDropShadow>
+  </filter>
+  <filter id="redGlow" x="-60%" y="-60%" width="220%" height="220%">
+    <feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="#E5484D" flood-opacity="0.72"></feDropShadow>
+  </filter>
+  <clipPath id="screenClip">
+    <rect x="250" y="392" width="475" height="430" rx="76"></rect>
+  </clipPath>
+</defs>
+
+
+
+
+
+<g id="sys-ter-source-rig">
+
+<g id="50-beret" class="rig-layer">
+  <path id="beret-band-shadow" d="M249 366 C306 347 399 356 523 385 C631 411 741 446 831 437 C825 464 788 489 728 496 C628 508 535 462 431 429 C347 404 274 405 249 366 Z" fill="#05080C" opacity="0.35"></path>
+  <path id="beret-band" d="M246 357 C306 341 407 348 535 381 C642 408 736 435 834 427 C821 455 789 476 733 485 C628 500 535 455 431 421 C345 394 272 398 246 357 Z" fill="url(#beretBand)" stroke="#0A0C0E" stroke-width="9" stroke-linejoin="round"></path>
+  <path id="beret-body" d="M253 346 C263 278 343 226 470 205 C616 181 761 217 827 318 C891 417 847 493 735 495 C621 496 535 448 433 417 C348 391 278 393 253 346 Z" fill="url(#beretFelt)" stroke="#0A0C0E" stroke-width="10" stroke-linejoin="round"></path>
+  <path id="beret-slouch-fold" d="M278 342 C355 313 474 314 590 342 C679 363 745 398 817 386" fill="none" stroke="#2C4128" stroke-width="12" stroke-linecap="round" opacity="0.35"></path>
+  <path id="beret-highlight" d="M312 306 C425 238 588 225 722 262" fill="none" stroke="#9EB58C" stroke-width="8" stroke-linecap="round" opacity="0.48"></path>
+  <path id="beret-felt-soft" d="M330 286 C442 221 631 217 760 306 C686 274 564 255 430 285 C376 297 342 312 294 335 C302 314 314 297 330 286 Z" fill="#FFFFFF" opacity="0.035"></path>
+  <path id="beret-stem" d="M733 217 C750 190 767 175 781 180 C793 185 793 207 778 233 L758 265 L720 248 Z" fill="#47663B" stroke="#0A0C0E" stroke-width="10" stroke-linejoin="round"></path>
+  <path id="beret-stem-highlight" d="M760 194 C770 190 774 194 765 210 L747 238" fill="none" stroke="#8FAE7B" stroke-width="6" stroke-linecap="round" opacity="0.55"></path>
+</g>
+
+</g>
+</svg>

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="gnu6-cube" viewBox="0 0 256 256">
+      <g id="defs-cube-terminal">
+        <polygon id="defs-cube-top" points="66,66 128,32 190,66 128,100" fill="#FF6A00"></polygon>
+        <polygon id="defs-cube-left" points="60,78 122,113 122,181 60,146" fill="#FF6A00"></polygon>
+        <polygon id="defs-terminal-face" points="134,113 196,78 196,146 134,181" fill="#111418"></polygon>
+        <g id="defs-prompt" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+          <polyline id="defs-prompt-chevron" points="151,115 166,130 151,145"></polyline>
+          <line id="defs-prompt-cursor" x1="167" y1="153" x2="184" y2="153"></line>
+        </g>
+      </g>
+    </symbol>
+    <symbol id="gnu6-cube-dialogue" viewBox="0 0 300 256">
+      <g id="defs-dialogue-cube-dialogue-symbol">
+        <path id="defs-dialogue-dialogue-frame" d="M 194 52 H 256 Q 268 52 268 64 V 178 Q 268 190 256 190 H 184 L 160 214 V 190 H 146" fill="none" stroke="#FF6A00" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+        <g id="defs-dialogue-cube-terminal">
+        <polygon id="defs-dialogue-cube-top" points="66,66 128,32 190,66 128,100" fill="#FF6A00"></polygon>
+        <polygon id="defs-dialogue-cube-left" points="60,78 122,113 122,181 60,146" fill="#FF6A00"></polygon>
+        <polygon id="defs-dialogue-terminal-face" points="134,113 196,78 196,146 134,181" fill="#111418"></polygon>
+        <g id="defs-dialogue-prompt" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+          <polyline id="defs-dialogue-prompt-chevron" points="151,115 166,130 151,145"></polyline>
+          <line id="defs-dialogue-prompt-cursor" x1="167" y1="153" x2="184" y2="153"></line>
+        </g>
+      </g>
+      </g>
+    </symbol>
+    <symbol id="gnu6-notification-badge" viewBox="0 0 256 256">
+      <g transform="translate(8 24) scale(0.82)">
+        <g id="defs-badge-cube-dialogue-symbol">
+          <path id="defs-badge-dialogue-frame" d="M 194 52 H 256 Q 268 52 268 64 V 178 Q 268 190 256 190 H 184 L 160 214 V 190 H 146" fill="none" stroke="#FF6A00" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+          <g id="defs-badge-cube-terminal">
+          <polygon id="defs-badge-cube-top" points="66,66 128,32 190,66 128,100" fill="#FF6A00"></polygon>
+          <polygon id="defs-badge-cube-left" points="60,78 122,113 122,181 60,146" fill="#FF6A00"></polygon>
+          <polygon id="defs-badge-terminal-face" points="134,113 196,78 196,146 134,181" fill="#111418"></polygon>
+          <g id="defs-badge-prompt" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+            <polyline id="defs-badge-prompt-chevron" points="151,115 166,130 151,145"></polyline>
+            <line id="defs-badge-prompt-cursor" x1="167" y1="153" x2="184" y2="153"></line>
+          </g>
+        </g>
+        </g>
+      </g>
+      <circle cx="205" cy="54" r="25" fill="#FF6A00"></circle>
+      <text x="205" y="62" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF">3</text>
+    </symbol>
+  </defs>
+</svg>

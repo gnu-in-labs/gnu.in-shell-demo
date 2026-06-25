@@ -1,0 +1,147 @@
+<!doctype html>
+<!-- @dsCard group="Type" name="All-Caps Tags" subtitle="KIT 01 — PROMPT GATE style" viewport="700x200" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tag label · all-caps</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .stack { display: grid; gap: 14px; }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .row:last-child { border-bottom: none; }
+
+  /* Primary tag — lighter weight, wider tracking, with a small orange lede mark */
+  .tag {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--fg1);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .tag .lede {
+    color: var(--gnu-orange);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    letter-spacing: 0;
+    font-size: 10px;
+  }
+  .tag .num {
+    color: var(--gnu-orange);
+    font-weight: 500;
+  }
+  .tag .em {
+    color: var(--fg3);
+    font-weight: 400;
+    margin: 0 2px;
+  }
+
+  /* Triplet — airy, almost hand-set; sep is a thin orange dot */
+  .triplet {
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--fg2);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0;
+  }
+  .triplet .word {
+    padding: 0 0;
+  }
+  .triplet .sep {
+    color: var(--gnu-orange);
+    font-weight: 400;
+    margin: 0 12px;
+    font-size: 9px;
+    transform: translateY(-1px);
+    display: inline-block;
+  }
+
+  /* Mini-cap — for inline meta, even quieter */
+  .mini {
+    font-size: 10px;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--fg3);
+  }
+
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg3);
+    margin-left: auto;
+    letter-spacing: 0.04em;
+  }
+
+  /* Section heading for the card */
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 4px;
+  }
+  .head .left {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--fg2);
+    max-width: 38ch;
+  }
+  .head .left b { color: var(--fg1); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="head">
+    <div class="left">
+      Uppercase tags are <b>quiet, not loud</b> — wider tracking, lighter weight, an orange lede mark instead of bold.
+    </div>
+    <span class="mini">tag system</span>
+  </div>
+
+  <div class="stack">
+    <div class="row">
+      <span class="tag">
+        <span class="lede">▸</span>
+        <span><span class="num">KIT 01</span><span class="em">—</span>PROMPT GATE</span>
+      </span>
+      <span class="meta">500 · 11px · 0.22em</span>
+    </div>
+
+    <div class="row">
+      <span class="triplet">
+        <span class="word">TERMINAL GATEWAY</span><span class="sep">●</span><span class="word">COMMAND ACCESS</span><span class="sep">●</span><span class="word">SYSTEM CLARITY</span>
+      </span>
+    </div>
+
+    <div class="row">
+      <span class="triplet">
+        <span class="word">FOCUS</span><span class="sep">·</span><span class="word">CURSOR</span><span class="sep">·</span><span class="word">ACTIVE SYSTEM</span>
+      </span>
+    </div>
+
+    <div class="row">
+      <span class="triplet" style="color:var(--fg1)">
+        <span class="word">PRECISE</span><span class="sep">·</span><span class="word">MINIMAL</span><span class="sep">·</span><span class="word">FUNCTIONAL</span>
+      </span>
+    </div>
+
+    <div class="row">
+      <span class="mini">v3 — 2026 — gnu.in labs · montreal</span>
+      <span class="meta">500 · 10px · 0.20em</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

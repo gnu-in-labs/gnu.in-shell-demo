@@ -1,0 +1,50 @@
+<!doctype html>
+<!-- @dsCard group="Type" name="Montreal Specimen" subtitle="Brand sans — geometric, system-native" viewport="700x280" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Montreal · brand sans specimen</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .head {
+    display:flex; align-items:baseline; justify-content:space-between;
+    border-bottom: 1px solid var(--line-2);
+    padding-bottom: 10px;
+  }
+  .tag { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; color: var(--fg2); }
+  .tag .accent { color: var(--gnu-orange); }
+  .meta { font-family: var(--font-mono); font-size: 11px; color: var(--fg3); }
+
+  .specimen { display:grid; grid-template-columns: 70px 1fr; gap: 18px; padding: 14px 0; border-bottom: 1px solid var(--line-2); align-items: baseline; }
+  .specimen:last-child { border-bottom: none; }
+  .specimen .w { font-family: var(--font-mono); font-size: 11px; color: var(--fg3); padding-top: 14px; }
+  .specimen .stack { display:flex; flex-direction:column; gap: 4px; }
+  .alphabet { font-size: 18px; line-height: 1.2; color: var(--fg2); letter-spacing: -0.005em; }
+  .pangram { font-size: 28px; line-height: 1.15; letter-spacing: -0.015em; color: var(--fg1); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="head">
+    <span class="tag"><span class="accent">SPECIMEN</span> — MONTREAL</span>
+    <span class="meta">/fonts/Montreal-{Regular,Bold}.woff</span>
+  </div>
+
+  <div class="specimen">
+    <span class="w">400 · regular</span>
+    <div class="stack">
+      <div class="pangram" style="font-weight:400">Atomic-age warmth, terminal-grade clarity.</div>
+      <div class="alphabet" style="font-weight:400">ABCDEFGHIJKLMNOPQRSTUVWXYZ &nbsp; abcdefghijklmnopqrstuvwxyz &nbsp; 0123456789</div>
+    </div>
+  </div>
+
+  <div class="specimen">
+    <span class="w">700 · bold</span>
+    <div class="stack">
+      <div class="pangram" style="font-weight:700">One mascot, two scales — GNU<span style="color:var(--gnu-orange)">6</span>-shell.</div>
+      <div class="alphabet" style="font-weight:700">ABCDEFGHIJKLMNOPQRSTUVWXYZ &nbsp; abcdefghijklmnopqrstuvwxyz &nbsp; 0123456789</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

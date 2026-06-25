@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Gnu.In-Shell — Context Spec v0.14.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; height: 100%; overflow: hidden; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- Foundations -->
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="menu-primitives.jsx"></script>
+<script type="text/babel" src="menu-scenes.jsx"></script>
+<script type="text/babel" src="syster-mascot.jsx"></script>
+<script type="text/babel" src="menu-archetypes.jsx"></script>
+
+<!-- Engine -->
+<script type="text/babel" src="motion-engine.jsx"></script>
+
+<!-- Context spec · core -->
+<script type="text/babel" src="ctxmenu-atoms.jsx"></script>
+<script type="text/babel" src="ctxmenu-molecules.jsx"></script>
+<script type="text/babel" src="ctxmenu-atoms-extra.jsx"></script>
+<script type="text/babel" src="ctxmenu-molecules-extra.jsx"></script>
+<script type="text/babel" src="ctxmenu-cards.jsx"></script>
+<script type="text/babel" src="ctxmenu-board.jsx"></script>
+<script type="text/babel" src="ctxmenu-anatomy.jsx"></script>
+
+<!-- Context spec v3 · production -->
+<script type="text/babel" src="ctxmenu-atoms-prod.jsx"></script>
+<script type="text/babel" src="ctxmenu-molecules-prod.jsx"></script>
+<script type="text/babel" src="ctxmenu-recettes-prod.jsx"></script>
+<script type="text/babel" src="ctxmenu-tools.jsx"></script>
+<script type="text/babel" src="ctxmenu-handoff-extras.jsx"></script>
+
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "showAtoms": true,
+  "showMolecules": true,
+  "showRecettes": true,
+  "showTools": true,
+  "mode": "dark",
+  "brand": "heavy",
+  "density": "mouse"
+}/*EDITMODE-END*/;
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  const theme = React.useMemo(
+    () => gnuTheme({ dark: t.mode === 'dark', brand: t.brand }),
+    [t.mode, t.brand]
+  );
+
+  const ATOMS_ALL     = [...CTX_ATOMS, ...CTX_ATOMS_EXTRA, ...CTX_ATOMS_PROD];
+  const MOLECULES_ALL = [...CTX_MOLECULES, ...CTX_MOLECULES_EXTRA, ...CTX_MOLECULES_PROD];
+  const RECETTES_ALL  = [...CTX_RECETTES, ...CTX_RECETTES_PROD];
+
+  return (
+    <>
+      <DesignCanvas>
+
+        {/* ═══════════ Section 1 · Manifeste ═══════════ */}
+        <DCSection
+          id="manifeste"
+          title="Gnu.In-Shell · context spec v0.14.0"
+          subtitle="31 composants passés en revue · 6 portes fermées · deux WATCH résiduels sur les signatures ★ (volontaires). Prêt à brancher en QML / Qt / GPUI / CSS."
+        >
+          <DCArtboard id="cover" label="∞.0 · Cover · v0.14.0" width={1280} height={720}>
+            <CtxCover />
+          </DCArtboard>
+          <DCArtboard id="manifeste" label="∞.1 · Manifeste" width={1280} height={720}>
+            <CtxManifesto />
+          </DCArtboard>
+          <DCArtboard id="taxonomy" label="∞.2 · Taxonomie" width={1280} height={720}>
+            <CtxTaxonomy />
+          </DCArtboard>
+          <DCArtboard id="anatomy" label="∞.3 · Anatomie (in-situ)" width={1280} height={720}>
+            <CtxAnatomy />
+          </DCArtboard>
+          <DCArtboard id="states-gallery" label="∞.4 · States gallery" width={1280} height={720}>
+            <CtxStatesGallery />
+          </DCArtboard>
+          <DCArtboard id="tokens" label="∞.5 · Tokens · palette · density · shape" width={1280} height={720}>
+            <CtxTokens />
+          </DCArtboard>
+        </DCSection>
+
+        {/* ═══════════ Section 2 · Atomes (24) ═══════════ */}
+        {t.showAtoms && (
+          <DCSection
+            id="atomes"
+            title="Atomes · 24 primitives de menu"
+            subtitle="C.01 → C.12 canon · C.13 → C.18 extras (radio/slider/state/search/connector/footer) · C.19 → C.24 prod (avatar/badge/tag/progress/tooltip/step)."
+          >
+            {ATOMS_ALL.map((a) => (
+              <DCArtboard key={a.id} id={`atom-${a.id}`} label={`${a.id} · ${a.title}`} width={1280} height={720}>
+                <CtxAtomCard atom={a} themeOverride={theme} />
+              </DCArtboard>
+            ))}
+          </DCSection>
+        )}
+
+        {/* ═══════════ Section 3 · Molécules (16) ═══════════ */}
+        {t.showMolecules && (
+          <DCSection
+            id="molecules"
+            title="Molécules · 16 compositions nommées"
+            subtitle="CM.01 → CM.08 canon · CM.09 → CM.12 (search/tray-body/footer/cascade) · CM.13 → CM.16 prod (account/toast/empty/breadcrumb)."
+          >
+            {MOLECULES_ALL.map((m) => (
+              <DCArtboard key={m.id} id={`mol-${m.id}`} label={`${m.id} · ${m.title}`} width={1280} height={720}>
+                <CtxMoleculeCard mol={m} themeOverride={theme} />
+              </DCArtboard>
+            ))}
+          </DCSection>
+        )}
+
+        {/* ═══════════ Section 4 · Recettes (8) ═══════════ */}
+        {t.showRecettes && (
+          <DCSection
+            id="recettes"
+            title="Recettes · 8 archétypes complets"
+            subtitle="R.01 → R.05 canon · R.06 Notifications · R.07 Power tray · R.08 ✦ App launcher (Spotlight-style)."
+          >
+            {RECETTES_ALL.map((r) => (
+              <DCArtboard key={r.id} id={`rec-${r.id}`} label={`${r.id} · ${r.title.split(' · ')[0]}${r.signature ? ' ★' : ''}`} width={1280} height={720}>
+                <CtxRecetteCard rec={r} densityOverride={t.density} />
+              </DCArtboard>
+            ))}
+          </DCSection>
+        )}
+
+        {/* ═══════════ Section 5 · Outils production ═══════════ */}
+        {t.showTools && (
+          <DCSection
+            id="tools"
+            title="◇ Outils production · 6 boards"
+            subtitle="Six fiches pour passer du board au code : catalogue iconographique, i18n, états système, budget perf, telemetry, readiness gates."
+          >
+            <DCArtboard id="tool-icons" label="◇.1 · Icon catalogue" width={1280} height={720}>
+              <ToolIconCatalogue />
+            </DCArtboard>
+            <DCArtboard id="tool-i18n" label="◇.2 · I18n · RTL · long labels" width={1280} height={720}>
+              <ToolI18n />
+            </DCArtboard>
+            <DCArtboard id="tool-states" label="◇.3 · States catalogue" width={1280} height={720}>
+              <ToolStateCatalogue />
+            </DCArtboard>
+            <DCArtboard id="tool-perf" label="◇.4 · Performance budget" width={1280} height={720}>
+              <ToolPerfBudget />
+            </DCArtboard>
+            <DCArtboard id="tool-telemetry" label="◇.5 · Telemetry events" width={1280} height={720}>
+              <ToolTelemetry />
+            </DCArtboard>
+            <DCArtboard id="tool-readiness" label="◇.6 · Readiness checklist" width={1280} height={720}>
+              <ToolReadiness />
+            </DCArtboard>
+          </DCSection>
+        )}
+
+        {/* ═══════════ Section 6 · Handoff ═══════════ */}
+        <DCSection
+          id="handoff"
+          title="Matrice · handoff moteur · compat"
+          subtitle="Quelle molécule sert quel archétype. Comment compiler les tokens en GnuTheme. Repo layout, plan de sprint, surface API, ContextMenuService singleton. Comment dégrader proprement quand une feature manque."
+        >
+          <DCArtboard id="matrix" label="◆.1 · Matrice molécule × archétype" width={1280} height={720}>
+            <CtxMatrix />
+          </DCArtboard>
+          <DCArtboard id="handoff" label="◆.2 · Handoff · 3 paquets" width={1280} height={720}>
+            <CtxHandoff />
+          </DCArtboard>
+          <DCArtboard id="repo" label="◆.3 · Repo layout · 3 moteurs" width={1280} height={720}>
+            <CtxHandoffRepo />
+          </DCArtboard>
+          <DCArtboard id="sprints" label="◆.4 · Sprint plan · 10 semaines" width={1280} height={720}>
+            <CtxHandoffSprints />
+          </DCArtboard>
+          <DCArtboard id="api" label="◆.5 · API surface · 5 symboles" width={1280} height={720}>
+            <CtxHandoffApi />
+          </DCArtboard>
+          <DCArtboard id="service" label="◆.6 · ContextMenuService · singleton" width={1280} height={720}>
+            <CtxHandoffService />
+          </DCArtboard>
+        </DCSection>
+
+      </DesignCanvas>
+
+      <TweaksPanel title="Context Spec v0.14.0 · Tweaks">
+        <TweakSection label="Sections" />
+        <TweakToggle label="Atomes (24)"    value={t.showAtoms}     onChange={(v) => setTweak('showAtoms', v)} />
+        <TweakToggle label="Molécules (16)" value={t.showMolecules} onChange={(v) => setTweak('showMolecules', v)} />
+        <TweakToggle label="Recettes (8)"   value={t.showRecettes}  onChange={(v) => setTweak('showRecettes', v)} />
+        <TweakToggle label="Outils prod (6)" value={t.showTools}    onChange={(v) => setTweak('showTools', v)} />
+
+        <TweakSection label="Theme · all demos" />
+        <TweakRadio label="Mode" value={t.mode}
+          options={[{value:'light',label:'Light'},{value:'dark',label:'Dark'}]}
+          onChange={(v) => setTweak('mode', v)} />
+        <TweakRadio label="Branding" value={t.brand}
+          options={[{value:'light',label:'Light'},{value:'medium',label:'Med'},{value:'heavy',label:'Heavy'}]}
+          onChange={(v) => setTweak('brand', v)} />
+
+        <TweakSection label="Density · recettes" />
+        <TweakRadio label="Pointer" value={t.density}
+          options={[{value:'mouse',label:'Mouse'},{value:'comfy',label:'Comfy'},{value:'touch',label:'Touch'}]}
+          onChange={(v) => setTweak('density', v)} />
+      </TweaksPanel>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>

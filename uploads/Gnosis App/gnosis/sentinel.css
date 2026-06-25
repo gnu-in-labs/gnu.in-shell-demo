@@ -1,0 +1,301 @@
+/* ============================================================================
+   gnosis/sentinel.css — chrome for the Sentinel reactor + cloud-agent bus +
+   the tabbed console. Composes ON TOP of tokens.css and the HUD's membrane
+   tokens (--mem-*, --col-layer*, --m3-*). Everything here is dynamic chrome:
+   colors come from M3 role tokens, never hardcoded orange. Severity (warn /
+   alert) uses the fixed semantic tokens — a VRAM overload reads red under
+   every wallpaper scheme.
+
+   MOTION: this file pins the canonical Gnu.In Motion Spec tokens (MDUR / MEASE
+   from motion-tokens.jsx) as CSS variables so the reactor ramp and bus blooms
+   run on the SAME curves the shipped engine uses.
+   ========================================================================== */
+
+.stage {
+  /* ---- MDUR (ms) — canonical durations ---- */
+  --mdur-instant: 60ms;
+  --mdur-flash:   100ms;
+  --mdur-fast:    140ms;
+  --mdur-base:    200ms;
+  --mdur-smooth:  280ms;
+  --mdur-slow:    360ms;
+  --mdur-unfurl:  420ms;
+  --mdur-pulse:   1400ms;
+  --mdur-idle:    3200ms;
+
+  /* ---- MEASE — canonical easing curves ---- */
+  --mease-standard:  cubic-bezier(0.20, 0.70, 0.20, 1.00);
+  --mease-decel:     cubic-bezier(0.16, 1.00, 0.30, 1.00); /* entrée */
+  --mease-accel:     cubic-bezier(0.70, 0.00, 0.84, 0.00); /* sortie */
+  --mease-snap:      cubic-bezier(0.40, 0.00, 0.20, 1.00); /* commit */
+  --mease-gentle:    cubic-bezier(0.32, 0.72, 0.32, 1.00); /* hover */
+  --mease-overshoot: cubic-bezier(0.34, 1.36, 0.64, 1.00); /* atomic */
+  --mease-elastic:   cubic-bezier(0.50, 1.55, 0.40, 1.00); /* bloom */
+}
+
+/* ===================== SENTINEL BAR PILL ===================== */
+/* Sits in the bar between focus + chips. Shows live analysis level + a 4-seg
+   power meter that fills to the active rung. Click → opens the SENTINEL tab. */
+.sentinel-pill {
+  display: flex; align-items: center; gap: 8px; flex: none;
+  height: 36px; padding: 0 11px 0 9px;
+  border: 1px solid var(--mem-hair);
+  background: var(--chip-bg);
+  border-radius: var(--r-3); cursor: pointer;
+  transition: border-color var(--mdur-base) var(--mease-gentle),
+              background var(--mdur-base) var(--mease-gentle),
+              transform var(--mdur-fast) var(--mease-overshoot);
+  -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.density-compact .sentinel-pill { height: 32px; padding: 0 9px 0 7px; gap: 6px; }
+.sentinel-pill:hover { background: var(--chip-bg-hover); border-color: color-mix(in srgb, var(--m3-primary) 38%, var(--mem-hair)); }
+.sentinel-pill:active { transform: scale(0.97); }
+.sentinel-pill:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--m3-primary) 32%, transparent); }
+.sentinel-pill.is-open { border-color: color-mix(in srgb, var(--m3-primary) 55%, transparent); background: var(--chip-bg-hover); }
+.sentinel-pill.is-cloud { border-color: color-mix(in srgb, var(--gnu-info) 50%, transparent); }
+
+.sentinel-pill__core { display: flex; flex-direction: column; gap: 1px; line-height: 1; }
+.sentinel-pill__lvl {
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+  color: var(--mem-fg); font-variant-numeric: tabular-nums;
+}
+.sentinel-pill__code { color: var(--m3-primary); }
+.sentinel-pill.is-cloud .sentinel-pill__code { color: var(--gnu-info); }
+.sentinel-pill__name { font-size: 9px; letter-spacing: 0.18em; color: var(--mem-fg3); font-weight: 600; }
+
+/* vertical 4-segment power meter */
+.pwr-meter { display: flex; align-items: flex-end; gap: 2px; height: 18px; }
+.pwr-meter__seg {
+  width: 4px; border-radius: 1.5px; background: color-mix(in srgb, var(--col-on-layer0) 14%, transparent);
+  transition: background var(--mdur-smooth) var(--mease-overshoot), height var(--mdur-smooth) var(--mease-elastic);
+}
+.pwr-meter__seg:nth-child(1) { height: 7px; }
+.pwr-meter__seg:nth-child(2) { height: 11px; }
+.pwr-meter__seg:nth-child(3) { height: 15px; }
+.pwr-meter__seg:nth-child(4) { height: 18px; }
+.pwr-meter__seg.is-lit { background: var(--m3-primary); }
+.pwr-meter__seg.is-cloud { background: var(--gnu-info); }
+.pwr-meter.is-ramping .pwr-meter__seg.is-lit:last-of-type {
+  animation: pwr-throb var(--mdur-pulse) var(--mease-standard) infinite;
+}
+@keyframes pwr-throb { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+/* ===================== CONSOLE TABS ===================== */
+.console-tabs { display: flex; align-items: center; gap: 2px; }
+.console-tab {
+  position: relative; display: inline-flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 9px; border: none; background: transparent; cursor: pointer;
+  border-radius: var(--r-2); color: var(--mem-fg3);
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+  transition: color var(--mdur-base) var(--mease-gentle), background var(--mdur-base) var(--mease-gentle);
+}
+.console-tab:hover { color: var(--mem-fg2); background: var(--chip-bg); }
+.console-tab.is-active { color: var(--mem-fg); background: var(--chip-bg-hover); }
+.console-tab.is-active .console-tab__dot { background: var(--m3-primary); }
+.console-tab__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--mem-fg3); transition: background var(--mdur-base) var(--mease-gentle); }
+.console-tab__badge {
+  min-width: 14px; height: 14px; padding: 0 3px; display: inline-grid; place-items: center;
+  background: var(--m3-primary); color: var(--m3-on-primary);
+  border-radius: var(--r-pill); font-size: 8.5px; font-weight: 700; letter-spacing: 0;
+}
+
+/* console shell — the drop panel becomes tabbed; each view owns its padding */
+.feed.is-console { padding: 0; }
+.console-head { display: flex; align-items: center; gap: 10px; padding: 10px 12px 6px; }
+.console-head .feed__meta { margin-left: auto; }
+.timeline-view { padding: 3px 14px 14px; }
+
+.console-body { animation: panel-swap var(--mdur-smooth) var(--mease-decel) both; }
+@keyframes panel-swap { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+
+/* ===================== SENTINEL REACTOR ===================== */
+.reactor { display: grid; grid-template-columns: 184px 1fr; gap: 13px; padding: 11px 14px 14px; }
+.density-compact .reactor { grid-template-columns: 168px 1fr; gap: 11px; }
+
+/* ---- left: tier ladder (top = strongest) ---- */
+.ladder { display: flex; flex-direction: column-reverse; gap: 4px; }
+.tier {
+  position: relative; display: flex; align-items: center; gap: 9px;
+  padding: 6px 9px; border: 1px solid transparent; border-radius: var(--r-3);
+  background: var(--chip-bg); cursor: pointer; text-align: left; width: 100%;
+  transition: background var(--mdur-base) var(--mease-gentle),
+              border-color var(--mdur-base) var(--mease-gentle),
+              transform var(--mdur-fast) var(--mease-overshoot);
+}
+.tier:hover { background: var(--chip-bg-hover); }
+.tier:active { transform: scale(0.985); }
+.tier:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--m3-primary) 30%, transparent); }
+
+.tier__rail { display: grid; place-items: center; width: 16px; flex: none; }
+.tier__node {
+  width: 9px; height: 9px; border-radius: 50%;
+  border: 1.5px solid var(--mem-fg3);
+  transition: background var(--mdur-smooth) var(--mease-overshoot), border-color var(--mdur-smooth) var(--mease-overshoot), box-shadow var(--mdur-smooth) var(--mease-overshoot);
+}
+.tier__body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.tier__name {
+  display: flex; align-items: baseline; gap: 6px;
+  font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; color: var(--mem-fg2);
+}
+.tier__code { color: var(--mem-fg3); font-size: 9px; font-variant-numeric: tabular-nums; }
+.tier__role { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.02em; color: var(--mem-fg3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* state: online (loaded, at/below active) */
+.tier.is-online { background: color-mix(in srgb, var(--m3-primary) 8%, var(--chip-bg)); }
+.tier.is-online .tier__node { background: color-mix(in srgb, var(--m3-primary) 55%, transparent); border-color: color-mix(in srgb, var(--m3-primary) 70%, transparent); }
+.tier.is-online .tier__name { color: var(--mem-fg); }
+/* state: active (the live rung) */
+.tier.is-active { background: color-mix(in srgb, var(--m3-primary) 15%, var(--chip-bg)); border-color: color-mix(in srgb, var(--m3-primary) 45%, transparent); }
+.tier.is-active .tier__node { background: var(--m3-primary); border-color: var(--m3-primary); box-shadow: 0 0 0 4px color-mix(in srgb, var(--m3-primary) 22%, transparent); }
+.tier.is-active .tier__role { color: var(--mem-fg2); }
+.tier.is-active.is-ramping .tier__node { animation: node-pulse var(--mdur-pulse) var(--mease-standard) infinite; }
+@keyframes node-pulse {
+  0%,100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--m3-primary) 26%, transparent); }
+  50%     { box-shadow: 0 0 0 7px color-mix(in srgb, var(--m3-primary) 0%, transparent); }
+}
+/* cloud rung recolors to info (still a role token, not identity orange) */
+.tier.is-cloud.is-active { background: color-mix(in srgb, var(--gnu-info) 15%, var(--chip-bg)); border-color: color-mix(in srgb, var(--gnu-info) 45%, transparent); }
+.tier.is-cloud.is-active .tier__node { background: var(--gnu-info); border-color: var(--gnu-info); box-shadow: 0 0 0 4px color-mix(in srgb, var(--gnu-info) 22%, transparent); }
+.tier.is-cloud.is-online .tier__node { background: color-mix(in srgb, var(--gnu-info) 55%, transparent); border-color: color-mix(in srgb, var(--gnu-info) 70%, transparent); }
+
+.tier__glyph { display: grid; place-items: center; color: var(--mem-fg3); flex: none; transition: color var(--mdur-base) var(--mease-gentle); }
+.tier.is-active .tier__glyph { color: var(--m3-primary); }
+.tier.is-cloud.is-active .tier__glyph { color: var(--gnu-info); }
+
+/* ---- right: active-tier detail + VRAM budget + controls ---- */
+.reactor__detail { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+.rx-head { display: flex; align-items: baseline; gap: 8px; }
+.rx-head__name { font-family: var(--font-sans); font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--mem-fg); }
+.rx-head__lvl { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: var(--m3-primary); }
+.reactor.is-cloud .rx-head__lvl { color: var(--gnu-info); }
+.rx-head__mode {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mem-fg3);
+}
+
+.rx-model { font-family: var(--font-mono); font-size: 10.5px; color: var(--mem-fg2); display: flex; align-items: center; gap: 7px; }
+.rx-model .sep { color: var(--mem-fg3); opacity: 0.5; }
+.rx-model b { color: var(--mem-fg3); font-weight: 600; }
+
+/* VRAM budget meter — segmented stacked bar, used vs 8 GB */
+.vram { display: flex; flex-direction: column; gap: 5px; }
+.vram__head { display: flex; align-items: baseline; justify-content: space-between; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.06em; color: var(--mem-fg3); }
+.vram__head b { color: var(--mem-fg); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.vram__head .warn { color: var(--state-warn); }
+.vram__head .alert { color: var(--state-alert); }
+.vram__track {
+  position: relative; height: 12px; border-radius: var(--r-1);
+  background: color-mix(in srgb, var(--col-on-layer0) 8%, transparent);
+  overflow: hidden; border: 1px solid var(--mem-hair);
+}
+.vram__fill {
+  position: absolute; inset: 0 auto 0 0; border-radius: var(--r-1) 0 0 var(--r-1);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--m3-primary) 72%, transparent), var(--m3-primary));
+  transition: width var(--mdur-slow) var(--mease-elastic), background var(--mdur-base) var(--mease-gentle);
+}
+.vram__fill.is-warn { background: linear-gradient(90deg, color-mix(in srgb, var(--state-warn) 72%, transparent), var(--state-warn)); }
+.vram__fill.is-alert { background: linear-gradient(90deg, color-mix(in srgb, var(--state-alert) 72%, transparent), var(--state-alert)); }
+.vram__ticks { position: absolute; inset: 0; pointer-events: none; }
+.vram__tick { position: absolute; top: 0; bottom: 0; width: 1px; background: color-mix(in srgb, var(--col-layer0) 60%, transparent); }
+
+/* reactor controls */
+.rx-ctl { display: flex; align-items: center; gap: 7px; margin-top: 1px; }
+.rx-ctl__step {
+  width: 30px; height: 28px; display: grid; place-items: center;
+  border: 1px solid var(--mem-hair); background: var(--chip-bg); color: var(--mem-fg2);
+  border-radius: var(--r-2); cursor: pointer;
+  transition: background var(--mdur-fast) var(--mease-gentle), color var(--mdur-fast) var(--mease-gentle), transform var(--mdur-fast) var(--mease-overshoot);
+}
+.rx-ctl__step:hover:not(:disabled) { background: var(--chip-bg-hover); color: var(--mem-fg); }
+.rx-ctl__step:active:not(:disabled) { transform: scale(0.92); }
+.rx-ctl__step:disabled { opacity: 0.35; cursor: not-allowed; }
+.rx-ctl__auto {
+  display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px;
+  border: 1px solid var(--mem-hair); background: var(--chip-bg); color: var(--mem-fg2);
+  border-radius: var(--r-pill); cursor: pointer;
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  transition: background var(--mdur-fast) var(--mease-gentle), color var(--mdur-fast) var(--mease-gentle), border-color var(--mdur-fast) var(--mease-gentle);
+}
+.rx-ctl__auto:hover { background: var(--chip-bg-hover); }
+.rx-ctl__auto.is-on { background: var(--m3-primary); color: var(--m3-on-primary); border-color: color-mix(in srgb, var(--m3-primary) 70%, #000); }
+.rx-ctl__auto .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.rx-ctl__spacer { flex: 1 1 auto; }
+.rx-ctl__lat { font-family: var(--font-mono); font-size: 9.5px; color: var(--mem-fg3); font-variant-numeric: tabular-nums; }
+.rx-ctl__lat b { color: var(--mem-fg2); font-weight: 600; }
+
+/* ===================== AGENT BUS ===================== */
+.bus { display: flex; flex-direction: column; padding: 11px 14px 14px; gap: 9px; }
+.bus__head { display: flex; align-items: center; gap: 8px; }
+.bus__title { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; color: var(--mem-fg2); }
+.bus__socket {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; color: var(--mem-fg3);
+  padding: 2px 7px; border: 1px solid var(--mem-hair); border-radius: var(--r-pill);
+}
+.bus__socket .pip { width: 6px; height: 6px; border-radius: 50%; background: var(--state-ok); }
+.bus__count { margin-left: auto; font-family: var(--font-mono); font-size: 9.5px; color: var(--mem-fg3); }
+.bus__count b { color: var(--mem-fg); font-weight: 700; }
+
+.bus__agents { display: flex; flex-direction: column; gap: 6px; }
+.agent {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border: 1px solid var(--mem-hair); border-radius: var(--r-3);
+  background: var(--chip-bg);
+  animation: agent-bloom var(--mdur-unfurl) var(--mease-elastic) both;
+}
+@keyframes agent-bloom { from { opacity: 0; transform: scale(0.9) translateY(6px); } to { opacity: 1; transform: none; } }
+.agent__avatar {
+  width: 28px; height: 28px; border-radius: var(--r-2); flex: none;
+  display: grid; place-items: center; color: var(--gnu-info);
+  background: color-mix(in srgb, var(--gnu-info) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gnu-info) 30%, transparent);
+}
+.agent__main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.agent__id { display: flex; align-items: center; gap: 7px; }
+.agent__name { font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; color: var(--mem-fg); letter-spacing: -0.01em; }
+.agent__origin {
+  font-family: var(--font-mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gnu-info); padding: 1px 5px; border-radius: var(--r-1);
+  background: color-mix(in srgb, var(--gnu-info) 12%, transparent);
+}
+.agent__act { font-family: var(--font-mono); font-size: 10px; color: var(--mem-fg2); display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agent__act .glyph { color: var(--m3-primary); flex: none; }
+.agent__act.is-idle .glyph { color: var(--mem-fg3); }
+
+/* capability grants — tiny pills, filled = granted */
+.grants { display: flex; align-items: center; gap: 4px; flex: none; }
+.grant {
+  width: 24px; height: 24px; display: grid; place-items: center; border-radius: var(--r-2);
+  border: 1px solid var(--mem-hair); color: var(--mem-fg3); background: transparent;
+  cursor: pointer; transition: background var(--mdur-fast) var(--mease-gentle), color var(--mdur-fast) var(--mease-gentle), border-color var(--mdur-fast) var(--mease-gentle), transform var(--mdur-fast) var(--mease-overshoot);
+}
+.grant:hover { transform: translateY(-1px); }
+.grant:active { transform: scale(0.9); }
+.grant.is-granted { background: color-mix(in srgb, var(--m3-primary) 16%, transparent); color: var(--m3-primary); border-color: color-mix(in srgb, var(--m3-primary) 38%, transparent); }
+.grant:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--m3-primary) 30%, transparent); }
+
+/* live command bus stream */
+.bus__stream {
+  margin-top: 1px; border-top: 1px solid var(--mem-hair); padding-top: 8px;
+  display: flex; flex-direction: column; gap: 3px; max-height: 92px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--mem-fg3) transparent;
+}
+.bus__stream::-webkit-scrollbar { width: 6px; }
+.bus__stream::-webkit-scrollbar-thumb { background: var(--mem-hair); border-radius: 3px; }
+.bus-call {
+  display: flex; align-items: baseline; gap: 7px;
+  font-family: var(--font-mono); font-size: 10.5px; line-height: 1.4; color: var(--mem-fg2);
+  animation: line-in var(--mdur-base) var(--mease-decel) both;
+}
+.bus-call__ts { color: var(--mem-fg3); flex: none; font-variant-numeric: tabular-nums; opacity: 0.7; }
+.bus-call__agent { color: var(--gnu-info); flex: none; font-weight: 600; }
+.bus-call__arrow { color: var(--mem-fg3); flex: none; }
+.bus-call__fn { color: var(--mem-fg); min-width: 0; word-break: break-word; }
+.bus-call__fn .accent { color: var(--m3-primary); }
+.bus-call--deny .bus-call__fn { color: var(--state-alert); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pwr-meter.is-ramping .pwr-meter__seg.is-lit:last-of-type,
+  .tier.is-active.is-ramping .tier__node { animation: none !important; }
+}

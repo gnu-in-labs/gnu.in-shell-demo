@@ -1,0 +1,28 @@
+<!doctype html>
+<!-- @dsCard group="Spacing" name="Spacing Scale" subtitle="4px base, doubled scale" viewport="700x240" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Spacing scale</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .row { display: grid; grid-template-columns: 56px 1fr 70px; gap: 12px; align-items: center; padding: 6px 0; }
+  .label { font-family: var(--font-mono); font-size: 11px; color: var(--fg2); }
+  .meta  { font-family: var(--font-mono); font-size: 11px; color: var(--fg3); text-align: right; }
+  .bar { height: 14px; background: var(--gnu-orange); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row"><span class="label">s-1</span><div class="bar" style="width:4px"></div><span class="meta">4 px</span></div>
+  <div class="row"><span class="label">s-2</span><div class="bar" style="width:8px"></div><span class="meta">8 px</span></div>
+  <div class="row"><span class="label">s-3</span><div class="bar" style="width:12px"></div><span class="meta">12 px</span></div>
+  <div class="row"><span class="label">s-4</span><div class="bar" style="width:16px"></div><span class="meta">16 px</span></div>
+  <div class="row"><span class="label">s-6</span><div class="bar" style="width:24px"></div><span class="meta">24 px</span></div>
+  <div class="row"><span class="label">s-8</span><div class="bar" style="width:32px"></div><span class="meta">32 px</span></div>
+  <div class="row"><span class="label">s-12</span><div class="bar" style="width:48px"></div><span class="meta">48 px</span></div>
+  <div class="row"><span class="label">s-16</span><div class="bar" style="width:64px"></div><span class="meta">64 px</span></div>
+  <div class="row"><span class="label">s-24</span><div class="bar" style="width:96px"></div><span class="meta">96 px</span></div>
+</div>
+</body>
+</html>

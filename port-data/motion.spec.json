@@ -1,0 +1,97 @@
+{
+  "$schema": "gnu.in/motion-spec-4",
+  "version": "0.4.0",
+  "imported_from": "GNU.IN Design System (legacy) · ui_kits/motion-spec/{motion-tokens,motion-atoms,motion-molecules}.jsx + uploads/motion.spec.v4.json + blob.in/tokens.json",
+  "note": "Canonical Gnu.In-Shell motion language. The bezier eases + MDUR durations drive the menu/chrome atom-molecule layer; engine_springs drive the compose-core surface solver. Consumed by Central (live) and the Rust port (scene_motion.rs).",
+
+  "tokens": {
+    "durations_ms": { "instant": 60, "flash": 100, "fast": 140, "base": 200, "smooth": 280, "slow": 360, "unfurl": 420, "pulse": 1400, "idle": 3200 },
+    "eases": {
+      "standard":  { "bezier": [0.20, 0.70, 0.20, 1.00], "qt": "OutCubic",   "gpui": "bezier(.20,.70,.20,1)",   "label": "standard" },
+      "decel":     { "bezier": [0.16, 1.00, 0.30, 1.00], "qt": "OutExpo",    "gpui": "bezier(.16,1,.30,1)",     "label": "décel · entrée" },
+      "accel":     { "bezier": [0.70, 0.00, 0.84, 0.00], "qt": "InExpo",     "gpui": "bezier(.70,0,.84,0)",     "label": "accel · sortie" },
+      "snap":      { "bezier": [0.40, 0.00, 0.20, 1.00], "qt": "InOutCubic", "gpui": "bezier(.40,0,.20,1)",     "label": "snap · commit" },
+      "gentle":    { "bezier": [0.32, 0.72, 0.32, 1.00], "qt": "OutQuad",    "gpui": "bezier(.32,.72,.32,1)",   "label": "doux · hover" },
+      "overshoot": { "bezier": [0.34, 1.36, 0.64, 1.00], "qt": "OutBack",    "gpui": "bezier(.34,1.36,.64,1)",  "label": "overshoot · atomic" },
+      "elastic":   { "bezier": [0.50, 1.55, 0.40, 1.00], "qt": "OutElastic", "gpui": "bezier(.50,1.55,.40,1)",  "label": "élastique · bloom" },
+      "linear":    { "bezier": [0.00, 0.00, 1.00, 1.00], "qt": "Linear",     "gpui": "linear",                  "label": "linéaire · pulse" }
+    },
+    "distances_px": { "lift": 4, "slide": 8, "row": 12, "mag": 3, "bloom": 52, "bounce": 6, "press_ratio": 0.96 },
+    "perf_tiers": {
+      "light":  { "gpu": 0.05, "cost": "transform + opacity only" },
+      "medium": { "gpu": 0.25, "cost": "clip-path / blur / filter" },
+      "heavy":  { "gpu": 0.55, "cost": "backdrop-filter / shader / compositing layers" }
+    },
+    "reduced_motion": { "duration_scale": 0.55, "min_ms": 60, "prefer_ease": "gentle", "drop_effects": ["blur", "origami", "liquid", "particle", "dither-shift", "overshoot"] },
+    "audio_cues": {
+      "open":    { "id": "cue.menu.open",   "vol": -22, "dur": 120, "character": "soft cassette click" },
+      "close":   { "id": "cue.menu.close",  "vol": -24, "dur": 100, "character": "short retract" },
+      "hover":   { "id": "cue.menu.hover",  "vol": -32, "dur": 40,  "character": "low blip" },
+      "commit":  { "id": "cue.menu.commit", "vol": -18, "dur": 140, "character": "mechanical clack" },
+      "subOpen": { "id": "cue.menu.sub",    "vol": -26, "dur": 110, "character": "paper unfold" },
+      "error":   { "id": "cue.menu.error",  "vol": -20, "dur": 180, "character": "damped thud" }
+    },
+    "engine_springs": {
+      "settle": { "stiffness": 170.0, "damping": 22.0, "mass": 1.0 },
+      "snap":   { "stiffness": 260.0, "damping": 24.0, "mass": 1.0 },
+      "wobbly": { "stiffness": 200.0, "damping": 12.0, "mass": 1.0 }
+    }
+  },
+
+  "atoms": [
+    { "id": "A.01", "title": "Fade",          "prop": "opacity",        "from": 0,      "to": 1,     "dur_token": "base",      "dur_ms": 200,  "ease": "standard",  "perf": "light",  "audio": "open",    "rm": "dur ½ · ease gentle" },
+    { "id": "A.02", "title": "Scale",         "prop": "scale",          "from": 0.86,   "to": 1,     "dur_token": "base",      "dur_ms": 200,  "ease": "overshoot", "perf": "light",  "audio": "open",    "rm": "ease standard · no overshoot" },
+    { "id": "A.03", "title": "Translate · Y-lift", "prop": "translateY", "from": 8,     "to": 0,     "dur_token": "base",      "dur_ms": 200,  "ease": "decel",     "perf": "light",  "audio": "open",    "rm": "delta +4 · dur ½" },
+    { "id": "A.04", "title": "Mask reveal",   "prop": "clip-radius",    "from": 0,      "to": 160,   "dur_token": "smooth",    "dur_ms": 280,  "ease": "decel",     "perf": "medium", "audio": "open",    "rm": "fade only", "signature": true },
+    { "id": "A.05", "title": "Blur",          "prop": "blur",           "from": 8,      "to": 0,     "dur_token": "base",      "dur_ms": 200,  "ease": "decel",     "perf": "heavy",  "audio": null,      "rm": "disabled — pure fade" },
+    { "id": "A.06", "title": "Dither shift",  "prop": "pattern-opacity","from": 0.45,   "to": 0.08,  "dur_token": "smooth",    "dur_ms": 280,  "ease": "decel",     "perf": "light",  "audio": null,      "rm": "static · no drift" },
+    { "id": "A.07", "title": "Origami fold",  "prop": "rotateX",        "from": -72,    "to": 0,     "dur_token": "smooth",    "dur_ms": 280,  "ease": "overshoot", "perf": "medium", "audio": "subOpen", "rm": "flat — translateY only" },
+    { "id": "A.08", "title": "Refraction · glass warp", "prop": "backdrop-blur", "from": 2, "to": 18, "dur_token": "smooth",  "dur_ms": 280,  "ease": "decel",     "perf": "heavy",  "audio": null,      "rm": "opaque surface" },
+    { "id": "A.09", "title": "Particle burst","prop": "particles",      "from": 0,      "to": 40,    "dur_token": "smooth+100","dur_ms": 380,  "ease": "decel",     "perf": "medium", "audio": "commit",  "rm": "single luminance flash" },
+    { "id": "A.10", "title": "Pulse · breathe","prop": "ring-radius",   "from": 28,     "to": 56,    "dur_token": "pulse",     "dur_ms": 1400, "ease": "linear",    "perf": "light",  "audio": null,      "rm": "static ring" },
+    { "id": "A.11", "title": "Type-on",       "prop": "chars",          "from": 0,      "to": 25,    "dur_token": "unfurl",    "dur_ms": 420,  "ease": "linear",    "perf": "light",  "audio": null,      "rm": "immediate" },
+    { "id": "A.12", "title": "Magnetic snap", "prop": "translateX",     "from": 0,      "to": 3,     "dur_token": "fast",      "dur_ms": 140,  "ease": "gentle",    "perf": "light",  "audio": "hover",   "rm": "disabled" },
+    { "id": "A.13", "title": "Liquid morph",  "prop": "border-radius",  "from": "12% 80%", "to": "80% 12%", "dur_token": "unfurl", "dur_ms": 420, "ease": "linear",   "perf": "light",  "audio": null,      "rm": "static shape" },
+    { "id": "A.14", "title": "Spring physics","prop": "translateX",     "from": 120,    "to": 0,     "dur_token": "unfurl+100","dur_ms": 520,  "ease": "elastic",   "perf": "light",  "audio": "open",    "rm": "ease decel · no spring", "note": "stiffness ≈ 220 · damping ≈ 18" },
+    { "id": "A.15", "title": "Stagger",       "prop": "translateY",     "from": 8,      "to": 0,     "dur_token": "base",      "dur_ms": 200,  "ease": "decel",     "perf": "light",  "audio": "open",    "rm": "all arrive at once", "stagger_ms": 32 }
+  ],
+
+  "molecules": [
+    { "id": "M.01", "title": "reveal-from-cursor", "moment": "open",            "atoms": ["A.04 mask", "A.02 scale (over)", "A.01 fade"], "dur_ms": 280, "ease": "decel+overshoot", "perf": "medium", "audio": "open",    "rm": "simple fade, dur ½" },
+    { "id": "M.02", "title": "dismiss-to-cursor",  "moment": "close",           "atoms": ["A.04 mask⁻¹", "A.02 scale⁻¹", "A.01 fade⁻¹"], "dur_ms": 200, "ease": "accel",          "perf": "medium", "audio": "close",   "rm": "fade-out, dur ½" },
+    { "id": "M.03", "title": "row-hover-slide",    "moment": "hover",           "atoms": ["A.12 magnetic ±3px", "tick 2px", "bg fill 80ms"], "dur_ms": 140, "ease": "gentle",       "perf": "light",  "audio": "hover",   "rm": "bg only · no translate" },
+    { "id": "M.04", "title": "commit-flash",       "moment": "press",           "atoms": ["A.02 scale .96 (snap)", "A.02 overshoot back", "A.09 particle"], "dur_ms": 580, "ease": "snap+overshoot+decel", "perf": "medium", "audio": "commit", "rm": "1-frame flash, no particles" },
+    { "id": "M.05", "title": "sub-cascade",        "moment": "sub-open",        "atoms": ["parent translateX −2px", "child A.04+A.01", "A.15 stagger 32ms"], "dur_ms": 700, "ease": "gentle+decel", "perf": "medium", "audio": "subOpen", "rm": "instant, opacity only" },
+    { "id": "M.06", "title": "sub-collapse",       "moment": "sub-close",       "atoms": ["child A.04⁻¹", "translateX −4px", "parent → rest"], "dur_ms": 140, "ease": "accel",     "perf": "medium", "audio": "close",   "rm": "simple fade out" },
+    { "id": "M.07", "title": "drill-replace",      "moment": "drill-in",        "atoms": ["out translateX −16 + fade", "in +16 → 0", "overlap 40%"], "dur_ms": 280, "ease": "accel+decel", "perf": "light", "audio": "subOpen", "rm": "crossfade" },
+    { "id": "M.08", "title": "retarget-slide",     "moment": "retarget",        "atoms": ["translate spring · lag 80ms", "preserve clip-origin"], "dur_ms": 600, "ease": "decel",     "perf": "light",  "audio": null,      "rm": "teleport" },
+    { "id": "M.09", "title": "edge-bounce",        "moment": "edge-bounce",     "atoms": ["A.14 spring elastic", "bounce −6px"], "dur_ms": 420, "ease": "elastic", "perf": "light", "audio": null,      "rm": "direct, no bounce" },
+    { "id": "M.10", "title": "idle-breathe",       "moment": "idle",            "atoms": ["A.10 pulse (mascot)", "A.06 dither drift"], "dur_ms": 1400, "ease": "linear", "perf": "light", "audio": null,      "rm": "disabled" },
+    { "id": "M.11", "title": "error-shake",        "moment": "error",           "atoms": ["damped sine 4Hz", "amplitude 8px", "colour → red"], "dur_ms": 420, "ease": "linear", "perf": "light", "audio": "error",   "rm": "single red border flash" },
+    { "id": "M.12", "title": "bubble-bloom ★",     "moment": "open · signature","atoms": ["A.14 spring elastic", "A.15 stagger 36ms", "radial 88px"], "dur_ms": 496, "ease": "elastic", "perf": "medium", "audio": "open", "rm": "fade + bbox, no spring", "signature": "A4.7 bubble-tree" }
+  ],
+
+  "mascot_states": [
+    { "state": "idle",      "mode": "loop",     "dur_ms": 1400, "screen_glyph": "prompt",                         "visual": "chevron + cream underscore",                 "motion": "gentle bob, no FX",       "syster": "idle" },
+    { "state": "listening", "mode": "loop",     "dur_ms": 1400, "screen_glyph": "prompt + three dots",            "visual": "chevron stable · dots breathe · antenna rings", "motion": "subtle micro-lean",    "syster": "listening" },
+    { "state": "thinking",  "mode": "loop",     "dur_ms": 1200, "screen_glyph": "prompt → ·→··→···→··→ prompt",   "visual": "chevron stable · dot sequence · screen-only",   "motion": "body calm",            "syster": "work",  "frame_ms": 200 },
+    { "state": "success",   "mode": "one-shot", "dur_ms": 520,  "screen_glyph": "prompt-success",                 "visual": "green underscore + screen-local glow",        "motion": "positive bounce on rig", "syster": "success" },
+    { "state": "error",     "mode": "one-shot", "dur_ms": 520,  "screen_glyph": "error",                          "visual": "red mark + red underscore + antenna ticks",   "motion": "recoil on rig",          "syster": "fail" }
+  ],
+
+  "geometry": {
+    "canvas": { "width": 1254, "height": 1254 },
+    "screen_overlay_pct": { "left": 24.1, "top": 38.85, "width": 41.95, "height": 37.85, "radius": 12.5 },
+    "antenna_tip_pct": { "x": 74.2, "y": 28.7 }
+  },
+
+  "acceptance": [
+    "Idle never displays an X.",
+    "Listening and thinking always retain the terminal chevron.",
+    "Success never displays error glyphs or debug-like random rays.",
+    "Error never inherits thinking dots after reset.",
+    "The mascot stays centered across one-shot states.",
+    "Screen overlay covers the old prompt cleanly.",
+    "Antenna rings originate from the antenna cap."
+  ]
+}

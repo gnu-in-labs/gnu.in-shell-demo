@@ -1,0 +1,44 @@
+<!doctype html>
+<!-- @dsCard group="Spacing" name="Shadow System" subtitle="Three-tier warm-ink + focus glow + bezel" viewport="700x280" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shadow system</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  body { background: #F7F8FA; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; padding-top: 6px; }
+  .tile { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .box { width: 110px; height: 80px; background: #FFF; border-radius: 12px; border: 1px solid #E6E8EB; }
+  .name { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg1); }
+  .v { font-family: var(--font-mono); font-size: 10px; color: var(--fg3); text-align: center; line-height: 1.4; }
+  .glow { background: #FFF; border: 1px solid var(--gnu-orange); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="grid">
+    <div class="tile">
+      <div class="box" style="box-shadow: 0 1px 0 rgba(17,20,24,0.04), 0 1px 2px rgba(17,20,24,0.06)"></div>
+      <span class="name">Shadow 1</span>
+      <span class="v">rest · hairline lift</span>
+    </div>
+    <div class="tile">
+      <div class="box" style="box-shadow: 0 2px 4px rgba(17,20,24,0.06), 0 6px 12px rgba(17,20,24,0.08)"></div>
+      <span class="name">Shadow 2</span>
+      <span class="v">menu · popover · card</span>
+    </div>
+    <div class="tile">
+      <div class="box" style="box-shadow: 0 8px 16px rgba(17,20,24,0.10), 0 16px 32px rgba(17,20,24,0.10)"></div>
+      <span class="name">Shadow 3</span>
+      <span class="v">modal · hero overlay</span>
+    </div>
+    <div class="tile">
+      <div class="box glow" style="box-shadow: 0 0 0 4px rgba(255,106,0,0.18)"></div>
+      <span class="name">Glow Orange</span>
+      <span class="v">focus-visible ring</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<!-- @dsCard group="Colors" name="Surface Tokens" subtitle="Light + dark surface mappings" viewport="700x280" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Surface tokens — light & dark</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .surface {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--line-2);
+  }
+  .surface header {
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--line-2);
+    background: #FFF;
+    color: var(--fg2);
+  }
+  .surface .stack { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .surface .stack .cell {
+    padding: 22px 10px 12px;
+    min-height: 86px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1px;
+    font-size: 11px;
+  }
+  .surface .stack .cell .v { font-family: var(--font-mono); font-size: 10px; opacity: 0.7; }
+  .light .cell { color: var(--fg1); }
+  .dark { background: #0D1014; }
+  .dark header { background: #0D1014; color: #B6BCC4; border-color: #2B3037; }
+  .dark .cell { color: #F7F3ED; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row">
+    <div class="surface light">
+      <header>Light</header>
+      <div class="stack">
+        <div class="cell" style="background:#F7F3ED">bg<span class="v">#F7F3ED</span></div>
+        <div class="cell" style="background:#FFFFFF">elev1<span class="v">#FFFFFF</span></div>
+        <div class="cell" style="background:#F7F8FA">inset<span class="v">#F7F8FA</span></div>
+      </div>
+    </div>
+    <div class="surface dark">
+      <header>Dark</header>
+      <div class="stack">
+        <div class="cell" style="background:#111418">bg<span class="v">#111418</span></div>
+        <div class="cell" style="background:#1A1F26">elev1<span class="v">#1A1F26</span></div>
+        <div class="cell" style="background:#0D1014">inset<span class="v">#0D1014</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

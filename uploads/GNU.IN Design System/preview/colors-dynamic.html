@@ -1,0 +1,61 @@
+<!-- @dsCard group="Colors" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Dynamic color · M3 layers</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .lede { font-size: 12px; color: var(--fg2); line-height: 1.45; margin: -2px 0 2px; }
+  .lede b { color: var(--fg1); font-weight: 600; }
+  .scheme { display: flex; flex-direction: column; gap: 8px; }
+  .scheme__name { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg3); font-weight: 600; }
+  .strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+  .sw { border-radius: 12px; height: 60px; border: 1px solid rgba(255,255,255,0.06);
+        display: flex; align-items: flex-end; padding: 7px 8px; }
+  .sw small { font-family: var(--font-mono); font-size: 9.5px; line-height: 1.1; }
+  /* cool / mauve scheme (default committed matugen) */
+  .cool .l0 { background: #141313; } .cool .l1 { background: #1c1b1c; } .cool .l2 { background: #201f20; }
+  .cool .l3 { background: #2b2a2a; }
+  .cool .pri { background: #cbc4cb; } .cool .sec { background: #4d4b4d; }
+  .cool .l0 small,.cool .l1 small,.cool .l2 small,.cool .l3 small,.cool .sec small { color:#cbc5ca; }
+  .cool .pri small { color:#322f34; }
+  /* warm / amber scheme (alt wallpaper) */
+  .warm .l0 { background: #161210; } .warm .l1 { background: #1f1814; } .warm .l2 { background: #251c16; }
+  .warm .l3 { background: #30231a; }
+  .warm .pri { background: #FF6A00; } .warm .sec { background: #4a2f1c; }
+  .warm .l0 small,.warm .l1 small,.warm .l2 small,.warm .l3 small,.warm .sec small { color:#e8c9b3; }
+  .warm .pri small { color:#111418; }
+  .ident { display:flex; align-items:center; gap:8px; font-size: 11px; color: var(--fg2); margin-top: 2px; }
+  .ident .dot { width: 14px; height: 14px; border-radius: 4px; background: var(--gnu-orange); }
+</style>
+</head>
+<body>
+<div class="card">
+  <p class="lede"><b>Chrome is fully dynamic.</b> Surfaces + accent are matugen-derived from the wallpaper. Same layer roles, different scheme — design every surface to read under both.</p>
+  <div class="scheme cool">
+    <span class="scheme__name">Cool · mauve (committed default)</span>
+    <div class="strip">
+      <div class="sw l0"><small>layer0</small></div>
+      <div class="sw l1"><small>layer1</small></div>
+      <div class="sw l2"><small>layer2</small></div>
+      <div class="sw l3"><small>layer3</small></div>
+      <div class="sw pri"><small>primary</small></div>
+      <div class="sw sec"><small>sec·cont</small></div>
+    </div>
+  </div>
+  <div class="scheme warm">
+    <span class="scheme__name">Warm · amber (alt wallpaper)</span>
+    <div class="strip">
+      <div class="sw l0"><small>layer0</small></div>
+      <div class="sw l1"><small>layer1</small></div>
+      <div class="sw l2"><small>layer2</small></div>
+      <div class="sw l3"><small>layer3</small></div>
+      <div class="sw pri"><small>primary</small></div>
+      <div class="sw sec"><small>sec·cont</small></div>
+    </div>
+  </div>
+  <div class="ident"><span class="dot"></span> identity accent <code style="font-family:var(--font-mono);font-size:11px">--brand-accent #FF6A00</code> stays constant across all schemes</div>
+</div>
+</body>
+</html>

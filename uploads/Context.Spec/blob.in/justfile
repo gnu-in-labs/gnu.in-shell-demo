@@ -1,0 +1,62 @@
+# blob.in — dev tasks. Run with `just <task>` (https://github.com/casey/just).
+
+# Regenerate every codegen target from the single source of truth.
+# This is "the loop": tokens.json → solver consts (+ theme files).
+tokens:
+    cargo run -p blobin-gen -- tokens.json \
+        --rust   blobin-core/src/tokens.rs \
+        --qml    gen/GnuTheme.qml \
+        --header gen/gnu_theme.h \
+        --dart   gen/gnu_theme.dart
+    @echo "regenerated tokens — re-run tests to confirm parity"
+
+# Fail CI if tokens.rs is stale vs tokens.json (the drift guard).
+check-tokens:
+    cargo run -p blobin-gen -- tokens.json --rust /tmp/tokens.check.rs
+    diff -u blobin-core/src/tokens.rs /tmp/tokens.check.rs \
+        && echo "tokens.rs is in sync with tokens.json" \
+        || (echo "DRIFT: tokens.rs is stale — run \`just tokens\`" && exit 1)
+
+# Rust engine + generator tests (no Qt toolchain needed).
+test:
+    cargo test --workspace
+
+# Same, with the dedicated solver pool (Q2) — must produce identical results.
+test-threaded:
+    cargo test -p blobin-core --features threaded-solver
+
+# C++ shim budget guard (plan §6): fail if the shim exceeds 300 LoC.
+loc:
+    bash tools/loc-guard.sh 300
+
+# Material parity goldens (P3). Regenerate the reference PNGs from the Rust
+# raster oracle; review the contact sheet, then commit.
+goldens:
+    UPDATE_GOLDEN=1 cargo test -p blobin-golden
+    @echo "goldens rewritten — review blobin-golden/golden/_contact_sheet.png"
+
+# P3 parity gate: render via Rust raster, pixel-diff + SSIM vs committed PNGs.
+parity:
+    cargo test -p blobin-golden -- --nocapture
+
+# Everything CI runs.
+ci: check-tokens test test-threaded loc parity
+
+# P5 readiness gate — runs every auto gate, lists manual ones. The final
+# check before flipping BLOBIN_BACKEND=rust by default.
+readiness:
+    bash tools/readiness.sh
+
+# R7 — frame-budget benchmarks (Criterion). Sign-off recorded in
+# tools/r7-sign-off.json once compared against the v3.1 baseline.
+bench:
+    cargo bench -p blobin-bench
+
+# Build the reactive Qt surface (Q6, parallel to blobin-qt).
+cxxqt:
+    cargo build -p blobin-cxxqt
+
+# Full Qt plugin (needs Qt 6.6 + Corrosion).
+qt:
+    cmake -S blobin-qt -B ../build/blobin-qt
+    cmake --build ../build/blobin-qt

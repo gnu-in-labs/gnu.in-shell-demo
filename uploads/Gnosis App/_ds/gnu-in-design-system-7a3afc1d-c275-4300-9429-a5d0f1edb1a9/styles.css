@@ -1,0 +1,13 @@
+/* =================================================================
+   GNU.IN — styles.css
+   Root entry point for the design system. Link THIS one file and you
+   get the full token closure + foundations. Consumers: import once.
+   ================================================================= */
+
+/* Source of truth — color, type, spacing, radii, shadow, motion tokens,
+   @font-face (Montreal), and the semantic typography classes. */
+@import url("colors_and_type.css");
+
+/* Drop-in terminal-signature styles + the --gnu6-* token aliases for
+   <pre>/TUI blocks. */
+@import url("assets/terminal/web-terminal-signature.css");

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9/colors_and_type.css">
+<link rel="stylesheet" href="_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9/styles.css">
+<script src="_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9/_ds_bundle.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..800&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..0&display=block" rel="stylesheet">
+<style>
+body { margin:0; background:#F5EEDD; }
+@keyframes idxPing { 0%{box-shadow:0 0 0 0 rgba(255,106,0,0.5)} 70%{box-shadow:0 0 0 8px rgba(255,106,0,0)} 100%{box-shadow:0 0 0 0 rgba(255,106,0,0)} }
+.idx-card { text-decoration:none; transition:transform .18s cubic-bezier(.2,.7,.2,1), box-shadow .18s cubic-bezier(.2,.7,.2,1), border-color .18s; }
+.idx-card:hover { transform:translateY(-3px); box-shadow:0 16px 36px rgba(17,20,24,0.14); border-color:#FF6A00 !important; }
+.idx-card:hover .idx-arrow { transform:translateX(3px); color:#FF6A00; }
+.idx-arrow { transition:transform .18s cubic-bezier(.2,.7,.2,1), color .18s; }
+</style>
+</helmet>
+
+<div style="min-height:100%; background:#F5EEDD; font-family:'Montreal','Inter',system-ui,sans-serif; padding:0 0 64px;">
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <div style="position:relative; margin:0; padding:0; height:430px; overflow:hidden; background:#0a0c0f;">
+    <div style="position:absolute; inset:0; background:radial-gradient(120% 140% at 78% 30%, #161b22 0%, #0a0c0f 62%);"></div>
+    <div style="position:absolute; inset:0; background:linear-gradient(100deg, #0c0e11 0%, #0c0e11 42%, rgba(12,14,17,0.7) 58%, rgba(12,14,17,0.1) 80%, rgba(12,14,17,0.4) 100%);"></div>
+    <div style="position:relative; max-width:1280px; margin:0 auto; padding:54px 64px; box-sizing:border-box;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:46px; height:52px;"><dc-import name="Syster" state="hello" hint-size="46px,52px"></dc-import></div>
+        <div style="font:600 11px/1 'JetBrains Mono',monospace; letter-spacing:0.2em; text-transform:uppercase; color:#948f94;">Gnu.in Labs · OS · index du système</div>
+      </div>
+      <div style="font-weight:700; font-size:80px; line-height:0.98; letter-spacing:-0.03em; color:#f3eee9; margin-top:20px;">gnu<span style="color:#FF6A00;">.in</span>-OS</div>
+      <div style="font-size:18px; line-height:1.45; color:#cbc5ca; margin-top:16px; max-width:680px;">Le système unifié — <b style="color:#f3eee9;">Gnosis</b> ⊕ <b style="color:#f3eee9;">Context.Spec</b> ⊕ <b style="color:#f3eee9;">GNU.IN</b>. Six boards connectés, une seule colonne vertébrale. Choisis une porte d'entrée.</div>
+      <div style="display:flex; gap:8px; margin-top:24px;">
+        <span style="font:600 10px/1 'JetBrains Mono',monospace; color:#FF8E40; padding:8px 12px; border:1px solid #4a3320; border-radius:8px;">render-first Rust/GPUI</span>
+        <span style="font:600 10px/1 'JetBrains Mono',monospace; color:#8DA982; padding:8px 12px; border:1px solid #2c3a2c; border-radius:8px;">gnu.in-os · v0.12.0 beta</span>
+        <span style="font:600 10px/1 'JetBrains Mono',monospace; color:#cbc5ca; padding:8px 12px; border:1px solid #2b2a2a; border-radius:8px;">31 composants · 6 portes fermées</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ BOARD GRID ═══════════ -->
+  <div style="max-width:1280px; margin:0 auto; padding:44px 64px 0; box-sizing:border-box;">
+    <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:22px;">
+      <span style="font:700 13px/1 'JetBrains Mono',monospace; color:#FF6A00; letter-spacing:0.08em;">06</span>
+      <span style="font:700 22px/1 'Montreal'; letter-spacing:-0.01em; color:#111418;">Les boards</span>
+      <span style="font:400 13px/1 'Montreal'; color:#667085;">identité → tokens → composants → intégration → ingénierie</span>
+      <span style="flex:1; height:1px; background:#D7DADF;"></span>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px;">
+
+      <!-- Atlas -->
+      <a class="idx-card" href="Gnu.In-Shell%20-%20Atlas%20Unifi%C3%A9.dc.html" style="display:flex; flex-direction:column; background:#fff; border:1px solid #E6E8EB; border-radius:14px; padding:22px; box-shadow:0 4px 14px rgba(17,20,24,0.06);">
+        <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF6A00;">01 · ATLAS</span><span style="font-family:'Material Symbols Rounded'; font-size:20px; color:#cbc5ca;">map</span></div>
+        <div style="font:700 22px/1.1 'Montreal'; color:#111418; margin-top:14px;">Atlas Unifié</div>
+        <div style="font:400 13px/1.5 'Montreal'; color:#56606a; margin-top:8px; flex:1;">Le système entier sur une planche — fondations → atomes → molécules → archétypes → motion → shell vivant.</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:16px; padding-top:14px; border-top:1px solid #EEF0F2;"><span style="font:500 10.5px/1 'JetBrains Mono',monospace; color:#A1A6AD;">∞ · C · CM · R · A·M · live</span><span class="idx-arrow" style="font-family:'Material Symbols Rounded'; font-size:20px; color:#111418;">arrow_forward</span></div>
+      </a>
+
+      <!-- Fondations -->
+      <a class="idx-card" href="Gnu.In-Shell%20-%20Fondations.dc.html" style="display:flex; flex-direction:column; background:#fff; border:1px solid #E6E8EB; border-radius:14px; padding:22px; box-shadow:0 4px 14px rgba(17,20,24,0.06);">
+        <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF6A00;">02 · FONDATIONS</span><span style="font-family:'Material Symbols Rounded'; font-size:20px; color:#cbc5ca;">palette</span></div>
+        <div style="font:700 22px/1.1 'Montreal'; color:#111418; margin-top:14px;">Fondations</div>
+        <div style="font:400 13px/1.5 'Montreal'; color:#56606a; margin-top:8px; flex:1;">Le socle : couleur, type, espace, rayons, motion, ombres, densité, forme. Tout s'y résout.</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:16px; padding-top:14px; border-top:1px solid #EEF0F2;"><span style="font:500 10.5px/1 'JetBrains Mono',monospace; color:#A1A6AD;">tokens · 5 familles</span><span class="idx-arrow" style="font-family:'Material Symbols Rounded'; font-size:20px; color:#111418;">arrow_forward</span></div>
+      </a>
+
+      <!-- Atomes -->
+      <a class="idx-card" href="Gnu.In-Shell%20-%20Atomes.dc.html" style="display:flex; flex-direction:column; background:#fff; border:1px solid #E6E8EB; border-radius:14px; padding:22px; box-shadow:0 4px 14px rgba(17,20,24,0.06);">
+        <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF6A00;">03 · ATOMES</span><span style="font-family:'Material Symbols Rounded'; font-size:20px; color:#cbc5ca;">category</span></div>
+        <div style="font:700 22px/1.1 'Montreal'; color:#111418; margin-top:14px;">Atomes</div>
+        <div style="font:400 13px/1.5 'Montreal'; color:#56606a; margin-top:8px; flex:1;">Les primitives disséquées : anatomie mesurée, ancres de tokens, grammaire d'états câblée.</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:16px; padding-top:14px; border-top:1px solid #EEF0F2;"><span style="font:500 10.5px/1 'JetBrains Mono',monospace; color:#A1A6AD;">C.01 → C.24</span><span class="idx-arrow" style="font-family:'Material Symbols Rounded'; font-size:20px; color:#111418;">arrow_forward</span></div>
+      </a>
+
+      <!-- Molécules -->
+      <a class="idx-card" href="Gnu.In-Shell%20-%20Mol%C3%A9cules.dc.html" style="display:flex; flex-direction:column; background:#fff; border:1px solid #E6E8EB; border-radius:14px; padding:22px; box-shadow:0 4px 14px rgba(17,20,24,0.06);">
+        <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF6A00;">04 · MOLÉCULES</span><span style="font-family:'Material Symbols Rounded'; font-size:20px; color:#cbc5ca;">widgets</span></div>
+        <div style="font:700 22px/1.1 'Montreal'; color:#111418; margin-top:14px;">Molécules</div>
+        <div style="font:400 13px/1.5 'Montreal'; color:#56606a; margin-top:8px; flex:1;">Les compositions vivantes, chacune avec sa formule — quels atomes l'assemblent + son motion.</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:16px; padding-top:14px; border-top:1px solid #EEF0F2;"><span style="font:500 10.5px/1 'JetBrains Mono',monospace; color:#A1A6AD;">CM.01 → CM.16</span><span class="idx-arrow" style="font-family:'Material Symbols Rounded'; font-size:20px; color:#111418;">arrow_forward</span></div>
+      </a>
+
+      <!-- Intégration -->
+      <a class="idx-card" href="Gnu.In-Shell%20-%20Int%C3%A9gration.dc.html" style="display:flex; flex-direction:column; background:#fff; border:1px solid #E6E8EB; border-radius:14px; padding:22px; box-shadow:0 4px 14px rgba(17,20,24,0.06);">
+        <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF6A00;">05 · INTÉGRATION</span><span style="font-family:'Material Symbols Rounded'; font-size:20px; color:#cbc5ca;">hub</span></div>
+        <div style="font:700 22px/1.1 'Montreal'; color:#111418; margin-top:14px;">Intégration</div>
+        <div style="font:400 13px/1.5 'Montreal'; color:#56606a; margin-top:8px; flex:1;">L'équation : runtime ⊕ spec = un système. Fusion sans perte, complémentarité, couleur dynamique.</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:16px; padding-top:14px; border-top:1px solid #EEF0F2;"><span style="font:500 10.5px/1 'JetBrains Mono',monospace; color:#A1A6AD;">Gnosis Live ⊕ Context Spec</span><span class="idx-arrow" style="font-family:'Material Symbols Rounded'; font-size:20px; color:#111418;">arrow_forward</span></div>
+      </a>
+
+      <!-- Handoff -->
+      <a class="idx-card" href="Gnu.In-Shell%20-%20Handoff.dc.html" style="display:flex; flex-direction:column; background:#0D1014; border:1px solid #2B3037; border-radius:14px; padding:22px; box-shadow:0 4px 14px rgba(17,20,24,0.12);">
+        <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF8E40;">06 · HANDOFF</span><span style="font-family:'Material Symbols Rounded'; font-size:20px; color:#7c828a;">terminal</span></div>
+        <div style="font:700 22px/1.1 'Montreal'; color:#f3eee9; margin-top:14px;">Handoff moteur</div>
+        <div style="font:400 13px/1.5 'Montreal'; color:#9aa0a8; margin-top:8px; flex:1;">Board → code. Matrice, 3 couches Rust, repo réel, API, ContextMenuService, sprint.</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:16px; padding-top:14px; border-top:1px solid #20262E;"><span style="font:500 10.5px/1 'JetBrains Mono',monospace; color:#7c828a;">engine 100% Rust · render-first</span><span class="idx-arrow" style="font-family:'Material Symbols Rounded'; font-size:20px; color:#FF8E40;">arrow_forward</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ═══════════ SPINE ═══════════ -->
+  <div style="max-width:1280px; margin:0 auto; padding:44px 64px 0; box-sizing:border-box;">
+    <div style="background:#111418; border-radius:16px; padding:28px 32px; display:flex; align-items:center; gap:28px;">
+      <div style="flex:none;">
+        <div style="font:600 9px/1 'Montreal'; letter-spacing:0.18em; text-transform:uppercase; color:#7c828a;">la colonne vertébrale</div>
+        <div style="font:700 24px/1 'JetBrains Mono',monospace; color:#FF6A00; margin-top:10px;">tokens.json</div>
+        <div style="font:400 11px/1.6 'JetBrains Mono',monospace; color:#9aa0a8; margin-top:8px;">+ engine Rust<br>+ Gnu* vocab<br>+ Sys.ter</div>
+      </div>
+      <div style="width:1px; align-self:stretch; background:#2B3037;"></div>
+      <div style="flex:1; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span style="font:600 11px/1 'JetBrains Mono',monospace; color:#cbc5ca; padding:9px 13px; background:#1A1F26; border:1px solid #2B3037; border-radius:9px;">design-reference</span>
+        <span style="font-family:'Material Symbols Rounded'; font-size:16px; color:#5F7F52;">east</span>
+        <span style="font:600 11px/1 'JetBrains Mono',monospace; color:#8DA982; padding:9px 13px; background:#161b16; border:1px solid #2c3a2c; border-radius:9px;">engine Rust/GPUI</span>
+        <span style="font-family:'Material Symbols Rounded'; font-size:16px; color:#667085;">east</span>
+        <span style="font:600 11px/1 'JetBrains Mono',monospace; color:#cbc5ca; padding:9px 13px; background:#1A1F26; border:1px solid #2B3037; border-radius:9px;">Gnu* composants</span>
+        <span style="font-family:'Material Symbols Rounded'; font-size:16px; color:#FF6A00;">east</span>
+        <span style="font:600 11px/1 'JetBrains Mono',monospace; color:#FF8E40; padding:9px 13px; background:#241a12; border:1px solid #4a3320; border-radius:9px;">surface Quickshell/QML</span>
+      </div>
+      <div style="flex:none; align-self:flex-start;"><span style="width:9px; height:9px; border-radius:50%; background:#FF6A00; display:inline-block; animation:idxPing 1400ms ease-out infinite;"></span></div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div style="max-width:1280px; margin:0 auto; padding:24px 64px 0; box-sizing:border-box; display:flex; justify-content:space-between; font:400 12px/1 'JetBrains Mono',monospace; color:#A1A6AD;">
+    <span>&gt;_ gnu.in-OS · index · Gnosis ⊕ Context.Spec ⊕ GNU.IN</span>
+    <span>v0.12.0 · 6 boards · une colonne</span>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

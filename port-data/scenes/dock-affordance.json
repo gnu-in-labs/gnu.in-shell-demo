@@ -1,0 +1,14 @@
+{
+  "$schema": "gnu.in/dock-affordance-1",
+  "note": "DockAffordanceConfig as asset-core would emit it. The host mounts this as-is; the engine's DockAffordanceConfig::place() derives N card transforms. Switching deck_style needs NO new host code path — the goal's 'expressive affordance without rewriting the runtime'.",
+  "surface": "dock",
+  "output": "eDP-1",
+  "deck_style": "Fan",
+  "card_px": 42,
+  "fan_arc_deg": 42,
+  "spread": 1.0,
+  "items": 6,
+  "mounted_from": "asset-core://manifest",
+  "deck_styles": ["Row", "Stack", "Fan"],
+  "derives": "CardPlacement { dx, dy, rotate_deg, origin_y_px, z } per item"
+}

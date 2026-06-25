@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 532 212" role="img" aria-labelledby="title desc">
+  <title id="title">GNU6-shell notification pill component template</title>
+  <desc>Notification pill UI component with editable text.</desc>
+  <rect id="notification-pill" x="16" y="42" width="500" height="128" rx="34" fill="#FFFFFF" stroke="#E6E8EB" stroke-width="3"></rect>
+  <g id="mark" transform="translate(36 52) scale(0.34)">
+    <g id="pill-cube-dialogue-symbol">
+      <path id="pill-dialogue-frame" d="M 194 52 H 256 Q 268 52 268 64 V 178 Q 268 190 256 190 H 184 L 160 214 V 190 H 146" fill="none" stroke="#FF6A00" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+      <g id="pill-cube-terminal">
+      <polygon id="pill-cube-top" points="66,66 128,32 190,66 128,100" fill="#FF6A00"></polygon>
+      <polygon id="pill-cube-left" points="60,78 122,113 122,181 60,146" fill="#FF6A00"></polygon>
+      <polygon id="pill-terminal-face" points="134,113 196,78 196,146 134,181" fill="#111418"></polygon>
+      <g id="pill-prompt" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+        <polyline id="pill-prompt-chevron" points="151,115 166,130 151,145"></polyline>
+        <line id="pill-prompt-cursor" x1="167" y1="153" x2="184" y2="153"></line>
+      </g>
+    </g>
+    </g>
+  </g>
+  <g id="editable-text" font-family="Montreal, Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="142" y="95" font-size="30" font-weight="800" fill="#111418">3 notifications</text>
+    <text x="142" y="129" font-size="27" fill="#667085">en attente</text>
+  </g>
+  <g id="notification-count" transform="translate(452 106)">
+    <circle cx="0" cy="0" r="33" fill="#FF6A00"></circle>
+    <text x="0" y="10" text-anchor="middle" font-family="Montreal, Inter, ui-sans-serif, system-ui, sans-serif" font-size="34" font-weight="800" fill="#FFFFFF">3</text>
+  </g>
+
+</svg>

@@ -1,0 +1,481 @@
+<!doctype html>
+<!-- @dsCard group="UI Kit — Gnu In Shell" name="ii Bar — Upgrade Target" subtitle="Faithful Quickshell bar recreation — toggle matugen vs GNU brand-pin" viewport="1440x360" -->
+<html lang="en" data-screen-label="GNU.IN — ii bar upgrade study">
+<head>
+<meta charset="utf-8" />
+<title>GNU.IN — ii bar (upgrade target)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..0&display=block" rel="stylesheet" />
+<link rel="stylesheet" href="../../colors_and_type.css" />
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font-sans);
+    background: #000;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    user-select: none;
+  }
+  button { font: inherit; border: none; background: transparent; color: inherit; cursor: pointer; padding: 0; }
+
+  .material-symbols-rounded {
+    font-family: "Material Symbols Rounded";
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    direction: ltr;
+    font-variation-settings: "FILL" 0, "wght" 450, "GRAD" 0, "opsz" 20;
+  }
+
+  /* ===================== DESKTOP ===================== */
+  .desk {
+    position: relative;
+    width: 100vw; height: 100vh;
+    background: #0d1014 center/cover no-repeat;
+    overflow: hidden;
+  }
+  .desk__scrim { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 50% 64%, rgba(0,0,0,0) 34%, rgba(0,0,0,0.5) 100%); }
+
+  /* ===================== TOKENS PER THEME ===================== */
+  .ii {
+    --bar-h: 40px;
+    --ws-cell: 26px;
+    --bar-solid: #141313;
+    --bar-bg: rgba(20,19,19,0.74);
+    --bar-border: #34313200;
+    --on-bar: #e6e1e1;
+    --subtext: #948f94;
+    --group-bg: rgba(255,255,255,0.045);
+    --hover: rgba(230,225,225,0.09);
+    --active: rgba(230,225,225,0.16);
+    --ws-occ: rgba(122,118,122,0.55);
+    --ws-on-occ: #ece6e9;
+    --primary: #cbc4cb;
+    --on-primary: #322f34;
+    --inactive: #6f6b6f;
+    --toggle-bg: rgba(202,197,200,0.20);
+    --green: #9fb5a0;
+    --spring: cubic-bezier(0.38, 1.21, 0.22, 1.0);
+  }
+  .ii[data-theme="gnu"] {
+    --bar-solid: #111418;
+    --bar-bg: rgba(17,20,24,0.70);
+    --bar-border: #2B303700;
+    --on-bar: #F5EEDD;
+    --subtext: #A1A6AD;
+    --group-bg: rgba(255,255,255,0.05);
+    --hover: rgba(255,106,0,0.13);
+    --active: rgba(255,106,0,0.22);
+    --ws-occ: rgba(255,106,0,0.20);
+    --ws-on-occ: #FFE0C7;
+    --primary: #FF6A00;
+    --on-primary: #111418;
+    --inactive: #5b6470;
+    --toggle-bg: rgba(255,106,0,0.16);
+    --green: #5F7F52;
+  }
+
+  /* ===================== BAR SHELL ===================== */
+  .barwrap { position: absolute; left: 0; right: 0; top: 0; z-index: 40; }
+  .bar {
+    position: relative;
+    height: var(--bar-h);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    color: var(--on-bar);
+    background: var(--bar-bg);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    backdrop-filter: blur(22px) saturate(1.5);
+    border: 1px solid var(--bar-border);
+    font-size: 13px;
+    overflow: hidden;
+  }
+  /* Float style (cornerStyle 1) */
+  .ii[data-corner="float"] .bar {
+    margin: 5px;
+    border-radius: 18px;
+    border-color: color-mix(in srgb, var(--on-bar) 10%, transparent);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.32);
+  }
+  /* Hug style (cornerStyle 0) */
+  .ii[data-corner="hug"] .bar { border-radius: 0; border-color: transparent; }
+  .corners { position: relative; height: 23px; pointer-events: none; }
+  .corner { position: absolute; top: 0; width: 23px; height: 23px; overflow: hidden; }
+  .corner::before {
+    content: ""; position: absolute; width: 46px; height: 46px; border-radius: 50%;
+    box-shadow: 0 0 0 40px var(--bar-solid);
+  }
+  .corner.l { left: 0; } .corner.l::before { right: 0; bottom: 0; }
+  .corner.r { right: 0; } .corner.r::before { left: 0; bottom: 0; }
+  .ii[data-corner="float"] .corners { display: none; }
+
+  /* ===================== ZONES ===================== */
+  .zone { display: flex; align-items: center; height: 100%; position: relative; min-width: 0; overflow: hidden; }
+  .zone.left { justify-self: stretch; }
+  .zone.right { justify-self: stretch; flex-direction: row-reverse; }
+  .mid { display: flex; align-items: center; gap: 4px; height: 100%; flex: 0 0 auto; }
+
+  .group {
+    display: flex; align-items: center; gap: 12px;
+    height: 28px; padding: 0 11px;
+    background: var(--group-bg);
+    border-radius: 999px;
+  }
+  .group.tap { cursor: pointer; transition: background 180ms var(--spring); }
+  .group.tap:hover { background: var(--hover); }
+
+  .ico { font-size: 19px; color: var(--on-bar); display: grid; place-items: center; }
+  .ico.sm { font-size: 17px; }
+  .muted { color: var(--subtext); }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+  /* sidebar button (left) */
+  .sidebtn {
+    height: 28px; min-width: 34px; padding: 0 7px; margin-left: 5px;
+    display: grid; place-items: center; border-radius: 999px;
+    transition: background 180ms var(--spring);
+  }
+  .sidebtn:hover { background: var(--hover); }
+  .sidebtn img { width: 18px; height: 18px; display: block; }
+
+  .activewin { display: flex; align-items: center; gap: 8px; padding: 0 6px 0 10px; min-width: 0; overflow: hidden; }
+  .activewin .dotapp { width: 14px; height: 14px; border-radius: 4px; flex: 0 0 auto;
+    background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 60%, #000)); }
+  .activewin .title { font-size: 13px; color: var(--on-bar); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .activewin .title b { font-weight: 600; }
+  .activewin .title .sub { color: var(--subtext); }
+
+  /* media marquee */
+  .media { display: flex; align-items: center; gap: 8px; max-width: 190px; overflow: hidden; }
+  .media .track { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 12.5px; }
+
+  /* resources ring */
+  .ring { width: 19px; height: 19px; border-radius: 50%; position: relative; display: grid; place-items: center; }
+  .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .ring .gly { font-size: 11px; color: var(--on-bar); }
+  .res { display: flex; align-items: center; gap: 9px; }
+  .res .pct { font-size: 12px; color: var(--on-bar); font-variant-numeric: tabular-nums; }
+
+  /* ===================== WORKSPACES ===================== */
+  .ws { position: relative; height: 28px; display: flex; align-items: center; padding: 0 2px; }
+  .ws__row { position: relative; display: flex; height: var(--ws-cell); }
+  .ws__cell { width: var(--ws-cell); height: var(--ws-cell); position: relative; display: grid; place-items: center; cursor: pointer; }
+  .ws__occ { position: absolute; inset: 2px; background: var(--ws-occ); transition: border-radius 420ms var(--spring), opacity 300ms var(--spring); }
+  .ws__active {
+    position: absolute; top: 2px; height: calc(var(--ws-cell) - 4px);
+    background: var(--primary); border-radius: 999px;
+    transition: left 480ms var(--spring), width 480ms var(--spring);
+    z-index: 2; pointer-events: none;
+  }
+  .ws__label { position: relative; z-index: 3; font-size: 13px; font-variant-numeric: tabular-nums;
+    transition: opacity 180ms ease, color 200ms ease; }
+  .ws__dot { position: relative; z-index: 3; width: 5px; height: 5px; border-radius: 50%; transition: opacity 180ms ease; }
+
+  /* ===================== RIGHT CLUSTER ===================== */
+  .indi {
+    display: flex; align-items: center; gap: 14px;
+    height: 28px; padding: 0 12px; margin-right: 5px;
+    border-radius: 999px;
+    transition: background 180ms var(--spring);
+  }
+  .indi:hover { background: var(--hover); }
+  .indi[data-on="1"] { background: var(--toggle-bg); }
+  .indi .badge {
+    min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px;
+    background: var(--primary); color: var(--on-primary);
+    font-size: 11px; font-weight: 700; display: grid; place-items: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .systray { display: flex; align-items: center; gap: 10px; padding: 0 10px; }
+  .systray .ti { color: var(--subtext); font-size: 17px; display: grid; place-items: center;
+    transition: color 160ms ease; }
+  .systray .ti:hover { color: var(--on-bar); }
+  .weather { display: flex; align-items: center; gap: 6px; padding: 0 4px; color: var(--on-bar); font-size: 12.5px; }
+
+  /* clock / battery group */
+  .clock { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.02; }
+  .clock .t { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .clock .d { font-size: 10px; color: var(--subtext); letter-spacing: 0.01em; }
+  .batt { display: flex; align-items: center; gap: 4px; }
+  .batt .pct { font-size: 12px; font-variant-numeric: tabular-nums; }
+
+  /* scroll hints */
+  .hint {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    display: flex; align-items: center; gap: 4px;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--subtext);
+    opacity: 0; transition: opacity 160ms ease; pointer-events: none; white-space: nowrap;
+  }
+  .zone.left:hover .hint.l { opacity: 0.85; }
+  .zone.right:hover .hint.r { opacity: 0.85; }
+  .hint.l { left: 8px; } .hint.r { right: 8px; }
+
+  /* ===================== CONTROL DOCK ===================== */
+  .ctl {
+    position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%);
+    z-index: 60; display: flex; align-items: stretch; gap: 8px;
+    background: rgba(17,20,24,0.74); -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 8px;
+    font-family: var(--font-sans); color: #F5EEDD;
+  }
+  .ctl__seg { display: flex; flex-direction: column; gap: 5px; padding: 4px 8px; }
+  .ctl__seg + .ctl__seg { border-left: 1px solid rgba(255,255,255,0.08); }
+  .ctl__lab { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #8a929c; }
+  .ctl__opts { display: flex; gap: 4px; }
+  .ctl__btn {
+    font-size: 12px; padding: 6px 12px; border-radius: 9px;
+    background: rgba(255,255,255,0.05); color: #cdd3da;
+    transition: all 150ms ease; white-space: nowrap;
+  }
+  .ctl__btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .ctl__btn.on { background: #FF6A00; color: #111418; font-weight: 600; }
+  .ii[data-theme="matugen"] ~ .ctl .ctl__btn.on.mau { background: #cbc4cb; color: #322f34; }
+
+  .ctl__cap {
+    position: absolute; left: 50%; bottom: 92px; transform: translateX(-50%);
+    z-index: 55; font-family: var(--font-mono); font-size: 11px; color: rgba(245,238,221,0.62);
+    background: rgba(13,16,20,0.5); border: 1px solid rgba(255,255,255,0.07); border-radius: 999px;
+    padding: 5px 14px; white-space: nowrap;
+  }
+  .ctl__cap .o { color: #FF6A00; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+const CELL = 26;
+
+function Sym({ children, className = "", fill = 0, style }) {
+  return <span className={"material-symbols-rounded " + className}
+    style={{ fontVariationSettings: `"FILL" ${fill}, "wght" 450, "GRAD" 0, "opsz" 20`, ...style }}>{children}</span>;
+}
+
+function Ring({ pct, glyph }) {
+  const r = 8, c = 2 * Math.PI * r, off = c * (1 - pct / 100);
+  return (
+    <span className="ring">
+      <svg width="19" height="19" viewBox="0 0 19 19">
+        <circle cx="9.5" cy="9.5" r={r} fill="none" stroke="var(--group-bg)" strokeWidth="2.5" />
+        <circle cx="9.5" cy="9.5" r={r} fill="none" stroke="var(--primary)" strokeWidth="2.5"
+          strokeLinecap="round" strokeDasharray={c} strokeDashoffset={off} />
+      </svg>
+      <Sym className="gly">{glyph}</Sym>
+    </span>
+  );
+}
+
+function Workspaces({ occupied, active, setActive }) {
+  const shown = 10;
+  const hoverAll = useRef(false);
+  const [, force] = useState(0);
+  return (
+    <div className="group" style={{ padding: "0 4px", gap: 0 }}>
+      <div className="ws"
+        onMouseEnter={() => { hoverAll.current = true; force(n => n + 1); }}
+        onMouseLeave={() => { hoverAll.current = false; force(n => n + 1); }}>
+        <div className="ws__row" style={{ width: shown * CELL }}>
+          {/* active indicator */}
+          <div className="ws__active" style={{ left: (active - 1) * CELL + 2, width: CELL - 4 }} />
+          {Array.from({ length: shown }, (_, i) => {
+            const id = i + 1;
+            const occ = occupied.includes(id);
+            const prevOcc = occupied.includes(id - 1);
+            const nextOcc = occupied.includes(id + 1);
+            const rL = prevOcc ? 2 : 999, rR = nextOcc ? 2 : 999;
+            const isActive = active === id;
+            const showNum = isActive || hoverAll.current;
+            return (
+              <div key={id} className="ws__cell" onClick={() => setActive(id)}>
+                {occ && <div className="ws__occ" style={{ borderRadius: `${rL}px ${rR}px ${rR}px ${rL}px` }} />}
+                {showNum
+                  ? <span className="ws__label" style={{ color: isActive ? "var(--on-primary)" : occ ? "var(--ws-on-occ)" : "var(--inactive)" }}>{id}</span>
+                  : <span className="ws__dot" style={{ background: occ ? "var(--ws-on-occ)" : "var(--inactive)", opacity: occ ? 1 : 0.55 }} />}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Bar({ theme }) {
+  const [active, setActive] = useState(2);
+  const [occupied] = useState([1, 2, 3, 5, 8]);
+  const [rightOpen, setRightOpen] = useState(false);
+  const [leftOpen, setLeftOpen] = useState(false);
+  const [clock, setClock] = useState(() => new Date());
+  const [form, setForm] = useState(0); // 0 verbose · 1 shortened · 2 hella
+  const barRef = useRef(null);
+  useEffect(() => { const t = setInterval(() => setClock(new Date()), 10000); return () => clearInterval(t); }, []);
+  useEffect(() => {
+    const calc = (w) => {
+      if (!w) w = barRef.current?.clientWidth || window.innerWidth || 0;
+      if (!w) return; // don't latch on a 0 width
+      setForm(w <= 1000 ? 2 : w <= 1280 ? 1 : 0);
+    };
+    let ro;
+    if (barRef.current && "ResizeObserver" in window) {
+      ro = new ResizeObserver(entries => calc(entries[0].contentRect.width));
+      ro.observe(barRef.current);
+    }
+    const onResize = () => calc();
+    window.addEventListener("resize", onResize);
+    requestAnimationFrame(() => calc()); // recalc after first paint
+    return () => { ro && ro.disconnect(); window.removeEventListener("resize", onResize); };
+  }, []);
+  const hh = String(clock.getHours()).padStart(2, "0");
+  const mm = String(clock.getMinutes()).padStart(2, "0");
+  const date = clock.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+
+  return (
+    <div className="bar" ref={barRef}>
+      {/* LEFT */}
+      <div className="zone left">
+        <span className="hint l"><Sym fill={0} style={{ fontSize: 14 }}>light_mode</Sym>brightness</span>
+        <button className="sidebtn" onClick={() => setLeftOpen(v => !v)} title="Left sidebar"
+          style={{ background: leftOpen ? "var(--active)" : undefined }}>
+          <img src="../../assets/symbols/cube.svg" alt="GNU.IN" />
+        </button>
+        {form === 0 && (
+          <div className="activewin">
+            <span className="dotapp" />
+            <span className="title"><b>kitty</b> <span className="sub">— ~/illogical-morgue</span></span>
+          </div>
+        )}
+      </div>
+
+      {/* MIDDLE */}
+      <div className="mid">
+        <div className="group">
+          <div className="res">
+            <Ring pct={54} glyph="memory" />
+            <span className="pct">54%</span>
+          </div>
+          {form === 2 && (
+            <div className="res">
+              <Ring pct={31} glyph="developer_board" />
+              <span className="pct">31%</span>
+            </div>
+          )}
+          {form < 2 && (
+            <div className="media">
+              <Sym className="ico sm">music_note</Sym>
+              <span className="track">Boards of Canada — Roygbiv</span>
+            </div>
+          )}
+        </div>
+
+        <Workspaces occupied={occupied} active={active} setActive={setActive} />
+
+        <div className="group tap" onClick={() => setRightOpen(v => !v)}>
+          <div className="clock">
+            <span className="t num">{hh}:{mm}</span>
+            {form === 0 && <span className="d">{date}</span>}
+          </div>
+          {form < 2 && (
+            <div className="batt">
+              <Sym className="ico sm" fill={1}>battery_5_bar</Sym>
+              <span className="pct num">82%</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* RIGHT (reversed flex) */}
+      <div className="zone right">
+        <span className="hint r">volume<Sym fill={0} style={{ fontSize: 14 }}>volume_up</Sym></span>
+        <button className="indi" data-on={rightOpen ? "1" : "0"} onClick={() => setRightOpen(v => !v)} title="Right sidebar">
+          <span className="badge">3</span>
+          <Sym className="ico sm">signal_cellular_alt</Sym>
+          <Sym className="ico sm">bluetooth</Sym>
+        </button>
+        <div className="systray" style={{ display: form === 0 ? undefined : "none" }}>
+          <button className="ti" title="Sync"><Sym>cloud_queue</Sym></button>
+          <button className="ti" title="Network manager"><Sym>dns</Sym></button>
+          <button className="ti" title="Audio"><Sym>headphones</Sym></button>
+        </div>
+        {form < 2 && (
+          <div className="weather">
+            <Sym className="ico sm" fill={1} style={{ color: "var(--green)" }}>partly_cloudy_day</Sym>
+            <span className="num">18°</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [theme, setTheme] = useState("gnu");
+  const [corner, setCorner] = useState("float");
+  const wp = "../../assets/imagery/wallpaper-hero.png";
+  return (
+    <React.Fragment>
+      <div className="desk" style={{ backgroundImage: `url('${wp}')` }}>
+        <div className="desk__scrim" />
+        <div className="ii" data-theme={theme} data-corner={corner}>
+          <div className="barwrap">
+            <Bar theme={theme} />
+            <div className="corners">
+              <div className="corner l" /><div className="corner r" />
+            </div>
+          </div>
+        </div>
+
+        <div className="ctl__cap">
+          {theme === "gnu"
+            ? <span><span className="o">●</span> fully dynamic · warm wallpaper → amber chrome <span className="o">#FF6A00</span> · identity constant</span>
+            : <span><span className="o">●</span> fully dynamic · cool wallpaper → mauve chrome <span className="o">#cbc4cb</span> · identity constant</span>}
+        </div>
+
+        <div className="ctl">
+          <div className="ctl__seg">
+            <span className="ctl__lab">Dynamic scheme</span>
+            <div className="ctl__opts">
+              <button className={"ctl__btn mau " + (theme === "matugen" ? "on" : "")} onClick={() => setTheme("matugen")}>Cool · mauve</button>
+              <button className={"ctl__btn " + (theme === "gnu" ? "on" : "")} onClick={() => setTheme("gnu")}>Warm · amber</button>
+            </div>
+          </div>
+          <div className="ctl__seg">
+            <span className="ctl__lab">Corner style</span>
+            <div className="ctl__opts">
+              <button className={"ctl__btn " + (corner === "float" ? "on" : "")} onClick={() => setCorner("float")}>Float</button>
+              <button className={"ctl__btn " + (corner === "hug" ? "on" : "")} onClick={() => setCorner("hug")}>Hug</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#141313" />
+  <rect x="20" y="42" width="60" height="16" rx="8" fill="#1f1d1d" stroke="#FF6A00" stroke-width="1.5" />
+  <circle cx="45" cy="50" r="4" fill="#FF6A00" />
+  <rect x="52" y="47" width="12" height="6" rx="3" fill="#cbc4cb" />
+</svg>
+</template>
+</body>
+</html>

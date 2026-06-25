@@ -1,0 +1,117 @@
+{
+  "meta": {
+    "name": "GNU.IN OS \u2014 Sys.ter Motion Spec",
+    "version": "0.4.0",
+    "basis": "Approved Sys.ter mascot PNG, with redesigned beret, fleur-de-lys badge, and antenna in front.",
+    "fixes": [
+      "Rebuilt screen states as deterministic SVG glyphs instead of mixed CSS pseudo-glyphs.",
+      "Expanded and tuned the screen overlay to cover the actual screen, preventing old prompt leakage.",
+      "Separated stage, mascot, and motion-rig transforms to avoid composition drift.",
+      "Anchored listening rings to the antenna tip.",
+      "Rebuilt success as screen-local glow/underscore and subtle burst, not debug-like random rays.",
+      "Added alignment debug page with live geometry output."
+    ],
+    "geometry": {
+      "canvas": {
+        "width": 1254,
+        "height": 1254
+      },
+      "screenOverlay": {
+        "leftPct": 24.1,
+        "topPct": 38.85,
+        "widthPct": 41.95,
+        "heightPct": 37.85,
+        "radiusPct": 12.5,
+        "note": "Tuned against approved PNG. Covers the true front screen including the existing prompt to prevent state contamination."
+      },
+      "antennaTip": {
+        "xPct": 74.2,
+        "yPct": 28.7
+      },
+      "successBurst": {
+        "xPct": 45.5,
+        "yPct": 63.0
+      },
+      "errorBurst": {
+        "xPct": 75.0,
+        "yPct": 26.0
+      }
+    }
+  },
+  "tokens": {
+    "duration": {
+      "fast": 120,
+      "base": 200,
+      "slow": 360,
+      "pulse": 1400,
+      "thinkingFrame": 200
+    },
+    "easing": {
+      "standard": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "emphatic": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+      "snap": "cubic-bezier(0, 0, 0.2, 1)"
+    },
+    "amplitude": {
+      "idleY": -5,
+      "idleRotate": -0.35,
+      "listenX": 3,
+      "listenY": -2,
+      "successY": -8,
+      "errorX": -6,
+      "errorRotate": -1.6
+    }
+  },
+  "states": {
+    "idle": {
+      "mode": "loop",
+      "durationMs": 1400,
+      "screenGlyph": "prompt",
+      "visual": "chevron + cream underscore",
+      "motion": "gentle bob, no FX"
+    },
+    "listening": {
+      "mode": "loop",
+      "durationMs": 1400,
+      "screenGlyph": "prompt + three listening dots",
+      "visual": "chevron stable; dots breathe softly; orange radio rings at antenna tip",
+      "motion": "subtle micro-lean, no center drift"
+    },
+    "thinking": {
+      "mode": "loop",
+      "durationMs": 1200,
+      "frameEveryMs": 200,
+      "screenGlyphSequence": [
+        "prompt",
+        "prompt-dot-1",
+        "prompt-dot-2",
+        "prompt-dot-3",
+        "prompt-dot-2",
+        "prompt"
+      ],
+      "motion": "screen-only state; body remains calm"
+    },
+    "success": {
+      "mode": "one-shot",
+      "durationMs": 520,
+      "screenGlyph": "prompt-success",
+      "visual": "chevron + green underscore + short screen-local glow",
+      "motion": "small positive bounce on internal rig only"
+    },
+    "error": {
+      "mode": "one-shot",
+      "durationMs": 520,
+      "screenGlyph": "error",
+      "visual": "red error mark + red underscore + restrained antenna alert ticks",
+      "motion": "brief recoil on internal rig only"
+    }
+  },
+  "acceptance": [
+    "Idle never displays an X.",
+    "Listening and thinking always retain the terminal chevron.",
+    "Success never displays error glyphs or debug-like random rays.",
+    "Error never inherits thinking dots after reset.",
+    "The mascot stays centered across one-shot states.",
+    "Screen overlay covers old prompt cleanly without looking smaller than the physical screen.",
+    "Antenna rings originate from the antenna cap."
+  ]
+}

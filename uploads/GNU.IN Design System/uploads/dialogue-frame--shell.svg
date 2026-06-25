@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" data-gnu-variant="shell" aria-labelledby="title desc">
+  <title id="title">GNU6-shell dialogue frame</title>
+  <desc>Standalone dialogue frame used to indicate contextual assistant presence.</desc>
+  <path id="dialogue-frame" d="M 36 16 H 142 Q 154 16 154 28 V 126 Q 154 138 142 138 H 92 L 68 162 V 138 H 36" fill="none" stroke="#F7F3ED" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>

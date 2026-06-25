@@ -1,0 +1,37 @@
+{
+  "archive": "gnu.in-OS · legacy source archive",
+  "generated": "2026-06-24",
+  "official_name": "gnu.in-OS",
+  "supersedes_branding": "gnu.in-shell",
+  "note": "Cold store of the three original separate specs that were merged into the gnu.in-OS boards. Live data (tokens, motions) migrates into the system; this folder is memory + provenance only.",
+  "sources": [
+    {
+      "id": "gnosis",
+      "role": "living shell — HUD · Live · Sentinel · Gnomon · agents · Sys.ter",
+      "path": "uploads/Gnosis App",
+      "canonical": true,
+      "duplicate_removed": "uploads/Gnosis App (1)"
+    },
+    {
+      "id": "context-spec",
+      "role": "atoms C.01–C.24 · molecules CM.01–CM.16 · archetypes R.01–R.08 · motion A.01–A.15 / M.01–M.12 · blob.in engine",
+      "path": "uploads/Context.Spec",
+      "version": "v0.4.0"
+    },
+    {
+      "id": "gnu.in",
+      "role": "design system — tokens.json · colors_and_type · Montreal · Sys.ter brand",
+      "path": "_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9"
+    }
+  ],
+  "snapshots": [
+    "legacy/snapshots/Gnu.In-Shell - Unified System.dc.html (A/B/C decision board — superseded)",
+    "legacy/snapshots/Gnu.In-Shell - Index copy.dc.html (duplicate of Index)"
+  ],
+  "integrity": "legacy/SOURCES.sha256",
+  "findings": [
+    "Dual-numbered component catalog: boards use Gnu* canonical (C.01 GnuRow…), prod lib renumbers C.19–C.24=Avatar/Badge/Tag/Progress/Tooltip/Step & CM.13–CM.16=Account/Toast/Empty/Breadcrumb — reconcile in F2.",
+    "Engine versioning split: blob.in semver v0.4.0 vs release train v0.12.0 — reconcile in F2.",
+    "QML runtime coverage ~10% vs spec ~100% vs compose-core engine ~62% — the F4 backlog."
+  ]
+}

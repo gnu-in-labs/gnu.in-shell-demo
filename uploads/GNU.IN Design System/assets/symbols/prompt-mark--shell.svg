@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" role="img" data-gnu-variant="shell" aria-labelledby="title desc">
+  <title id="title">GNU6-shell prompt mark</title>
+  <desc>Standalone prompt glyph, useful for CLI and TUI signatures.</desc>
+  <g id="prompt-mark" fill="none" stroke="#F7F3ED" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline id="chevron" points="20,14 38,32 20,50"></polyline>
+    <line id="cursor" x1="48" y1="50" x2="76" y2="50"></line>
+  </g>
+</svg>

@@ -1,0 +1,94 @@
+<!doctype html>
+<!-- @dsCard group="Brand" name="Brand Symbols" subtitle="Prompt mark · cube · cube-dialogue · app icon · badges" viewport="700x280" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Symbols</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .tile { display:flex; flex-direction:column; align-items:center; gap: 8px; }
+  .frame {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #FFFFFF;
+    border: 1px solid var(--line-2);
+    border-radius: 14px;
+    display:grid;
+    place-items:center;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  .frame.dark { background: #111418; border-color: #111418; }
+  .label { font-size: 11px; font-weight: 600; text-align: center; }
+  .v { font-family: var(--font-mono); font-size: 10px; color: var(--fg3); }
+  svg { width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="grid">
+    <div class="tile">
+      <div class="frame">
+        <svg viewBox="0 0 96 64" aria-hidden="true">
+          <polyline points="20,18 36,32 20,46" fill="none" stroke="#FF6A00" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="42" y1="50" x2="62" y2="50" stroke="#111418" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="label">prompt-mark</span>
+    </div>
+    <div class="tile">
+      <div class="frame">
+        <svg viewBox="0 0 256 256">
+          <polygon points="66,66 128,32 190,66 128,100" fill="#FF6A00"/>
+          <polygon points="60,78 122,113 122,181 60,146" fill="#FF6A00"/>
+          <polygon points="134,113 196,78 196,146 134,181" fill="#111418"/>
+          <polyline points="151,115 166,130 151,145" fill="none" stroke="#FFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="167" y1="153" x2="184" y2="153" stroke="#FFF" stroke-width="10" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="label">cube</span>
+    </div>
+    <div class="tile">
+      <div class="frame">
+        <svg viewBox="0 0 300 256">
+          <path d="M 194 52 H 256 Q 268 52 268 64 V 178 Q 268 190 256 190 H 184 L 160 214 V 190 H 146" fill="none" stroke="#FF6A00" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+          <polygon points="66,66 128,32 190,66 128,100" fill="#FF6A00"/>
+          <polygon points="60,78 122,113 122,181 60,146" fill="#FF6A00"/>
+          <polygon points="134,113 196,78 196,146 134,181" fill="#111418"/>
+          <polyline points="151,115 166,130 151,145" fill="none" stroke="#FFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="167" y1="153" x2="184" y2="153" stroke="#FFF" stroke-width="10" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="label">cube + dialogue</span>
+    </div>
+    <div class="tile">
+      <div class="frame dark">
+        <svg viewBox="0 0 256 256">
+          <rect x="32" y="32" width="192" height="192" rx="44" fill="#111418"/>
+          <polyline points="96,98 124,128 96,158" fill="none" stroke="#FF6A00" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="128" y1="170" x2="160" y2="170" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="label">app icon</span>
+    </div>
+    <div class="tile">
+      <div class="frame">
+        <svg viewBox="0 0 256 256">
+          <g transform="translate(8 24) scale(0.82)">
+            <polygon points="66,66 128,32 190,66 128,100" fill="#FF6A00"/>
+            <polygon points="60,78 122,113 122,181 60,146" fill="#FF6A00"/>
+            <polygon points="134,113 196,78 196,146 134,181" fill="#111418"/>
+            <polyline points="151,115 166,130 151,145" fill="none" stroke="#FFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="167" y1="153" x2="184" y2="153" stroke="#FFF" stroke-width="10" stroke-linecap="round"/>
+          </g>
+          <circle cx="205" cy="54" r="25" fill="#FF6A00"/>
+          <text x="205" y="64" text-anchor="middle" font-family="Inter, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF">3</text>
+        </svg>
+      </div>
+      <span class="label">badge</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

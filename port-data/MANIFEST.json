@@ -1,0 +1,176 @@
+{
+  "release": "v0.14.2",
+  "engine": "gnuin-compose-core",
+  "engine_source": "gnu.in-os/engine/gnuin-compose-core (authoritative; port-data mirrors it — see PARITY.md)",
+  "renderer": "tiny-skia · SoftwareRenderer",
+  "envelope": "protocol::Envelope v1",
+  "generated_by": "Central (gnu.in-OS simulator)",
+  "surfaces": [
+    {
+      "kind": "background",
+      "band": 0,
+      "interactive": false,
+      "status": "complete",
+      "proof": "render"
+    },
+    {
+      "kind": "wallpaper",
+      "band": 1,
+      "interactive": false,
+      "status": "partial",
+      "proof": "render · backdrop P6"
+    },
+    {
+      "kind": "bar",
+      "band": 30,
+      "interactive": true,
+      "status": "complete",
+      "proof": "render+layer-record"
+    },
+    {
+      "kind": "dock",
+      "band": 30,
+      "interactive": true,
+      "status": "complete",
+      "proof": "render+layer-record"
+    },
+    {
+      "kind": "sidebar",
+      "band": 60,
+      "interactive": true,
+      "status": "complete",
+      "proof": "cutover P7-tail"
+    },
+    {
+      "kind": "context-menu",
+      "band": 100,
+      "interactive": true,
+      "status": "complete",
+      "proof": "M6 render+layer-record"
+    },
+    {
+      "kind": "launcher",
+      "band": 120,
+      "interactive": true,
+      "status": "complete",
+      "proof": "cutover P7-tail"
+    },
+    {
+      "kind": "modal",
+      "band": 500,
+      "interactive": true,
+      "status": "pending",
+      "proof": "spec-only"
+    },
+    {
+      "kind": "osd",
+      "band": 800,
+      "interactive": false,
+      "status": "complete",
+      "proof": "cutover P7"
+    },
+    {
+      "kind": "notification",
+      "band": 850,
+      "interactive": false,
+      "status": "complete",
+      "proof": "cutover P7"
+    },
+    {
+      "kind": "screen-corner",
+      "band": 880,
+      "interactive": false,
+      "status": "pending",
+      "proof": "overlay passthrough"
+    }
+  ],
+  "complete": 8,
+  "pending": 2,
+  "fixtures": [
+    "scenes/scene.idle.json",
+    "scenes/scene.launcher.json",
+    "scenes/scene.sidebar.json",
+    "scenes/scene.osd.json",
+    "scenes/scene.modal.json",
+    "scenes/scene.notification.json",
+    "scenes/scene.context-menu.json",
+    "scenes/scene.full.json",
+    "scenes/scene.launcher.motion.json",
+    "scenes/taskbar-plan.json",
+    "scenes/dock-affordance.json",
+    "scenes/menu-vertical.json",
+    "scenes/input-focus.json",
+    "scenes/edge-aware.json"
+  ],
+  "files": {
+    "types": "scene_types.rs",
+    "tokens": "tokens.json",
+    "motion": "motion.spec.json",
+    "taskbar": "taskbar_registry.rs",
+    "dock": "dock_affordance.rs",
+    "compose": "compose_core.rs",
+    "parity": "PARITY.md",
+    "manifest": "MANIFEST.json"
+  },
+  "compose_engine": {
+    "spec": "COMPOSITION_ENGINE_SPEC.md (menus first)",
+    "authoritative_crate": "gnu.in-os/engine/gnuin-compose-core v0.14.2 (std-only, optional serde)",
+    "port_data_role": "compose_core.rs is a conformance MIRROR of the crate; scenes/menu-vertical.json is real-serde Scene JSON (Scene::from_json-loadable). See PARITY.md.",
+    "thesis": "one engine owns all chrome nodes, resolves tokens, composes in a single ordered pass — no node reads a peer's visibility",
+    "model": "Scene { screen, nodes:[Node{ id, kind, rect, z, state, tokens, payload }] }",
+    "node_kinds": ["Background", "Wallpaper", "Bar", "Dock", "Sidebar", "Blob", "MenuPanel", "MenuRow", "Osd", "Notification", "Launcher", "Overlay", "Modal", "ScreenCorner"],
+    "node_ids": ["Bar", "Dock", "Background", "Wallpaper", "MenuPanel", "MenuSub(u8)", "MenuRow{group,row}", "Blob(Backed{Menu|Bar|Dock})"],
+    "node_states": ["Hidden", "Opening", "Open", "Committing", "Closing"],
+    "payloads": ["None", "Menu(MenuModel)", "Blob(BlobBacking)", "MenuRow(MenuRowData)", "Wallpaper(WallpaperData)"],
+    "layer_bands": { "background": 0, "wallpaper": 50, "blob": 100, "dock": 150, "bar": 200, "sidebar": 250, "menu": 300, "menu_row": 305, "menu_sub": 310, "osd": 350, "notification": 380, "launcher": 390, "overlay": 400, "modal": 420, "screen_corner": 450 },
+    "menu_styles": { "chrome_backed": ["list", "brand", "trayaudio", "traynetwork", "traybluetooth", "traypower", "trayunified"], "bespoke_self": ["bubble", "bubbletree", "radial", "radialpill", "nestedradialpill", "radialdetached", "concentric", "megapanel", "fractal", "drill", "cascade", "windowtilegrid", "widgetcard", "workspacecard", "widgetpills", "windowcompact"] },
+    "blob": "managed node behind chrome menus/bar/dock; rect = element.inflate(DEFAULT_EDGE_MARGIN=6); PerfTier{Sdf->extruded, Static->rounded-rect} picks the rasterizer, never toggles the node; payload Blob{ backs }",
+    "reduce": "reduce(ComposeInput)->Scene — single pass: dock(+blob), exactly-one bar(+blob), menu(blob FIRST chrome-only -> MenuPanel -> one MenuRow per hittable row)",
+    "diff": "diff(prev,next)->SceneDiff{changes:[NodeChange{Added|Removed|Moved|Updated}]}; damage(prev,next)->Rect",
+    "input_region": "live interactive rects; Blob/Background/Wallpaper/ScreenCorner excluded (NodeKind::is_interactive)",
+    "retires": ["#4 panneau-noir geometry handshake", "#5/#3 bar double-surface / membraneOwnsBar", "usesMembraneChrome per-style cross-surface opt-in"],
+    "proof": "exactly 1 Bar + 1 MenuPanel & <=1 menu Blob across all styles · blob rect = panel.inflate(6) · blob excluded from input · hit at row centre -> MenuRow · in-crate unit tests + compose_core.rs parity_tests",
+    "input_model": {
+      "rapport": "(cursor_pos + cursor_focus_data_node) × {click-awareness, click-away, click-select, click-unfocus}",
+      "types": "CursorState{ x, y, over:Option<NodeId>, over_kind, over_z } · ClickIntent{ Awareness{over} | Away{surface} | Select{node} | Unfocus } · Transient{ Menu, Launcher, Sidebar }",
+      "track": "CursorState::track(scene,x,y) — Scene::hit every move; topmost INTERACTIVE node (blobs/backings excluded)",
+      "resolve": "resolve_click(scene,x,y,open,has_focus)->ClickIntent — pure+total; precedence away > select > unfocus > awareness",
+      "selectable": ["MenuRow", "Bar", "Dock", "Launcher"],
+      "fixture": "scenes/input-focus.json (6 cases)",
+      "proof": "exactly one intent per press · blob skirt never absorbs · engine owns focus + dismissal (no peer visibility toggles) · 6 input_tests in compose_core.rs"
+    },
+    "edge_aware": {
+      "problem": "reproducible across ALL surfaces — a deeper issue, not a per-surface offset: child affordances + hit/focus rects were placed in absolute space and never intersected against the parent surface's content box or the work-area, so they bleed past borders near any edge (the 'New' row outline + submenu bridge ran straight past the panel's right border).",
+      "fix": "one geometry pass: Rect::intersect clips children to their surface; Rect::clamp_inside shifts (not shrinks) transient surfaces into the work-area; submenu_rect flushes to the panel edge and FLIPS to the opposite side at the screen edge. Hit-region and painted rect share one value.",
+      "api": "Rect::intersect(parent) · Rect::clamp_inside(area, margin) · submenu_rect(panel, area, size, margin)->(Rect, Side{Left|Right})",
+      "fixture": "scenes/edge-aware.json",
+      "proof": "row ring never exceeds panel · submenu flips left at the right edge · panel shifted not shrunk · 6 edge_tests in compose_core.rs"
+    }
+  },
+  "dock_affordance": {
+    "deck_styles": ["Row", "Stack", "Fan"],
+    "config": "DockAffordanceConfig { deck_style, card_px, fan_arc_deg, spread, items }",
+    "mounted_from": "asset-core://manifest",
+    "proof": "one config -> N CardPlacement via place(); no per-style host path (deck of cards without rewriting the runtime)"
+  },
+  "taskbar_registry": {
+    "handoff_key": "shell.taskbar.modules_json",
+    "open_registry": true,
+    "builtins": 9,
+    "ext_modules": 3,
+    "replaces": "closed enum TaskbarWidgetId (gnuin-bar/src/settings.rs:307 parse_widget_id)",
+    "unknown_id": "resolves to None -> surfaced diagnostic, never silently dropped",
+    "slots": ["left", "center", "right"],
+    "per_output": ["edge", "visible", "density"]
+  },
+  "motion_spec": {
+    "version": "0.4.0",
+    "imported_from": "GNU.IN Design System (legacy) motion-spec ui_kit",
+    "atoms": 15,
+    "molecules": 12,
+    "mascot_states": 5,
+    "eases": 8,
+    "durations": 9,
+    "consumes": "scene_motion.rs maps eases→gpui bezier closures, engine_springs→compose-core solver"
+  }
+}

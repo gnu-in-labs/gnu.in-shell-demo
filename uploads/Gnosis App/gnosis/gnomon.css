@@ -1,0 +1,77 @@
+/* ============================================================================
+   gnosis/gnomon.css — Gnomon: the causal-memory timeline. A 4th console view
+   where memories captured through the menus land, threaded on a causal spine
+   (↳ from: what triggered them). Cards never auto-fill the desktop — only
+   explicit captures become memories (privacy by intent).
+   Chrome = dynamic M3 role tokens; memory kinds tint the node only.
+   ========================================================================== */
+
+.gnomon { padding: 10px 14px 14px; display: flex; flex-direction: column; gap: 9px; }
+
+.gnomon__head { display: flex; align-items: center; gap: 9px; }
+.gnomon__title { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; color: var(--mem-fg2); }
+.gnomon__count { font-family: var(--font-mono); font-size: 9.5px; color: var(--mem-fg3); }
+.gnomon__count b { color: var(--mem-fg); font-weight: 700; }
+.gnomon__store { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.04em; color: var(--mem-fg3); }
+
+/* kind filters */
+.gnomon__filters { display: flex; gap: 4px; }
+.gn-filter {
+  height: 22px; padding: 0 9px; border: 1px solid var(--mem-hair); background: var(--chip-bg);
+  border-radius: var(--r-pill); cursor: pointer; color: var(--mem-fg3);
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  transition: background var(--mdur-fast) var(--mease-gentle), color var(--mdur-fast) var(--mease-gentle), border-color var(--mdur-fast) var(--mease-gentle);
+}
+.gn-filter:hover { background: var(--chip-bg-hover); color: var(--mem-fg2); }
+.gn-filter.is-on { background: var(--m3-primary); color: var(--m3-on-primary); border-color: color-mix(in srgb, var(--m3-primary) 70%, #000); }
+
+/* the spine-threaded list */
+.gnomon__list {
+  display: flex; flex-direction: column; max-height: 196px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--mem-fg3) transparent;
+}
+.gnomon__list::-webkit-scrollbar { width: 6px; }
+.gnomon__list::-webkit-scrollbar-thumb { background: var(--mem-hair); border-radius: 3px; }
+.gnomon__empty { padding: 22px 8px; text-align: center; font-family: var(--font-mono); font-size: 10.5px; color: var(--mem-fg3); }
+
+.gnomon-card {
+  display: flex; gap: 10px; padding: 7px 6px; border-radius: var(--r-2); cursor: context-menu;
+  position: relative; transition: background var(--mdur-fast) var(--mease-gentle);
+  animation: gn-in var(--mdur-unfurl) var(--mease-elastic) both;
+}
+.gnomon-card:hover { background: var(--chip-bg); }
+@keyframes gn-in { from { opacity: 0; transform: translateY(-6px) scale(0.97); } to { opacity: 1; transform: none; } }
+
+/* causal spine: a line through the rail, a node per memory */
+.gn-card__rail { position: relative; width: 22px; flex: none; display: flex; justify-content: center; }
+.gn-card__rail::before {
+  content: ""; position: absolute; top: -7px; bottom: -7px; left: 50%; width: 1.5px; transform: translateX(-50%);
+  background: var(--mem-hair);
+}
+.gnomon-card:first-child .gn-card__rail::before { top: 11px; }
+.gnomon-card:last-child .gn-card__rail::before { bottom: auto; height: 11px; }
+.gn-card__node {
+  position: relative; z-index: 1; margin-top: 3px; width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center; flex: none;
+  background: color-mix(in srgb, var(--node) 16%, var(--col-layer1)); color: var(--node);
+  border: 1px solid color-mix(in srgb, var(--node) 36%, transparent);
+}
+
+.gn-card__body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.gn-card__top { display: flex; align-items: baseline; gap: 7px; }
+.gn-card__kind { font-family: var(--font-mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--node); }
+.gn-card__ts { margin-left: auto; font-family: var(--font-mono); font-size: 9px; color: var(--mem-fg3); font-variant-numeric: tabular-nums; }
+.gn-card__title { font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; letter-spacing: -0.01em; color: var(--mem-fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gn-card__cause { font-family: var(--font-mono); font-size: 9.5px; color: var(--mem-fg3); display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gn-card__cause .arr { color: var(--mem-fg3); opacity: 0.7; }
+.gn-card__cause b { color: var(--mem-fg2); font-weight: 600; }
+
+.gn-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+.gn-tag {
+  display: inline-flex; align-items: center; gap: 3px; height: 17px; padding: 0 6px;
+  border-radius: var(--r-1); border: 1px solid var(--mem-hair);
+  font-family: var(--font-mono); font-size: 8.5px; font-weight: 600; letter-spacing: 0.04em; color: var(--mem-fg2);
+}
+.gn-tag .glyph { display: grid; place-items: center; }
+.gn-tag--project { color: var(--m3-primary); border-color: color-mix(in srgb, var(--m3-primary) 32%, transparent); background: color-mix(in srgb, var(--m3-primary) 10%, transparent); }
+.gn-tag--competitor { color: var(--gnu-info); border-color: color-mix(in srgb, var(--gnu-info) 32%, transparent); background: color-mix(in srgb, var(--gnu-info) 10%, transparent); }

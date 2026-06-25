@@ -1,0 +1,113 @@
+{
+  "id": "scene.launcher",
+  "label": "Launcher open",
+  "frame": 4821,
+  "renderer": "tiny-skia",
+  "density": "mouse",
+  "seed": "orange",
+  "nodes": [
+    {
+      "id": 0,
+      "kind": "Background",
+      "interactive": false,
+      "layer": 0,
+      "bounds": [
+        0,
+        0,
+        1280,
+        800
+      ],
+      "payload": {
+        "Fill": "0x141313FF"
+      }
+    },
+    {
+      "id": 1,
+      "kind": "Wallpaper",
+      "interactive": false,
+      "layer": 1,
+      "bounds": [
+        0,
+        0,
+        1280,
+        800
+      ],
+      "payload": {
+        "Wallpaper": {
+          "generation": 1,
+          "source": "Matugen"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "kind": "Bar",
+      "interactive": true,
+      "layer": 30,
+      "bounds": [
+        0,
+        0,
+        1280,
+        34
+      ],
+      "payload": {
+        "Bar": {
+          "modules": 5
+        }
+      }
+    },
+    {
+      "id": 3,
+      "kind": "Dock",
+      "interactive": true,
+      "layer": 30,
+      "bounds": [
+        520,
+        740,
+        240,
+        46
+      ],
+      "payload": {
+        "Dock": {
+          "items": 6
+        }
+      }
+    },
+    {
+      "id": 4,
+      "kind": "Launcher",
+      "interactive": true,
+      "layer": 120,
+      "bounds": [
+        422,
+        204,
+        436,
+        360
+      ],
+      "payload": {
+        "Launcher": {
+          "query": "",
+          "items": 8
+        }
+      }
+    },
+    {
+      "id": 5,
+      "kind": "ScreenCorner",
+      "interactive": false,
+      "layer": 880,
+      "bounds": [
+        0,
+        0,
+        1280,
+        800
+      ],
+      "payload": {
+        "ScreenCorner": {
+          "radius": 14
+        }
+      }
+    }
+  ],
+  "damage": []
+}

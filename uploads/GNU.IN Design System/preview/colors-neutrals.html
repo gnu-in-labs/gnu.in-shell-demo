@@ -1,0 +1,33 @@
+<!doctype html>
+<!-- @dsCard group="Colors" name="Neutrals" subtitle="Soft · Gray · Line · Stone · Slate · Bezel" viewport="700x240" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Neutral scale</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .scale { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--line-2); }
+  .scale .step { padding: 18px 10px 12px; min-height: 110px; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; }
+  .scale .name { font-size: 11px; font-weight: 600; }
+  .scale .hex  { font-family: var(--font-mono); font-size: 10px; opacity: 0.7; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="scale">
+    <div class="step" style="background:#FFFFFF"><span class="name">White</span><span class="hex">#FFFFFF</span></div>
+    <div class="step" style="background:#F7F8FA"><span class="name">Soft</span><span class="hex">#F7F8FA</span></div>
+    <div class="step" style="background:#F7F3ED"><span class="name">Shell</span><span class="hex">#F7F3ED</span></div>
+    <div class="step" style="background:#E6E8EB"><span class="name">Gray</span><span class="hex">#E6E8EB</span></div>
+    <div class="step" style="background:#D7DADF"><span class="name">Line</span><span class="hex">#D7DADF</span></div>
+    <div class="step" style="background:#A1A6AD; color:#fff"><span class="name">Stone</span><span class="hex">#A1A6AD</span></div>
+    <div class="step" style="background:#667085; color:#fff"><span class="name">Slate</span><span class="hex">#667085</span></div>
+  </div>
+  <div class="scale" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="step" style="background:#2B3037; color:#fff"><span class="name">Bezel</span><span class="hex">#2B3037</span></div>
+    <div class="step" style="background:#1A1F26; color:#fff"><span class="name">Tui-2</span><span class="hex">#1A1F26</span></div>
+    <div class="step" style="background:#111418; color:#fff"><span class="name">Anthracite</span><span class="hex">#111418</span></div>
+  </div>
+</div>
+</body>
+</html>

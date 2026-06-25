@@ -1,0 +1,150 @@
+/* ============================================================================
+   gnosis/ctxmenu.css — GnuContextMenu: the contextual-menu primitive that makes
+   every GnosisApp surface (window · orb · resource) a synapse to sensory state,
+   profiles, resources and memory. One primitive, several specs.
+
+   Anatomy (top→bottom):  context header · deterministic sections · deferred
+   "Gnosis suggère…" · privacy / resource footer. The menu opens INSTANTLY with
+   known actions; suggestions fill after — the engine never blocks the open.
+   Chrome = dynamic M3 role tokens. Risk uses fixed semantic tokens.
+   Motion on the canonical MDUR/MEASE (open ~140ms, overshoot).
+   ========================================================================== */
+
+.ctxmenu {
+  position: fixed; z-index: 200; width: 272px; max-width: calc(100vw - 24px);
+  background: color-mix(in srgb, var(--col-layer2) 93%, transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4);
+  border: 1px solid var(--mem-hair);
+  border-radius: var(--r-4); padding: 5px;
+  box-shadow: var(--mem-shadow), inset 0 1px 0 color-mix(in srgb, var(--col-on-layer0) 6%, transparent);
+  color: var(--mem-fg);
+  transform-origin: var(--cm-origin, top left);
+  animation: cm-in var(--mdur-fast) var(--mease-overshoot) both;
+  user-select: none;
+}
+@keyframes cm-in { from { opacity: 0; transform: scale(0.92) translateY(-4px); } to { opacity: 1; transform: none; } }
+.density-compact .ctxmenu { width: 260px; }
+
+/* ---- context header ---- */
+.cm-head { padding: 8px 9px 9px; border-bottom: 1px solid var(--mem-hair); margin-bottom: 4px; }
+.cm-head__eyebrow {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--mem-fg3); margin-bottom: 3px;
+}
+.cm-head__eyebrow .glyph { color: var(--m3-primary); display: grid; place-items: center; }
+.cm-head__title { font-family: var(--font-sans); font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; color: var(--mem-fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cm-head__sub { font-family: var(--font-mono); font-size: 10px; color: var(--mem-fg3); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.cm-head__meta { display: flex; align-items: center; gap: 5px; margin-top: 7px; }
+.cm-chip {
+  display: inline-flex; align-items: center; gap: 4px; height: 19px; padding: 0 7px;
+  border-radius: var(--r-pill); border: 1px solid var(--mem-hair);
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+  color: var(--mem-fg2); font-variant-numeric: tabular-nums;
+}
+.cm-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--m3-primary); }
+.cm-chip.is-cloud .dot { background: var(--gnu-info); }
+.cm-chip--vram { color: var(--mem-fg); }
+.cm-chip--vram.warn { color: var(--state-warn); border-color: color-mix(in srgb, var(--state-warn) 40%, var(--mem-hair)); }
+.cm-chip--vram.alert { color: var(--state-alert); border-color: color-mix(in srgb, var(--state-alert) 45%, var(--mem-hair)); }
+.cm-chip__lamp { width: 7px; height: 7px; border-radius: 50%; }
+
+/* ---- section ---- */
+.cm-sect { padding: 6px 9px 2px 10px; font-family: var(--font-mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mem-fg3); }
+
+/* ---- item ---- */
+.cm-item {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 7px 9px; border: none; background: transparent; cursor: pointer;
+  border-radius: var(--r-2); color: var(--mem-fg);
+  font-family: var(--font-sans); font-size: 12.5px; text-align: left;
+  transition: background var(--mdur-fast) var(--mease-gentle);
+}
+.cm-item__glyph { display: grid; place-items: center; color: var(--mem-fg2); flex: none; transition: color var(--mdur-fast) var(--mease-gentle); }
+.cm-item__label { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cm-item__hint { font-family: var(--font-mono); font-size: 9.5px; color: var(--mem-fg3); flex: none; font-variant-numeric: tabular-nums; }
+.cm-item:hover:not(.is-disabled), .cm-item.is-cursor:not(.is-disabled) { background: var(--chip-bg-hover); }
+.cm-item:hover:not(.is-disabled) .cm-item__glyph, .cm-item.is-cursor:not(.is-disabled) .cm-item__glyph { color: var(--m3-primary); }
+.cm-item:active:not(.is-disabled) { transform: scale(0.99); }
+.cm-item.is-disabled { opacity: 0.4; cursor: not-allowed; }
+.cm-item.is-active .cm-item__glyph { color: var(--m3-primary); }
+.cm-item.is-active { background: color-mix(in srgb, var(--m3-primary) 12%, transparent); }
+
+/* risk badge — fixed semantic tokens (scheme-proof) */
+.cm-risk {
+  flex: none; font-family: var(--font-mono); font-size: 8px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 1.5px 5px; border-radius: var(--r-1);
+}
+.cm-risk--local { color: var(--state-warn); background: color-mix(in srgb, var(--state-warn) 14%, transparent); }
+.cm-risk--system { color: var(--state-alert); background: color-mix(in srgb, var(--state-alert) 14%, transparent); }
+
+/* ---- inline plan / apply confirm (risky actions never fire directly) ---- */
+.cm-confirm {
+  display: flex; align-items: center; gap: 8px; margin: 2px 4px;
+  padding: 7px 9px; border-radius: var(--r-2);
+  background: color-mix(in srgb, var(--state-warn) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--state-warn) 32%, transparent);
+  animation: cm-confirm-in var(--mdur-base) var(--mease-decel) both;
+}
+@keyframes cm-confirm-in { from { opacity: 0; transform: translateX(4px); } to { opacity: 1; transform: none; } }
+.cm-confirm__txt { flex: 1 1 auto; min-width: 0; font-family: var(--font-mono); font-size: 10px; color: var(--mem-fg2); }
+.cm-confirm__txt b { color: var(--state-warn); font-weight: 700; }
+.cm-confirm__btn {
+  flex: none; height: 24px; padding: 0 11px; border-radius: var(--r-pill); border: none; cursor: pointer;
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  transition: filter var(--mdur-fast) var(--mease-gentle), background var(--mdur-fast) var(--mease-gentle);
+}
+.cm-confirm__btn.apply { background: var(--state-warn); color: #1b1206; }
+.cm-confirm__btn.apply:hover { filter: brightness(1.08); }
+.cm-confirm__btn.cancel { background: var(--chip-bg); color: var(--mem-fg2); }
+.cm-confirm__btn.cancel:hover { background: var(--chip-bg-hover); }
+
+.cm-sep { height: 1px; background: var(--mem-hair); margin: 4px 6px; }
+
+/* ---- deferred "Gnosis suggère…" ---- */
+.cm-suggest { margin-top: 2px; }
+.cm-suggest__head {
+  display: flex; align-items: center; gap: 6px; padding: 6px 9px 3px 10px;
+  font-family: var(--font-mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--m3-primary);
+}
+.cm-suggest__head .glyph { display: grid; place-items: center; }
+.cm-suggest__head.is-thinking { color: var(--mem-fg3); }
+.cm-suggest__head .gx-spin { color: var(--m3-primary); }
+
+/* thinking skeleton rows (NOT a giant spinner — per spec) */
+.cm-skel { display: flex; align-items: center; gap: 10px; padding: 7px 9px; }
+.cm-skel__glyph { width: 16px; height: 16px; border-radius: var(--r-1); flex: none; }
+.cm-skel__bar { height: 9px; border-radius: var(--r-1); flex: 1 1 auto; }
+.cm-skel__glyph, .cm-skel__bar {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--col-on-layer0) 7%, transparent) 0%, color-mix(in srgb, var(--col-on-layer0) 15%, transparent) 50%, color-mix(in srgb, var(--col-on-layer0) 7%, transparent) 100%);
+  background-size: 200% 100%; animation: cm-shimmer 1.1s linear infinite;
+}
+.cm-skel:nth-child(2) .cm-skel__bar { max-width: 62%; }
+@keyframes cm-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+.cm-suggest .cm-item { animation: cm-sug-in var(--mdur-base) var(--mease-decel) both; }
+@keyframes cm-sug-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.cm-item__sug { font-family: var(--font-mono); font-size: 11px; color: var(--mem-fg2); }
+.cm-item__sug em { color: var(--mem-fg); font-style: normal; }
+
+/* ---- privacy / resource footer ---- */
+.cm-foot {
+  margin-top: 4px; border-top: 1px solid var(--mem-hair); padding: 7px 9px 4px;
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 9.5px; color: var(--mem-fg3);
+}
+.cm-lamp { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; padding: 2px 4px; border-radius: var(--r-1); transition: background var(--mdur-fast) var(--mease-gentle); }
+.cm-lamp:hover { background: var(--chip-bg); }
+.cm-lamp__led { width: 7px; height: 7px; border-radius: 50%; box-shadow: 0 0 5px -1px currentColor; }
+.cm-lamp.safe { color: var(--state-ok); }
+.cm-lamp.live { color: var(--m3-primary); }
+.cm-lamp.off  { color: var(--mem-fg3); }
+.cm-lamp__txt { color: var(--mem-fg2); letter-spacing: 0.02em; }
+.cm-foot__spacer { flex: 1 1 auto; }
+.cm-foot__note { color: var(--mem-fg3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+.cm-foot__note.ok { color: var(--state-ok); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cm-skel__glyph, .cm-skel__bar { animation: none !important; }
+}

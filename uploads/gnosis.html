@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GNOSIS — an agentic OS dreaming · GNU.IN</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script src="atlas.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --anthropic-dark:#141413; --anthropic-light:#faf9f5; --anthropic-mid-gray:#b0aea5;
+            --anthropic-light-gray:#e8e6dc; --anthropic-orange:#d97757; --anthropic-blue:#6a9bcc; --anthropic-green:#788c5d;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Poppins',sans-serif; background:linear-gradient(135deg,var(--anthropic-light) 0%,#f5f3ee 100%); min-height:100vh; color:var(--anthropic-dark); }
+        .container { display:flex; min-height:100vh; padding:20px; gap:20px; }
+        .sidebar { width:320px; flex-shrink:0; background:rgba(255,255,255,.95); backdrop-filter:blur(10px); padding:24px; border-radius:12px; box-shadow:0 10px 30px rgba(20,20,19,.1); overflow-y:auto; overflow-x:hidden; }
+        .sidebar h1 { font-family:'Lora',serif; font-size:24px; font-weight:500; margin-bottom:8px; }
+        .sidebar .subtitle { color:var(--anthropic-mid-gray); font-size:14px; margin-bottom:28px; line-height:1.45; }
+        .control-section { margin-bottom:30px; }
+        .control-section h3 { font-size:16px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+        .control-section h3::before { content:'•'; color:var(--anthropic-orange); font-weight:bold; }
+        .seed-input { width:100%; background:var(--anthropic-light); padding:12px; border-radius:8px; font-family:'Courier New',monospace; font-size:14px; margin-bottom:12px; border:1px solid var(--anthropic-light-gray); text-align:center; }
+        .seed-input:focus { outline:none; border-color:var(--anthropic-orange); box-shadow:0 0 0 2px rgba(217,119,87,.1); background:white; }
+        .seed-controls { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
+        .regen-button { margin-bottom:0; }
+        .control-group { margin-bottom:20px; }
+        .control-group label { display:block; font-size:14px; font-weight:500; margin-bottom:8px; }
+        .slider-container { display:flex; align-items:center; gap:12px; }
+        .slider-container input[type="range"] { flex:1; height:4px; background:var(--anthropic-light-gray); border-radius:2px; outline:none; -webkit-appearance:none; }
+        .slider-container input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; background:var(--anthropic-orange); border-radius:50%; cursor:pointer; transition:all .2s ease; }
+        .slider-container input[type="range"]::-webkit-slider-thumb:hover { transform:scale(1.1); background:#c86641; }
+        .slider-container input[type="range"]::-moz-range-thumb { width:16px; height:16px; background:var(--anthropic-orange); border-radius:50%; border:none; cursor:pointer; }
+        .value-display { font-family:'Courier New',monospace; font-size:12px; color:var(--anthropic-mid-gray); min-width:56px; text-align:right; }
+        .color-group { margin-bottom:16px; }
+        .color-group label { display:block; font-size:12px; color:var(--anthropic-mid-gray); margin-bottom:4px; }
+        .color-picker-container { display:flex; align-items:center; gap:8px; }
+        .color-picker-container input[type="color"] { width:32px; height:32px; border:none; border-radius:6px; cursor:pointer; background:none; padding:0; }
+        .color-value { font-family:'Courier New',monospace; font-size:12px; color:var(--anthropic-mid-gray); }
+        .button { background:var(--anthropic-orange); color:white; border:none; padding:10px 16px; border-radius:6px; font-size:14px; font-weight:500; cursor:pointer; transition:all .2s ease; width:100%; }
+        .button:hover { background:#c86641; transform:translateY(-1px); }
+        .button.secondary { background:var(--anthropic-blue); } .button.secondary:hover { background:#5a8bb8; }
+        .button.tertiary { background:var(--anthropic-green); } .button.tertiary:hover { background:#6b7b52; }
+        .button-row { display:flex; gap:8px; margin-bottom:8px; } .button-row .button { flex:1; }
+        .canvas-area { flex:1; display:flex; align-items:center; justify-content:center; min-width:0; }
+        #canvas-container { width:100%; max-width:1000px; border-radius:12px; overflow:hidden; box-shadow:0 20px 40px rgba(20,20,19,.22); background:#05070a; }
+        #canvas-container canvas { display:block; width:100% !important; height:auto !important; }
+        .loading { display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--anthropic-mid-gray); padding:80px 0; }
+        @media (max-width:600px) { .container { flex-direction:column; } .sidebar { width:100%; } .canvas-area { padding:20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>GNOSIS</h1>
+            <div class="subtitle">An agentic operating system, dreaming. A council of agents convenes, takes a directive, and works — until the ghost process stirs. Read the subtitles.</div>
+
+            <div class="control-section">
+                <h3>Seed</h3>
+                <input type="number" id="seed-input" class="seed-input" value="12345" onchange="updateSeed()">
+                <div class="seed-controls">
+                    <button class="button secondary" onclick="previousSeed()">← Prev</button>
+                    <button class="button secondary" onclick="nextSeed()">Next →</button>
+                </div>
+                <button class="button tertiary regen-button" onclick="randomSeedAndUpdate()">↻ Random fate</button>
+            </div>
+
+            <div class="control-section">
+                <h3>The Council</h3>
+                <div class="control-group">
+                    <label>Council Size</label>
+                    <div class="slider-container">
+                        <input type="range" id="councilSize" min="4" max="28" step="1" value="11" oninput="updateParam('councilSize', this.value)">
+                        <span class="value-display" id="councilSize-value">11</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Tempo</label>
+                    <div class="slider-container">
+                        <input type="range" id="tempo" min="0" max="1" step="0.05" value="0.5" oninput="updateParam('tempo', this.value)">
+                        <span class="value-display" id="tempo-value">0.50</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Reflow</label>
+                    <div class="slider-container">
+                        <input type="range" id="reflow" min="0" max="1" step="0.05" value="0.5" oninput="updateParam('reflow', this.value)">
+                        <span class="value-display" id="reflow-value">0.50</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Signal Traffic</label>
+                    <div class="slider-container">
+                        <input type="range" id="traffic" min="0" max="1" step="0.05" value="0.5" oninput="updateParam('traffic', this.value)">
+                        <span class="value-display" id="traffic-value">0.50</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h3>CRT Shader</h3>
+                <div class="control-group">
+                    <label>Phosphor Bloom</label>
+                    <div class="slider-container">
+                        <input type="range" id="bloom" min="0" max="30" step="1" value="12" oninput="updateParam('bloom', this.value)">
+                        <span class="value-display" id="bloom-value">12</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Scanlines</label>
+                    <div class="slider-container">
+                        <input type="range" id="scanlines" min="0" max="1" step="0.05" value="0.5" oninput="updateParam('scanlines', this.value)">
+                        <span class="value-display" id="scanlines-value">0.50</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Chromatic Aberration</label>
+                    <div class="slider-container">
+                        <input type="range" id="aberration" min="0" max="6" step="0.25" value="1.25" oninput="updateParam('aberration', this.value)">
+                        <span class="value-display" id="aberration-value">1.25</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Flicker</label>
+                    <div class="slider-container">
+                        <input type="range" id="flicker" min="0" max="1" step="0.05" value="0.2" oninput="updateParam('flicker', this.value)">
+                        <span class="value-display" id="flicker-value">0.20</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h3>Palette</h3>
+                <div class="color-group">
+                    <label>Void</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color1" value="#05070a" onchange="updateColor('color1', this.value)">
+                        <span class="color-value" id="color1-value">#05070a</span>
+                    </div>
+                </div>
+                <div class="color-group">
+                    <label>Phosphor</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color2" value="#56d99a" onchange="updateColor('color2', this.value)">
+                        <span class="color-value" id="color2-value">#56d99a</span>
+                    </div>
+                </div>
+                <div class="color-group">
+                    <label>Signal</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color3" value="#d97757" onchange="updateColor('color3', this.value)">
+                        <span class="color-value" id="color3-value">#d97757</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h3>Actions</h3>
+                <div class="button-row">
+                    <button class="button secondary" onclick="regenerate()">↻ Reboot</button>
+                    <button class="button" onclick="resetParameters()">Reset</button>
+                </div>
+                <button class="button tertiary" onclick="downloadPNG()">↓ Download PNG</button>
+            </div>
+        </div>
+
+        <div class="canvas-area">
+            <div id="canvas-container"><div class="loading">cold start…</div></div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════════════
+        // GNOSIS — an agentic OS told as a living UI fiction
+        // ═══════════════════════════════════════════════════════════════════════
+        let params = {
+            seed:12345, councilSize:11, tempo:0.5, reflow:0.5, traffic:0.5,
+            bloom:12, scanlines:0.5, aberration:1.25, flicker:0.2, speed:1,
+            colorPalette:['#05070a','#56d99a','#d97757']
+        };
+        let defaultParams = JSON.parse(JSON.stringify(params));
+
+        const CANVAS=1200, GAP=12, HUD_H=46, SUB_H=78;
+        const PHI_INV=0.61803398875;
+        const SPIN='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏';
+        const BLOCKS='▁▂▃▄▅▆▇█';
+        const KATA=(()=>{let s='';for(let i=0x30A0;i<0x30FF;i++)s+=String.fromCharCode(i);return s+'01¦§<>=*░▒▓';})();
+
+        // ── Agent archetypes: the cast of the fiction ──
+        const ROLES = {
+            oracle: { sigil:'◈', signal:true,  render:'oracle', lvl:3, core:true },
+            scribe: { sigil:'❖', signal:false, render:'scribe', lvl:1, core:true },
+            warden: { sigil:'⛨', signal:true,  render:'warden', lvl:3, core:true },
+            courier:{ sigil:'⇌', signal:false, render:'courier',lvl:1, core:true },
+            sentry: { sigil:'◉', signal:false, render:'sentry', lvl:2, core:true },
+            tensor: { sigil:'∴', signal:false, render:'tensor', lvl:2, core:false },
+            mason:  { sigil:'⚒', signal:false, render:'mason',  lvl:2, core:false },
+            weaver: { sigil:'⧉', signal:false, render:'weaver', lvl:2, core:false },
+            ghost:  { sigil:'░', signal:true,  render:'ghost',  lvl:0, core:false }
+        };
+        const CORE=['oracle','scribe','warden','courier','sentry'];
+        const WORKERS=['tensor','mason','weaver'];
+
+        // ── role → visualizer affinity (which of the 100 Atlas renderers suit each agent) ──
+        // Narrators (oracle/scribe/warden/courier) keep their bespoke story renderers — they
+        // carry the plot. The rest pull a thematically-tagged visualizer from the Atlas.
+        const ROLE_VIZ = {
+            sentry: ['chart','field'],            // a monitor: oscilloscopes, streams, vitals
+            tensor: ['wire3d','curve','particles'],// compute: 3D math, orbits, parametric geometry
+            mason:  ['ascii','text','fractal'],    // builder: code, ascii render, growth structures
+            weaver: ['tiling','voronoi','plasma'], // compositor: tessellations, membranes, fields
+        };
+        const GHOST_VIZ = ['MATRIX RAIN','ASCII TUNNEL','JULIA SET','BRAILLE TUNNEL','BITSTREAM','WORLEY NOISE']; // corrupted, ominous
+        let ATLAS=[];
+        function assignViz(win,g){
+            if(!ATLAS.length){ win.viz=null; return; }
+            if(win.role==='ghost'){ const pool=ATLAS.filter(v=>GHOST_VIZ.includes(v.n)); win.viz=pool.length?pool[Math.floor(g()*pool.length)]:null; return; }
+            const tags=ROLE_VIZ[win.role];
+            if(!tags){ win.viz=null; return; }           // narrators → bespoke renderer
+            const pool=ATLAS.filter(v=>tags.includes(v.c));
+            win.viz=pool.length?pool[Math.floor(g()*pool.length)]:null;
+        }
+
+        const DIRECTIVES=['quarantine the ghost process','recompose the north membrane','graduate the 0.14.x lattice',
+            'pin every component to main','reweave the compositor core','seal the unsigned intent','reconcile the release rail'];
+        const PLAN=['probe lattice','convene council','route intents','apply transform','verify membranes','seal & commit'];
+        const SYLL=['ka','re','sh','vi','no','lu','ze','th','ae','mi','os','yr','en','ix','ua','sol','vex','nyx','dru','el'];
+        const ACTS=['BOOT','CONVENE','DIRECTIVE','WORK','ANOMALY','ESCALATE','RESOLVE'];
+        const ROMAN=['0','I','II','III','IV','V','VI'];
+
+        let scene, scanTex, vigTex;
+        let rng, root, closing=[], graph={ids:[],edges:[],inc:{}}, packets=[], pulses=[];
+        let uid=0, focusId=-1, simTime=0, nextEvent=0, lastBroadcast=-1, aliveCache=[];
+        let msgLog=[], narration=[];   // inter-agent messages + story log
+        let D = null;                  // the Director (story state)
+
+        function mulberry32(a){return function(){a|=0;a=(a+0x6D2B79F5)|0;let t=Math.imul(a^(a>>>15),1|a);t=(t+Math.imul(t^(t>>>7),61|t))^t;return ((t^(t>>>14))>>>0)/4294967296;};}
+        function parse(hex){const h=hex.replace('#','');return {r:parseInt(h.slice(0,2),16),g:parseInt(h.slice(2,4),16),b:parseInt(h.slice(4,6),16)};}
+        function ease(c,t,base,dt){const k=1-Math.pow(1-base,Math.min(dt,0.05)*60);return c+(t-c)*k;}
+        function mix(a,b,t){return {r:a.r+(b.r-a.r)*t,g:a.g+(b.g-a.g)*t,b:a.b+(b.b-a.b)*t};}
+
+        function setup(){
+            const c=createCanvas(CANVAS,CANVAS); c.parent('canvas-container');
+            scene=createGraphics(CANVAS,CANVAS); scene.pixelDensity(1);
+            buildCRTTextures();
+            if(window.Atlas) ATLAS=Atlas.build();
+            const l=document.querySelector('.loading'); if(l) l.style.display='none';
+            initializeSystem();
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // BOOT / RESET
+        // ═══════════════════════════════════════════════════════════════════════
+        function initializeSystem(){
+            rng=mulberry32(params.seed>>>0);
+            noiseSeed(params.seed); randomSeed(params.seed);
+            uid=0; closing=[]; packets=[]; pulses=[]; simTime=0; lastBroadcast=-1; msgLog=[]; narration=[];
+            if(window.Atlas) Atlas.reset();
+            D={ act:0, actName:'BOOT', t0:0, dur:3.5, objective:0, tension:0, glitch:0,
+                directive:DIRECTIVES[Math.floor(rng()*DIRECTIVES.length)], cycle:0,
+                sub:{speaker:'init',sigil:'·',text:'cold start. the lattice remembers its shape.',t:0,signal:false},
+                ambientAt:2, escalateResolved:false };
+            const full={x:GAP,y:HUD_H,w:CANVAS-2*GAP,h:CANVAS-HUD_H-SUB_H};
+            root=leafOf(makeAgent(full,'oracle'));
+            root.win.state='alive'; root.win.anim=1;
+            // pre-warm a partial council instantly so the first frame isn't bare
+            let guard=0;
+            while(aliveAgents().length<Math.min(params.councilSize,7) && guard++<60){
+                layout(); if(!spawnRole(roleNeeded(), true)) break;
+            }
+            for(const w of aliveAgents()){ w.state='alive'; w.anim=1; w.cur={...w.target}; }
+            layout(); chooseFocus(); buildGraph(); spawnPackets();
+            narrate(agentName('init')||'init', '·', D.sub.text, false);
+            nextEvent = 0.6;
+        }
+
+        function leafOf(win){ return {leaf:true, win, parent:null}; }
+        function collect(n,a){ if(n.leaf)a.push(n); else {collect(n.a,a);collect(n.b,a);} return a; }
+        function aliveAgents(){ return collect(root,[]).map(l=>l.win); }
+        function byRole(role){ return aliveCache.find(w=>w.role===role) || aliveAgents().find(w=>w.role===role); }
+        function agentName(role){ const a=byRole(role); return a?a.name:null; }
+
+        function genName(role){
+            const t=SYLL[Math.floor(rng()*SYLL.length)]+(rng()<0.6?SYLL[Math.floor(rng()*SYLL.length)]:'');
+            const sep=['//','.',':','-'][Math.floor(rng()*4)];
+            return role.toUpperCase()+sep+t;
+        }
+
+        function makeAgent(rect,role){
+            const id=++uid; const R=ROLES[role];
+            const g=mulberry32((params.seed>>>0)+id*40503+role.length*31+13);
+            const win={ id, role, name:genName(role), sigil:R.sigil, signal:R.signal, render:R.render, lvl:R.lvl,
+                state:'opening', anim:0, g, cur:{...rect}, target:{...rect}, scroll:g()*20, phase:g()*100, hist:[], t0:simTime, born:simTime };
+            initAgent(win,g);
+            assignViz(win,g);
+            return win;
+        }
+
+        function initAgent(w,g){
+            if(w.render==='scribe'){ /* reads global narration */ }
+            else if(w.render==='courier'){ /* reads global msgLog */ }
+            else if(w.render==='sentry'){ w.hist=new Array(140).fill(0.4); }
+            else if(w.render==='tensor'){ w.glabel=['plan','infer','reduce','route'][Math.floor(g()*4)]; }
+            else if(w.render==='mason'){
+                w.code=['fn weave(t:&mut Bsp){','  let r = PHI_INV;','  t.split(Axis::from(r));','  commit(t);','}',
+                        '// pin to main','lock("components", MAIN);']; }
+            else if(w.render==='weaver'){ w.amode=Math.floor(g()*3); }
+            else if(w.render==='ghost'){ w.cols=[]; }
+            else if(w.render==='warden'){ /* reads roster */ }
+            else if(w.render==='oracle'){ /* reads directive/plan */ }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // TREE / LAYOUT
+        // ═══════════════════════════════════════════════════════════════════════
+        function layout(){ layoutNode(root, GAP, HUD_H, CANVAS-2*GAP, CANVAS-HUD_H-SUB_H); }
+        function layoutNode(n,x,y,w,h){
+            if(n.leaf){ n.win.target={x,y,w,h}; return; }
+            if(n.split==='v'){ const wa=Math.max(0,(w-GAP)*n.ratio); layoutNode(n.a,x,y,wa,h); layoutNode(n.b,x+wa+GAP,y,w-wa-GAP,h); }
+            else { const ha=Math.max(0,(h-GAP)*n.ratio); layoutNode(n.a,x,y,w,ha); layoutNode(n.b,x,y+ha+GAP,w,h-ha-GAP); }
+        }
+        function splittable(){ return collect(root,[]).filter(l=>l.win.target.w>150&&l.win.target.h>132); }
+
+        function spawnRole(role, instant){
+            if(!role) return false;
+            const cap=Math.min(60,params.councilSize+6);
+            if(aliveAgents().length>=cap) return false;
+            const cand=splittable(); if(!cand.length) return false;
+            const leaf=cand[Math.floor(rng()*cand.length)]; const r=leaf.win.target;
+            const vertical=r.w>=r.h, ratio=0.5+(rng()-0.5)*0.32;
+            const nw=makeAgent({...r},role);
+            const ol=leafOf(leaf.win), nl=leafOf(nw);
+            const internal={leaf:false,split:vertical?'v':'h',ratio,a:null,b:null,parent:leaf.parent};
+            if(rng()<0.5){internal.a=ol;internal.b=nl;}else{internal.a=nl;internal.b=ol;}
+            ol.parent=internal; nl.parent=internal;
+            if(!leaf.parent) root=internal; else { if(leaf.parent.a===leaf) leaf.parent.a=internal; else leaf.parent.b=internal; }
+            if(instant){ nw.state='alive'; nw.anim=1; }
+            layout(); nw.cur={...nw.target};
+            return true;
+        }
+
+        function killAgent(pred){
+            const leaves=collect(root,[]); if(leaves.length<=1) return false;
+            const pool=pred?leaves.filter(l=>pred(l.win)):leaves;
+            if(!pool.length) return false;
+            const leaf=pool[Math.floor(rng()*pool.length)]; const p=leaf.parent; if(!p) return false;
+            const sib=(p.a===leaf)?p.b:p.a; sib.parent=p.parent;
+            if(!p.parent) root=sib; else { if(p.parent.a===p) p.parent.a=sib; else p.parent.b=sib; }
+            leaf.win.state='closing'; closing.push(leaf.win);
+            if(leaf.win.id===focusId) focusId=-1;
+            layout(); return true;
+        }
+
+        function resizeSplit(){
+            const ins=[]; (function w(n){ if(!n.leaf){ins.push(n);w(n.a);w(n.b);} })(root);
+            if(!ins.length) return false;
+            const n=ins[Math.floor(rng()*ins.length)];
+            n.ratio=Math.max(0.22,Math.min(0.78,n.ratio+(rng()-0.5)*0.5)); layout(); return true;
+        }
+
+        function roleNeeded(){
+            const roles=aliveAgents().map(w=>w.role);
+            for(const c of CORE) if(!roles.includes(c)) return c;
+            if(aliveAgents().length<params.councilSize) return WORKERS[Math.floor(rng()*WORKERS.length)];
+            return null;
+        }
+        function hasGhost(){ return aliveAgents().some(w=>w.role==='ghost'); }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // THE DIRECTOR — drives the story
+        // ═══════════════════════════════════════════════════════════════════════
+        function narrate(speaker,sigil,text,signal){
+            D.sub={speaker,sigil,text,t:simTime,signal:!!signal};
+            narration.push({speaker,sigil,text,signal:!!signal,t:simTime});
+            if(narration.length>60) narration.shift();
+        }
+        function logMsg(type,from,to){ msgLog.push({type,from,to,t:simTime}); if(msgLog.length>80) msgLog.shift(); }
+
+        function actDur(){ const slow=ACTS[D.act]==='BOOT'?3.5:(ACTS[D.act]==='WORK'?12:7); return slow*(1.5-params.tempo); }
+
+        function enterAct(i){
+            D.act=i; D.actName=ACTS[i]; D.t0=simTime; D.dur=actDur(); D.ambientAt=simTime+2.2; D.escalateResolved=false;
+            const oN=agentName('oracle')||'oracle', sN=agentName('scribe')||'scribe', wN=agentName('warden')||'warden', seN=agentName('sentry')||'sentry';
+            switch(D.actName){
+                case 'BOOT': D.objective=0; D.tension=0; D.directive=DIRECTIVES[Math.floor(rng()*DIRECTIVES.length)];
+                    narrate('init','·','kernel warm. membranes settling into shape.',false); break;
+                case 'CONVENE':
+                    narrate(oN,'◈','convene the council. '+params.councilSize+' seats at the table.',false); break;
+                case 'DIRECTIVE':
+                    narrate(oN,'◈','directive received — '+D.directive+'.',true); break;
+                case 'WORK':
+                    narrate(sN,'❖','intents routed. the council bends to the work.',false); break;
+                case 'ANOMALY':
+                    D.tension=1; D.glitch=1;
+                    narrate(seN,'◉','anomaly on the lattice. an unsigned intent walks the gaps.',true); break;
+                case 'ESCALATE':
+                    narrate(wN,'⛨','this exceeds my grant. requesting level-three. operator?',true); break;
+                case 'RESOLVE':
+                    narrate(sN,'❖', D.objective>0.55?'the breach is sealed. the system exhales.':'directive abandoned. the council retires.', false); break;
+            }
+        }
+
+        function updateDirector(dt){
+            if(simTime>=D.t0+D.dur){
+                let nx=D.act+1;
+                if(nx>=ACTS.length){ D.cycle++; nx = (D.cycle%4===0)?0:1; } // mostly loop to CONVENE, occasionally full reboot
+                enterAct(nx);
+            }
+            // continuous state
+            if(D.actName==='WORK'){ D.objective=Math.min(1,D.objective+dt*0.07*(0.6+params.tempo)); D.tension=Math.max(0,D.tension-dt*0.5); }
+            else if(D.actName==='ANOMALY'){ D.objective=Math.max(0,D.objective-dt*0.03); D.tension=Math.min(1,D.tension+dt*0.6); }
+            else if(D.actName==='ESCALATE'){ D.tension=Math.max(0.4,D.tension-dt*0.15);
+                if(!D.escalateResolved && simTime>D.t0+D.dur*0.55){ D.escalateResolved=true;
+                    const wN=agentName('warden')||'warden';
+                    narrate('operator','✦','grant: level-three, scoped to '+D.directive.split(' ').slice(-1)[0]+'.',false);
+                    logMsg('GRANT', 'operator', wN); for(const ei of (graph.inc[focusId]||[])) graph.edges[ei].charge=1; } }
+            else if(D.actName==='RESOLVE'){ if(D.objective>0.55) D.objective=Math.min(1,D.objective+dt*0.5); D.tension=Math.max(0,D.tension-dt*0.6); }
+            else { D.tension=Math.max(0,D.tension-dt*0.4); }
+            D.glitch=Math.max(0,D.glitch-dt*0.8);
+
+            // ambient lines mid-act, in-character
+            if(simTime>=D.ambientAt){ D.ambientAt=simTime + (2.6+rng()*3)*(1.4-params.tempo); ambientLine(); }
+        }
+
+        function ambientLine(){
+            const ws=aliveAgents().filter(w=>w.role!=='ghost'); if(!ws.length) return;
+            const a=ws[Math.floor(rng()*ws.length)];
+            const obj=Math.floor(D.objective*100);
+            const L={
+                oracle:['hold the line at '+obj+'%.','transform is sound. proceed.','the directive stands: '+D.directive+'.'],
+                scribe:['logged. '+(narration.length)+' lines and counting.','the record remembers everything.','noting drift on the north edge.'],
+                warden:['permissions nominal.','i am watching the gaps.','no unsigned intent passes me twice.'],
+                courier:['queue draining. '+Math.max(0,msgLog.length)+' in flight.','acks returning clean.','rerouting around the dead node.'],
+                sentry:['vitals steady. pulse '+(60+Math.floor(D.tension*40))+'.', D.tension>0.4?'something is off-frequency.':'all bands quiet.'],
+                tensor:['reduction at '+obj+'%.','tensors aligned.','crunching the membrane field.'],
+                mason:['rebuilding the compositor.','pinned to main. clean tree.','linker is happy.'],
+                weaver:['re-tiled the '+['north','south','east','west'][Math.floor(rng()*4)]+' membrane.','dwindle holds.','golden ratio, as always.'],
+            };
+            const pool=L[a.role]||['…'];
+            narrate(a.name, a.sigil, pool[Math.floor(rng()*pool.length)], a.signal && D.tension>0.4);
+        }
+
+        function runEvent(){
+            // 1) ghost lifecycle is story-bound
+            if((D.actName==='ANOMALY'||D.actName==='ESCALATE') && !hasGhost()){ spawnRole('ghost',false); buildGraph(); spawnPackets();
+                narrate(agentName('sentry')||'sentry','◉','ghost process materialised. id pending. it should not exist.',true); return; }
+            if((D.actName==='RESOLVE'||D.actName==='WORK'||D.actName==='CONVENE') && hasGhost()){ killAgent(w=>w.role==='ghost'); buildGraph(); spawnPackets();
+                narrate(agentName('warden')||'warden','⛨','ghost quarantined. the gap is sealed.',false); return; }
+            // 2) keep the roster shaped to the act
+            const count=aliveAgents().length, target=(D.actName==='RESOLVE')?Math.max(5,params.councilSize-3):params.councilSize;
+            let changed=false, r=rng();
+            const need=roleNeeded();
+            if(count<target-1 && need) changed=spawnRole(need,false);
+            else if(count>target+1) changed=killAgent(w=>!ROLES[w.role].core);
+            else changed = r<0.4?(need?spawnRole(need,false):resizeSplit()) : r<0.72?killAgent(w=>!ROLES[w.role].core) : resizeSplit();
+            if(changed && r<0.85){ buildGraph(); spawnPackets(); }
+            chooseFocus();
+        }
+
+        function scheduleNext(){ const base=1.4-params.tempo*1.15; nextEvent=simTime+Math.max(0.18,base*(0.5+rng())); }
+
+        // focus follows the protagonist of the current act / current speaker
+        function chooseFocus(){
+            const ws=aliveAgents(); if(!ws.length){focusId=-1;return;}
+            const proto={BOOT:'oracle',CONVENE:'oracle',DIRECTIVE:'oracle',WORK:null,ANOMALY:'ghost',ESCALATE:'warden',RESOLVE:'scribe'}[D.actName];
+            let pick=proto?ws.find(w=>w.role===proto):null;
+            if(!pick){ let bs=-Infinity,cx=CANVAS/2,cy=(HUD_H+CANVAS-SUB_H)/2;
+                for(const w of ws){ const t=w.target,a=t.w*t.h,d=Math.hypot(t.x+t.w/2-cx,t.y+t.h/2-cy),s=a*0.7-d*120; if(s>bs){bs=s;pick=w;} } }
+            focusId=pick.id;
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // GRAPH / TYPED MESSAGES
+        // ═══════════════════════════════════════════════════════════════════════
+        function buildGraph(){
+            const ws=aliveAgents(); graph={ids:ws.map(w=>w.id),edges:[],inc:{}};
+            for(const id of graph.ids) graph.inc[id]=[];
+            const eps=GAP+2;
+            for(let i=0;i<ws.length;i++)for(let j=i+1;j<ws.length;j++){
+                const A=ws[i].target,B=ws[j].target; let t=false;
+                if(Math.abs((A.x+A.w)-B.x)<eps||Math.abs((B.x+B.w)-A.x)<eps){ if(Math.min(A.y+A.h,B.y+B.h)-Math.max(A.y,B.y)>24)t=true; }
+                if(!t&&(Math.abs((A.y+A.h)-B.y)<eps||Math.abs((B.y+B.h)-A.y)<eps)){ if(Math.min(A.x+A.w,B.x+B.w)-Math.max(A.x,B.x)>24)t=true; }
+                if(t){ const ei=graph.edges.length; graph.edges.push({a:ws[i].id,b:ws[j].id,charge:0}); graph.inc[ws[i].id].push(ei); graph.inc[ws[j].id].push(ei); }
+            }
+        }
+        function winById(id){ for(const w of aliveCache) if(w.id===id) return w; return null; }
+        function spawnPackets(){
+            packets=[]; if(!graph.edges.length) return;
+            const count=Math.round(3+params.traffic*30);
+            for(let k=0;k<count;k++){ const e=Math.floor(rng()*graph.edges.length);
+                packets.push({e,dir:rng()<0.5?1:-1,pos:rng(),signal:false}); }
+        }
+        function msgType(){
+            if(D.actName==='ANOMALY') return rng()<0.6?'ALERT':(rng()<0.5?'BREACH':'QUERY');
+            if(D.actName==='ESCALATE') return rng()<0.5?'REQ·L3':(rng()<0.5?'HOLD':'QUERY');
+            if(D.actName==='RESOLVE') return rng()<0.6?'ACK':'SYNC';
+            return ['INTENT','ACK','QUERY','SYNC','BIND'][Math.floor(rng()*5)];
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // MAIN LOOP
+        // ═══════════════════════════════════════════════════════════════════════
+        function draw(){
+            const dt=Math.min(deltaTime,50)/1000, time=millis()*0.001;
+            simTime+=dt;
+            updateDirector(dt);
+            let guard=0; while(simTime>=nextEvent && guard++<8){ runEvent(); scheduleNext(); }
+            updateAnim(dt);
+            aliveCache=aliveAgents();
+
+            // story-driven effective CRT
+            const eff={
+                bloom: params.bloom + D.objective*6,
+                aberration: Math.min(8, params.aberration + D.tension*3 + D.glitch*4),
+                flicker: Math.min(1, params.flicker + D.tension*0.45 + D.glitch*0.5),
+                scanlines: params.scanlines
+            };
+            // drive Atlas visualizers: pace rises with tempo, glow with objective, frenzy with tension
+            if(window.Atlas) Atlas.set(0.55 + params.tempo*1.1 + D.tension*0.6, eff.bloom, params.seed);
+
+            drawScene(dt,time,eff);
+
+            background(0);
+            const ab=eff.aberration;
+            if(ab<0.15){ image(scene,0,0); }
+            else { blendMode(ADD);
+                tint(255,0,0); image(scene,-ab,ab*0.4);
+                tint(0,255,0); image(scene,0,0);
+                tint(0,80,255); image(scene,ab,-ab*0.4);
+                blendMode(BLEND); noTint(); }
+            drawSweep(time); drawScanlines(eff); drawVignette(); drawFlicker(time,eff);
+        }
+
+        function updateAnim(dt){
+            const rb=0.05+params.reflow*0.30;
+            for(const w of aliveAgents()){
+                w.cur.x=ease(w.cur.x,w.target.x,rb,dt); w.cur.y=ease(w.cur.y,w.target.y,rb,dt);
+                w.cur.w=ease(w.cur.w,w.target.w,rb,dt); w.cur.h=ease(w.cur.h,w.target.h,rb,dt);
+                if(w.state==='opening'){ w.anim+=dt*3.2; if(w.anim>=1){w.anim=1;w.state='alive';} }
+            }
+            for(let i=closing.length-1;i>=0;i--){ const w=closing[i]; w.anim-=dt*3.4; if(w.anim<=0.02) closing.splice(i,1); }
+        }
+
+        // base palette, warmed toward signal by tension
+        function palette(){
+            const wp=parse(params.colorPalette[0]); let ph=parse(params.colorPalette[1]); const sg=parse(params.colorPalette[2]);
+            const phT=mix(ph,sg,Math.min(0.5,D.tension*0.5)); // phosphor drifts toward signal under stress
+            return {wp,ph:phT,sg,phPure:ph};
+        }
+
+        function drawScene(dt,time,eff){
+            const ctx=scene.drawingContext; const P=palette();
+            scene.clear();
+            ctx.save();
+            ctx.fillStyle=`rgb(${P.wp.r},${P.wp.g},${P.wp.b})`; ctx.fillRect(0,0,CANVAS,CANVAS);
+            const wash=ctx.createRadialGradient(CANVAS*0.5,(HUD_H+CANVAS-SUB_H)/2,80,CANVAS*0.5,CANVAS*0.5,CANVAS*0.82);
+            const wc=mix(P.ph,P.sg,D.tension*0.6);
+            wash.addColorStop(0,`rgba(${wc.r|0},${wc.g|0},${wc.b|0},${0.05+D.tension*0.05})`); wash.addColorStop(1,'rgba(0,0,0,0)');
+            ctx.fillStyle=wash; ctx.fillRect(0,0,CANVAS,CANVAS);
+            ctx.restore();
+
+            for(const w of closing) drawAgent(ctx,w,time,P,eff);
+            for(const w of aliveCache) drawAgent(ctx,w,time,P,eff);
+            drawNetwork(ctx,dt,time,P,eff);
+            drawPackets(ctx,dt,P,eff);
+            drawPulses(ctx,dt,P);
+            drawHUD(ctx,time,P);
+            drawSubtitle(ctx,time,P);
+        }
+
+        function rr(ctx,x,y,w,h,r){ r=Math.min(r,w/2,h/2); ctx.beginPath();
+            ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+            ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // AGENT WINDOW
+        // ═══════════════════════════════════════════════════════════════════════
+        function drawAgent(ctx,win,time,P,eff){
+            const c=win.cur;
+            const sc=win.state==='closing'?(0.80+0.20*win.anim):(0.93+0.07*win.anim);
+            const w=c.w*sc, h=c.h*sc, x=c.x+(c.w-w)/2, y=c.y+(c.h-h)/2;
+            if(w<26||h<22) return;
+            const focused=win.id===focusId, rad=9;
+            const acc=win.signal?P.sg:P.ph;
+            ctx.save(); ctx.globalAlpha=Math.max(0,Math.min(1,win.anim));
+
+            rr(ctx,x,y,w,h,rad); ctx.fillStyle='rgba(7,11,14,0.86)'; ctx.fill();
+            const body=ctx.createLinearGradient(x,y,x,y+h);
+            body.addColorStop(0,`rgba(${acc.r|0},${acc.g|0},${acc.b|0},${focused?0.08:0.035})`);
+            body.addColorStop(1,`rgba(${acc.r|0},${acc.g|0},${acc.b|0},0.015)`);
+            ctx.fillStyle=body; ctx.fill();
+
+            ctx.save(); rr(ctx,x,y,w,h,rad); ctx.clip();
+            const th=Math.min(19,h*0.2);
+            ctx.fillStyle=`rgba(${acc.r|0},${acc.g|0},${acc.b|0},${focused?0.22:0.12})`; ctx.fillRect(x,y,w,th);
+            ctx.font='10px "Courier New",monospace'; ctx.textBaseline='middle';
+            const spin=SPIN[Math.floor(time*10+win.id)%SPIN.length];
+            ctx.fillStyle=`rgba(${P.ph.r|0},${P.ph.g|0},${P.ph.b|0},0.95)`;
+            if(w>78) ctx.fillText(win.sigil+' '+win.name+(win.viz&&w>180?'  '+win.viz.n.toLowerCase():''), x+8, y+th/2);
+            else if(w>34) ctx.fillText(win.sigil, x+8, y+th/2);
+            ctx.textAlign='right';
+            ctx.fillStyle=`rgba(${(win.signal?P.sg:P.ph).r|0},${(win.signal?P.sg:P.ph).g|0},${(win.signal?P.sg:P.ph).b|0},0.6)`;
+            if(w>110) ctx.fillText('L'+win.lvl+' '+spin, x+w-8, y+th/2);
+            ctx.textAlign='left';
+
+            const ix=x+7, iy=y+th+5, iw=w-14, ih=h-th-11;
+            if(iw>30&&ih>22){ ctx.save(); ctx.beginPath(); ctx.rect(ix,iy,iw,ih); ctx.clip();
+                renderAgent(ctx,win,ix,iy,iw,ih,time,P,focused); ctx.restore(); }
+            ctx.restore();
+
+            const bw=focused?2.2:1.1; let ang=(win.id*0.7)+(focused?time*0.9:0);
+            const dx=Math.cos(ang),dy=Math.sin(ang);
+            const bg=ctx.createLinearGradient(x+w/2-dx*w/2,y+h/2-dy*h/2,x+w/2+dx*w/2,y+h/2+dy*h/2);
+            const ba=focused?0.95:0.4;
+            bg.addColorStop(0,`rgba(${P.sg.r|0},${P.sg.g|0},${P.sg.b|0},${ba})`);
+            bg.addColorStop(0.5,`rgba(${P.ph.r|0},${P.ph.g|0},${P.ph.b|0},${ba})`);
+            bg.addColorStop(1,`rgba(${P.sg.r|0},${P.sg.g|0},${P.sg.b|0},${ba})`);
+            if(focused&&eff.bloom>0){ ctx.shadowColor=`rgba(${P.sg.r|0},${P.sg.g|0},${P.sg.b|0},0.9)`; ctx.shadowBlur=eff.bloom; }
+            rr(ctx,x+bw/2,y+bw/2,w-bw,h-bw,Math.max(0,rad-bw/2)); ctx.lineWidth=bw; ctx.strokeStyle=bg; ctx.stroke(); ctx.shadowBlur=0;
+            ctx.restore();
+        }
+
+        function renderAgent(ctx,w,x,y,iw,ih,time,P,focused){
+            if(w.viz){ const small=(iw<240||ih<180); try{ w.viz.f(ctx,x,y,iw,ih,time,P,w.g,w.id,small); }catch(e){} return; }
+            switch(w.render){
+                case 'oracle': return rOracle(ctx,w,x,y,iw,ih,time,P,focused);
+                case 'scribe': return rScribe(ctx,w,x,y,iw,ih,time,P);
+                case 'warden': return rWarden(ctx,w,x,y,iw,ih,time,P);
+                case 'courier':return rCourier(ctx,w,x,y,iw,ih,time,P);
+                case 'sentry': return rSentry(ctx,w,x,y,iw,ih,time,P);
+                case 'tensor': return rTensor(ctx,w,x,y,iw,ih,time,P);
+                case 'mason':  return rMason(ctx,w,x,y,iw,ih,time,P);
+                case 'weaver': return rWeaver(ctx,w,x,y,iw,ih,time,P);
+                case 'ghost':  return rGhost(ctx,w,x,y,iw,ih,time,P);
+            }
+        }
+
+        function txt(ctx,P,a){ return `rgba(${P.ph.r|0},${P.ph.g|0},${P.ph.b|0},${a})`; }
+        function sig(ctx,P,a){ return `rgba(${P.sg.r|0},${P.sg.g|0},${P.sg.b|0},${a})`; }
+
+        // ORACLE — the directive and the plan, ticking with the objective
+        function rOracle(ctx,w,x,y,iw,ih,time,P,focused){
+            ctx.font='11px "Courier New",monospace'; ctx.textBaseline='alphabetic';
+            ctx.fillStyle=sig(ctx,P,0.95); ctx.fillText('» DIRECTIVE', x, y+11);
+            ctx.fillStyle=txt(ctx,P,0.75);
+            wrap(ctx,D.directive,x,y+27,iw,13,3);
+            const done=Math.floor(D.objective*PLAN.length);
+            let yy=y+74;
+            for(let i=0;i<PLAN.length && yy<y+ih-4;i++,yy+=15){
+                const ok=i<done, act=(i===done);
+                ctx.fillStyle = ok?sig(ctx,P,0.9):txt(ctx,P,act?0.85:0.4);
+                const box = ok?'[x]':(act?('['+SPIN[Math.floor(time*10)%SPIN.length]+']'):'[ ]');
+                ctx.fillText(box+' '+PLAN[i], x, yy);
+            }
+            // objective bar
+            const by=y+ih-6;
+            ctx.fillStyle=txt(ctx,P,0.12); ctx.fillRect(x,by,iw,4);
+            ctx.fillStyle=sig(ctx,P,0.9); ctx.fillRect(x,by,iw*D.objective,4);
+        }
+
+        // SCRIBE — the running story log (the narration history)
+        function rScribe(ctx,w,x,y,iw,ih,time,P){
+            ctx.font='10px "Courier New",monospace';
+            const lh=13, n=Math.floor(ih/lh);
+            const start=Math.max(0,narration.length-n);
+            let yy=y+11;
+            for(let i=start;i<narration.length && yy<y+ih;i++,yy+=lh){
+                const e=narration[i];
+                ctx.fillStyle = e.signal?sig(ctx,P,0.85):txt(ctx,P,0.5+0.4*(i-start)/n);
+                const line=(e.sigil||'·')+' '+clip(e.text,Math.floor(iw/6));
+                ctx.fillText(line,x,yy);
+            }
+        }
+
+        // WARDEN — permission ledger of the live roster
+        function rWarden(ctx,w,x,y,iw,ih,time,P){
+            ctx.font='10px "Courier New",monospace';
+            ctx.fillStyle=sig(ctx,P,0.9); ctx.fillText('PERMISSION LEDGER', x, y+11);
+            const rows=aliveCache.slice(0,Math.floor((ih-16)/13));
+            let yy=y+26;
+            for(const a of rows){ if(yy>y+ih) break;
+                const ghost=a.role==='ghost';
+                const verdict = ghost?'DENY':(D.actName==='ESCALATE' && a.role==='warden'?(D.escalateResolved?'GRANT':'REQ·L3'):'OK');
+                ctx.fillStyle=txt(ctx,P,0.7); ctx.fillText('L'+a.lvl+' '+clip(a.name,Math.floor(iw/7)-6), x, yy);
+                ctx.textAlign='right';
+                ctx.fillStyle = (verdict==='DENY')?sig(ctx,P,0.95):(verdict==='OK'?txt(ctx,P,0.5):sig(ctx,P,0.9));
+                ctx.fillText(verdict, x+iw, yy); ctx.textAlign='left'; yy+=13;
+            }
+        }
+
+        // COURIER — the live message queue between agents
+        function rCourier(ctx,w,x,y,iw,ih,time,P){
+            ctx.font='10px "Courier New",monospace';
+            const lh=13, n=Math.floor(ih/lh), start=Math.max(0,msgLog.length-n);
+            let yy=y+11;
+            for(let i=start;i<msgLog.length && yy<y+ih;i++,yy+=lh){
+                const m=msgLog[i]; const hot=(m.type==='ALERT'||m.type==='BREACH'); const grant=(m.type==='GRANT');
+                ctx.fillStyle = hot?sig(ctx,P,0.9):(grant?`rgba(${Math.min(255,P.ph.r+80)},255,${P.ph.b|0},0.95)`:txt(ctx,P,0.55));
+                ctx.fillText(clip(m.type+' '+shortn(m.from)+'→'+shortn(m.to),Math.floor(iw/6)),x,yy);
+            }
+        }
+
+        // SENTRY — vitals oscilloscope; spikes red under tension
+        function rSentry(ctx,w,x,y,iw,ih,time,P){
+            w.hist.push(0.5+0.5*Math.sin(time*2.4+w.phase)*noise(w.id,time*0.9) + D.tension*Math.sin(time*30)*0.25);
+            if(w.hist.length>150) w.hist.shift();
+            const col = D.tension>0.4?P.sg:P.ph;
+            ctx.strokeStyle=`rgba(${col.r|0},${col.g|0},${col.b|0},0.85)`; ctx.lineWidth=1.4; ctx.beginPath();
+            for(let i=0;i<w.hist.length;i++){ const px=x+(i/(w.hist.length-1))*iw, py=y+ih*0.5-(w.hist[i]-0.5)*ih*0.8; i?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+            ctx.stroke();
+            ctx.font='10px "Courier New",monospace'; ctx.fillStyle=txt(ctx,P,0.5);
+            ctx.fillText('pulse '+(60+Math.floor(D.tension*48))+'  '+(D.tension>0.4?'⚠ off-band':'nominal'), x, y+ih-4);
+        }
+
+        // TENSOR — compute gauge driven by the objective
+        function rTensor(ctx,w,x,y,iw,ih,time,P){
+            const cx=x+iw/2, cy=y+ih*0.52, R=Math.min(iw,ih)*0.33;
+            const v=0.25+0.7*(D.objective*0.6+0.4*(0.5+0.5*Math.sin(time*0.9+w.phase)));
+            const a0=Math.PI*0.75,a1=Math.PI*2.25;
+            ctx.lineWidth=Math.max(3,R*0.16); ctx.lineCap='round';
+            ctx.strokeStyle=txt(ctx,P,0.15); ctx.beginPath(); ctx.arc(cx,cy,R,a0,a1); ctx.stroke();
+            ctx.strokeStyle=sig(ctx,P,0.95); ctx.beginPath(); ctx.arc(cx,cy,R,a0,a0+(a1-a0)*v); ctx.stroke();
+            for(let i=0;i<24;i++){ const a=time*0.6+i*Math.PI/12; ctx.strokeStyle=txt(ctx,P,i%6===0?0.5:0.18); ctx.lineWidth=1;
+                ctx.beginPath(); ctx.moveTo(cx+Math.cos(a)*R*1.18,cy+Math.sin(a)*R*1.18); ctx.lineTo(cx+Math.cos(a)*R*1.3,cy+Math.sin(a)*R*1.3); ctx.stroke(); }
+            ctx.font=`${Math.floor(R*0.5)}px "Courier New",monospace`; ctx.textAlign='center';
+            ctx.fillStyle=txt(ctx,P,0.95); ctx.fillText(Math.floor(v*100)+'',cx,cy+R*0.16);
+            ctx.font='9px "Courier New",monospace'; ctx.fillStyle=txt(ctx,P,0.5); ctx.fillText(w.glabel,cx,cy+R*0.6); ctx.textAlign='left';
+        }
+
+        // MASON — code + build bar tracking the objective
+        function rMason(ctx,w,x,y,iw,ih,time,P){
+            ctx.font='10px "Courier New",monospace'; const lh=12;
+            const KW=['fn','let','mut','lock','commit','Axis','Bsp','MAIN','from'];
+            let yy=y+10;
+            for(let i=0;i<w.code.length && yy<y+ih-16;i++,yy+=lh){ const line=w.code[i];
+                if(line.trim().startsWith('//')){ ctx.fillStyle=txt(ctx,P,0.32); ctx.fillText(line,x,yy); continue; }
+                let cxp=x; for(const tk of line.split(/(\s+|[(){}&:;,])/)){ if(!tk)continue;
+                    ctx.fillStyle= KW.includes(tk)?sig(ctx,P,0.9):(/^[A-Z]/.test(tk)?`rgba(${P.ph.r|0},255,${P.ph.b|0},0.85)`:txt(ctx,P,0.7));
+                    ctx.fillText(tk,cxp,yy); cxp+=ctx.measureText(tk).width; } }
+            const by=y+ih-7; ctx.fillStyle=txt(ctx,P,0.12); ctx.fillRect(x,by,iw,4);
+            ctx.fillStyle=sig(ctx,P,0.85); ctx.fillRect(x,by,iw*D.objective,4);
+            ctx.font='9px "Courier New",monospace'; ctx.fillStyle=txt(ctx,P,0.5); ctx.fillText('build '+Math.floor(D.objective*100)+'%',x,by-3);
+        }
+
+        // WEAVER — the membrane mosaic (the compositor's own view)
+        function rWeaver(ctx,w,x,y,iw,ih,time,P){
+            const cell=12, cols=Math.floor(iw/cell), rows=Math.floor(ih/cell), tt=time*0.4+w.phase;
+            for(let cy=0;cy<rows;cy++)for(let cx=0;cx<cols;cx++){
+                let v; if(w.amode===0) v=noise(cx*0.3,cy*0.3,tt*0.5);
+                else if(w.amode===1) v=0.5+0.5*Math.sin(cx*0.5+cy*0.4+tt);
+                else v=0.5+0.5*Math.sin(Math.hypot(cx-cols/2,cy-rows/2)*0.6-tt*2);
+                const c=mix(P.wp,(v>0.66?P.sg:P.ph),0.2+v*0.6);
+                ctx.fillStyle=`rgb(${c.r|0},${c.g|0},${c.b|0})`;
+                ctx.fillRect(x+cx*cell+0.5,y+cy*cell+0.5,cell-1.5,cell-1.5);
+            }
+            ctx.font='9px "Courier New",monospace'; ctx.fillStyle=txt(ctx,P,0.6);
+            ctx.fillText('membranes:'+aliveCache.length, x+2, y+ih-3);
+        }
+
+        // GHOST — corrupted intruder; red, glitchy, unsigned
+        function rGhost(ctx,w,x,y,iw,ih,time,P){
+            const cw=12, cols=Math.max(1,Math.floor(iw/cw)), rh=13;
+            if(w.cols.length!==cols){ w.cols=[]; for(let i=0;i<cols;i++) w.cols.push({y:Math.random()*ih,sp:60+Math.random()*160}); }
+            ctx.font='12px "Courier New",monospace';
+            for(let i=0;i<cols;i++){ const col=w.cols[i]; col.y+=col.sp*(deltaTime/1000)*(1+D.tension);
+                if(col.y>ih+rh*6) col.y=-Math.random()*ih*0.5; const cx=x+i*cw+1;
+                for(let k=0;k<6;k++){ const yy=col.y-k*rh; if(yy<y-rh||yy>y+ih) continue;
+                    const ch=KATA[Math.floor(noise(i*3.1,(col.y-k*rh)*0.05,time*0.5)*KATA.length)%KATA.length];
+                    ctx.fillStyle= k===0?`rgba(255,${P.sg.g|0},${P.sg.b|0},0.95)`:sig(ctx,P,Math.max(0,0.7-k*0.12)); ctx.fillText(ch,cx,yy); } }
+            ctx.font='10px "Courier New",monospace'; ctx.fillStyle=sig(ctx,P,0.9);
+            ctx.fillText('UNSIGNED · id?', x+2, y+ih-3);
+        }
+
+        // ── helpers ──
+        function clip(s,n){ return s.length>n?s.slice(0,n-1)+'…':s; }
+        function shortn(s){ return s.length>9?s.slice(0,9):s; }
+        function wrap(ctx,s,x,y,w,lh,maxLines){ const words=s.split(' '); let line='',yy=y,ln=0;
+            for(const wd of words){ const test=line?line+' '+wd:wd; if(ctx.measureText(test).width>w && line){ ctx.fillText(line,x,yy); yy+=lh; line=wd; if(++ln>=maxLines)return; } else line=test; }
+            if(ln<maxLines) ctx.fillText(line,x,yy); }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // NETWORK / TRAFFIC
+        // ═══════════════════════════════════════════════════════════════════════
+        function center(w){ const t=ROLES; return { x:w.cur.x+w.cur.w/2, y:w.cur.y+w.cur.h/2 }; }
+        function drawNetwork(ctx,dt,time,P,eff){
+            ctx.save(); ctx.lineWidth=1;
+            for(let i=0;i<graph.edges.length;i++){ const e=graph.edges[i]; const A=winById(e.a),B=winById(e.b); if(!A||!B) continue;
+                e.charge=Math.max(0,e.charge-dt*1.6);
+                const a=Math.min(0.7,0.05+0.05*(0.5+0.5*Math.sin(time*1.3+i))+e.charge*0.7);
+                const ca=center(A),cb=center(B); ctx.strokeStyle=txt(ctx,P,a);
+                ctx.beginPath(); ctx.moveTo(ca.x,ca.y); ctx.lineTo(cb.x,cb.y); ctx.stroke(); }
+            ctx.restore();
+            for(const w of aliveCache){ const focused=w.id===focusId,c=center(w);
+                w._pulse=Math.max(0,(w._pulse||0)-dt*2.2); const rad=(focused?5:3)+w._pulse*4;
+                const col=w.signal?P.sg:P.ph;
+                if(eff.bloom>0){ ctx.shadowColor=`rgba(${col.r|0},${col.g|0},${col.b|0},0.9)`; ctx.shadowBlur=eff.bloom*(focused?1.3:0.6)+w._pulse*10; }
+                ctx.fillStyle=`rgb(${col.r|0},${col.g|0},${col.b|0})`; ctx.beginPath(); ctx.arc(c.x,c.y,rad,0,6.283); ctx.fill(); ctx.shadowBlur=0; }
+            const sec=Math.floor(time);
+            if(sec!==lastBroadcast && sec%3===0){ lastBroadcast=sec; const f=winById(focusId);
+                if(f){ const c=center(f); pulses.push({x:c.x,y:c.y,r:0,life:1,signal:f.signal}); for(const ei of (graph.inc[focusId]||[])) graph.edges[ei].charge=1; } }
+        }
+
+        function drawPackets(ctx,dt,P,eff){
+            const speed=0.25+params.traffic*1.3;
+            for(const p of packets){ const e=graph.edges[p.e]; if(!e){ p.e=Math.floor(rng()*Math.max(1,graph.edges.length)); continue; }
+                const A=winById(e.a),B=winById(e.b); if(!A||!B) continue; const ca=center(A),cb=center(B);
+                p.pos+=speed*dt*(p.dir>0?1:-1);
+                if(p.pos>=1||p.pos<=0){ const at=p.pos>=1?e.b:e.a; const from=p.pos>=1?e.a:e.b; const wA=winById(at);
+                    if(wA){ wA._pulse=1; const wF=winById(from); logMsg(msgType(), wF?wF.name:'?', wA.name); } e.charge=1;
+                    const opts=graph.inc[at]||[]; if(opts.length){ const ne=opts[Math.floor(rng()*opts.length)],en=graph.edges[ne]; p.e=ne; p.dir=(en.a===at)?1:-1; p.pos=(p.dir>0)?0:1; }
+                    else { p.pos=Math.max(0,Math.min(1,p.pos)); p.dir*=-1; } continue; }
+                const px=ca.x+(cb.x-ca.x)*p.pos, py=ca.y+(cb.y-ca.y)*p.pos;
+                const hot=D.tension>0.4; const col=hot?P.sg:(p.pos>0.5?P.sg:P.ph);
+                if(eff.bloom>0){ ctx.shadowColor=`rgba(${col.r|0},${col.g|0},${col.b|0},1)`; ctx.shadowBlur=eff.bloom*0.9; }
+                ctx.fillStyle=`rgb(${col.r|0},${col.g|0},${col.b|0})`; ctx.beginPath(); ctx.arc(px,py,2.3,0,6.283); ctx.fill(); ctx.shadowBlur=0; }
+        }
+
+        function drawPulses(ctx,dt,P){
+            for(let i=pulses.length-1;i>=0;i--){ const p=pulses[i]; p.r+=dt*340; p.life-=dt*0.7; if(p.life<=0){ pulses.splice(i,1); continue; }
+                const col=p.signal?P.sg:P.ph; ctx.strokeStyle=`rgba(${col.r|0},${col.g|0},${col.b|0},${p.life*0.35})`; ctx.lineWidth=2;
+                ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.283); ctx.stroke(); }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // HUD + SUBTITLES (the storytelling spine)
+        // ═══════════════════════════════════════════════════════════════════════
+        function fmtTime(s){ const m=Math.floor(s/60), ss=Math.floor(s%60); return ('0'+m).slice(-2)+':'+('0'+ss).slice(-2); }
+        function drawHUD(ctx,time,P){
+            ctx.save();
+            ctx.fillStyle='rgba(6,9,12,0.9)'; ctx.fillRect(0,0,CANVAS,HUD_H);
+            ctx.font='13px "Courier New",monospace'; ctx.textBaseline='middle';
+            // left: identity
+            ctx.fillStyle=sig(ctx,P,0.95); ctx.fillText('◈ GNOSIS', 16, HUD_H/2-7);
+            ctx.fillStyle=txt(ctx,P,0.5); ctx.font='10px "Courier New",monospace'; ctx.fillText('gnu.in · 0.14.2 beta', 16, HUD_H/2+8);
+            // center: act
+            ctx.textAlign='center'; ctx.font='14px "Courier New",monospace';
+            const alert=D.tension>0.4;
+            ctx.fillStyle= alert?sig(ctx,P,0.95):txt(ctx,P,0.9);
+            ctx.fillText('ACT '+ROMAN[D.act]+' · '+D.actName, CANVAS/2, HUD_H/2-7);
+            ctx.font='10px "Courier New",monospace'; ctx.fillStyle=txt(ctx,P,0.55);
+            ctx.fillText(clip(D.directive,46), CANVAS/2, HUD_H/2+8);
+            // right: vitals
+            ctx.textAlign='right'; ctx.font='11px "Courier New",monospace';
+            ctx.fillStyle=txt(ctx,P,0.8);
+            ctx.fillText('council '+aliveCache.length+'   obj '+Math.floor(D.objective*100)+'%   ↑'+fmtTime(simTime), CANVAS-16, HUD_H/2-6);
+            // objective ribbon
+            const by=HUD_H-4; ctx.textAlign='left';
+            ctx.fillStyle=txt(ctx,P,0.1); ctx.fillRect(0,by,CANVAS,4);
+            const og=ctx.createLinearGradient(0,0,CANVAS,0);
+            og.addColorStop(0,sig(ctx,P,0.9)); og.addColorStop(1,txt(ctx,P,0.9));
+            ctx.fillStyle=og; ctx.fillRect(0,by,CANVAS*D.objective,4);
+            // tension blips
+            if(alert){ for(let i=0;i<3;i++){ ctx.fillStyle=sig(ctx,P,0.6*(0.5+0.5*Math.sin(time*8+i))); ctx.fillRect(CANVAS-150-i*10,6,4,4); } }
+            ctx.restore();
+        }
+
+        function drawSubtitle(ctx,time,P){
+            const top=CANVAS-SUB_H;
+            ctx.save();
+            const grad=ctx.createLinearGradient(0,top-20,0,CANVAS);
+            grad.addColorStop(0,'rgba(0,0,0,0)'); grad.addColorStop(0.4,'rgba(4,6,9,0.86)'); grad.addColorStop(1,'rgba(4,6,9,0.96)');
+            ctx.fillStyle=grad; ctx.fillRect(0,top-20,CANVAS,SUB_H+20);
+            ctx.strokeStyle=sig(ctx,P,0.25); ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(40,top+4); ctx.lineTo(CANVAS-40,top+4); ctx.stroke();
+            const s=D.sub; const col=s.signal?P.sg:P.ph;
+            // speaker
+            ctx.textAlign='left'; ctx.textBaseline='alphabetic'; ctx.font='12px "Courier New",monospace';
+            ctx.fillStyle=`rgba(${col.r|0},${col.g|0},${col.b|0},0.95)`;
+            ctx.fillText((s.sigil||'·')+'  '+s.speaker.toUpperCase(), 48, top+30);
+            // typewriter body
+            ctx.font='17px "Courier New",monospace';
+            const chars=Math.floor((simTime-s.t)*42);
+            const shown=s.text.slice(0,Math.min(s.text.length,chars));
+            ctx.fillStyle=`rgba(${P.phPure.r|0},${P.phPure.g|0},${P.phPure.b|0},0.96)`;
+            ctx.fillText(shown, 48, top+54);
+            if(chars<s.text.length && Math.floor(time*2)%2===0){ const cw=ctx.measureText(shown).width; ctx.fillRect(48+cw+2,top+44,9,14); }
+            ctx.restore();
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // CRT POST
+        // ═══════════════════════════════════════════════════════════════════════
+        function buildCRTTextures(){
+            scanTex=createGraphics(CANVAS,CANVAS); scanTex.pixelDensity(1); scanTex.noStroke();
+            for(let y=0;y<CANVAS;y+=3){ scanTex.fill(0,0,0,255); scanTex.rect(0,y,CANVAS,1.4); }
+            vigTex=createGraphics(CANVAS,CANVAS); vigTex.pixelDensity(1);
+            const v=vigTex.drawingContext; const g=v.createRadialGradient(CANVAS/2,CANVAS/2,CANVAS*0.28,CANVAS/2,CANVAS/2,CANVAS*0.72);
+            g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,0.55)'); v.fillStyle=g; v.fillRect(0,0,CANVAS,CANVAS);
+        }
+        function drawScanlines(eff){ if(eff.scanlines<=0) return; tint(255,eff.scanlines*230); image(scanTex,0,0); noTint(); }
+        function drawVignette(){ image(vigTex,0,0); }
+        function drawSweep(time){ const ph=parse(params.colorPalette[1]); const span=CANVAS+240,y=(time*90)%span-120;
+            blendMode(ADD); const ctx=drawingContext; const g=ctx.createLinearGradient(0,y-70,0,y+70);
+            g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(0.5,`rgba(${ph.r},${ph.g},${ph.b},0.08)`); g.addColorStop(1,'rgba(0,0,0,0)');
+            ctx.fillStyle=g; ctx.fillRect(0,y-70,CANVAS,140); blendMode(BLEND); }
+        function drawFlicker(time,eff){ if(eff.flicker<=0) return;
+            const n=(Math.sin(time*47)*0.5+0.5)*(Math.sin(time*113)*0.5+0.5);
+            fill(0,0,0,eff.flicker*(0.04+n*0.06)*255); noStroke(); rect(0,0,CANVAS,CANVAS);
+            if(Math.random()<0.02*eff.flicker){ const sg=parse(params.colorPalette[2]); fill(sg.r,sg.g,sg.b,14); rect(0,0,CANVAS,CANVAS); } }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // UI
+        // ═══════════════════════════════════════════════════════════════════════
+        function updateParam(name,value){ const v=parseFloat(value); params[name]=v;
+            const d=document.getElementById(name+'-value'); if(d) d.textContent=['tempo','reflow','traffic','scanlines','flicker','aberration'].includes(name)?v.toFixed(2):value;
+            if(name==='traffic') spawnPackets(); }
+        function updateColor(id,value){ const i={color1:0,color2:1,color3:2}[id]; params.colorPalette[i]=value;
+            const d=document.getElementById(id+'-value'); if(d) d.textContent=value; }
+        function updateSeedDisplay(){ document.getElementById('seed-input').value=params.seed; }
+        function updateSeed(){ const s=parseInt(document.getElementById('seed-input').value); if(s&&s>0){params.seed=s;initializeSystem();} else updateSeedDisplay(); }
+        function previousSeed(){ params.seed=Math.max(1,params.seed-1); updateSeedDisplay(); initializeSystem(); }
+        function nextSeed(){ params.seed+=1; updateSeedDisplay(); initializeSystem(); }
+        function randomSeedAndUpdate(){ params.seed=Math.floor(Math.random()*999999)+1; updateSeedDisplay(); initializeSystem(); }
+        function regenerate(){ initializeSystem(); }
+        function downloadPNG(){ saveCanvas('gnosis-'+params.seed,'png'); }
+        function resetParameters(){ params=JSON.parse(JSON.stringify(defaultParams));
+            const S=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val;const d=document.getElementById(id+'-value');if(d)d.textContent=val;};
+            S('councilSize',params.councilSize); S('tempo',params.tempo.toFixed(2)); S('reflow',params.reflow.toFixed(2)); S('traffic',params.traffic.toFixed(2));
+            S('bloom',params.bloom); S('scanlines',params.scanlines.toFixed(2)); S('aberration',params.aberration.toFixed(2)); S('flicker',params.flicker.toFixed(2));
+            const C=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val;const d=document.getElementById(id+'-value');if(d)d.textContent=val;};
+            C('color1',params.colorPalette[0]); C('color2',params.colorPalette[1]); C('color3',params.colorPalette[2]);
+            updateSeedDisplay(); initializeSystem(); }
+        window.addEventListener('load',updateSeedDisplay);
+    </script>
+</body>
+</html>

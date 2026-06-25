@@ -1,0 +1,26 @@
+{
+  "canvas": {
+    "width": 1254,
+    "height": 1254
+  },
+  "screenOverlay": {
+    "leftPct": 24.1,
+    "topPct": 38.85,
+    "widthPct": 41.95,
+    "heightPct": 37.85,
+    "radiusPct": 12.5,
+    "note": "Tuned against approved PNG. Covers the true front screen including the existing prompt to prevent state contamination."
+  },
+  "antennaTip": {
+    "xPct": 74.2,
+    "yPct": 28.7
+  },
+  "successBurst": {
+    "xPct": 45.5,
+    "yPct": 63.0
+  },
+  "errorBurst": {
+    "xPct": 75.0,
+    "yPct": 26.0
+  }
+}

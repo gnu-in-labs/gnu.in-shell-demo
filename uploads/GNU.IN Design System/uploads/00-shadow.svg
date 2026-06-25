@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<svg class="state-idle" xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+<title id="title">Sys.ter layer 00-shadow.svg</title>
+<desc id="desc">GNU.IN OS Sys.ter mascot source rig v5. Physical z-order layers, real screen surface, dynamic shell glyphs, no foreground preservation hack.</desc>
+
+<defs>
+  <linearGradient id="orangeShell" x1="180" y1="300" x2="740" y2="860" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FF7A12"></stop>
+    <stop offset="0.45" stop-color="#FF6A00"></stop>
+    <stop offset="1" stop-color="#D95400"></stop>
+  </linearGradient>
+  <linearGradient id="orangeSide" x1="700" y1="330" x2="840" y2="860" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F68B28"></stop>
+    <stop offset="0.55" stop-color="#FF6A00"></stop>
+    <stop offset="1" stop-color="#D95400"></stop>
+  </linearGradient>
+  <linearGradient id="screenSurface" x1="260" y1="410" x2="685" y2="805" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#01050A"></stop>
+    <stop offset="0.55" stop-color="#0B1118"></stop>
+    <stop offset="1" stop-color="#171C23"></stop>
+  </linearGradient>
+  <linearGradient id="beretFelt" x1="260" y1="200" x2="850" y2="510" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#6D8A58"></stop>
+    <stop offset="0.44" stop-color="#4D6B3F"></stop>
+    <stop offset="1" stop-color="#3D5B34"></stop>
+  </linearGradient>
+  <linearGradient id="beretBand" x1="240" y1="360" x2="820" y2="500" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#161B1F"></stop>
+    <stop offset="0.55" stop-color="#262C32"></stop>
+    <stop offset="1" stop-color="#080B0E"></stop>
+  </linearGradient>
+  <linearGradient id="metalRod" x1="738" y1="215" x2="795" y2="640" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFFFFF"></stop>
+    <stop offset="0.22" stop-color="#E5E8EA"></stop>
+    <stop offset="0.5" stop-color="#FAFAF7"></stop>
+    <stop offset="1" stop-color="#9DA4AB"></stop>
+  </linearGradient>
+  <linearGradient id="metalDark" x1="725" y1="530" x2="805" y2="670" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EEF0F1"></stop>
+    <stop offset="0.35" stop-color="#AEB5BA"></stop>
+    <stop offset="1" stop-color="#5B646C"></stop>
+  </linearGradient>
+  <filter id="softDrop" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.22"></feDropShadow>
+  </filter>
+  <filter id="screenGlow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#F7F3ED" flood-opacity="0.12"></feDropShadow>
+  </filter>
+  <filter id="greenGlow" x="-60%" y="-60%" width="220%" height="220%">
+    <feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="#8CE05A" flood-opacity="0.70"></feDropShadow>
+  </filter>
+  <filter id="redGlow" x="-60%" y="-60%" width="220%" height="220%">
+    <feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="#E5484D" flood-opacity="0.72"></feDropShadow>
+  </filter>
+  <clipPath id="screenClip">
+    <rect x="250" y="392" width="475" height="430" rx="76"></rect>
+  </clipPath>
+</defs>
+
+
+
+
+
+<g id="sys-ter-source-rig">
+
+<g id="00-shadow" class="rig-layer">
+  <ellipse id="ground-shadow" cx="512" cy="886" rx="315" ry="34" fill="#111418" opacity="0.18"></ellipse>
+</g>
+
+</g>
+</svg>

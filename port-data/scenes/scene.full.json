@@ -1,0 +1,198 @@
+{
+  "id": "scene.full",
+  "label": "All surfaces composed",
+  "frame": 7002,
+  "renderer": "tiny-skia",
+  "density": "mouse",
+  "seed": "orange",
+  "nodes": [
+    {
+      "id": 0,
+      "kind": "Background",
+      "interactive": false,
+      "layer": 0,
+      "bounds": [
+        0,
+        0,
+        1280,
+        800
+      ],
+      "payload": {
+        "Fill": "0x141313FF"
+      }
+    },
+    {
+      "id": 1,
+      "kind": "Wallpaper",
+      "interactive": false,
+      "layer": 1,
+      "bounds": [
+        0,
+        0,
+        1280,
+        800
+      ],
+      "payload": {
+        "Wallpaper": {
+          "generation": 1,
+          "source": "Matugen"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "kind": "Bar",
+      "interactive": true,
+      "layer": 30,
+      "bounds": [
+        0,
+        0,
+        1280,
+        34
+      ],
+      "payload": {
+        "Bar": {
+          "modules": 5
+        }
+      }
+    },
+    {
+      "id": 3,
+      "kind": "Dock",
+      "interactive": true,
+      "layer": 30,
+      "bounds": [
+        520,
+        740,
+        240,
+        46
+      ],
+      "payload": {
+        "Dock": {
+          "items": 6
+        }
+      }
+    },
+    {
+      "id": 4,
+      "kind": "Sidebar",
+      "interactive": true,
+      "layer": 60,
+      "bounds": [
+        970,
+        42,
+        318,
+        744
+      ],
+      "payload": {
+        "Sidebar": {
+          "toggles": 4
+        }
+      }
+    },
+    {
+      "id": 5,
+      "kind": "ContextMenu",
+      "interactive": true,
+      "layer": 100,
+      "bounds": [
+        360,
+        230,
+        208,
+        236
+      ],
+      "payload": {
+        "Menu": {
+          "rows": 6
+        }
+      }
+    },
+    {
+      "id": 6,
+      "kind": "Launcher",
+      "interactive": true,
+      "layer": 120,
+      "bounds": [
+        422,
+        204,
+        436,
+        360
+      ],
+      "payload": {
+        "Launcher": {
+          "query": "",
+          "items": 8
+        }
+      }
+    },
+    {
+      "id": 7,
+      "kind": "Modal",
+      "interactive": true,
+      "layer": 500,
+      "bounds": [
+        460,
+        290,
+        360,
+        200
+      ],
+      "payload": {
+        "Modal": {
+          "scrim": true
+        }
+      }
+    },
+    {
+      "id": 8,
+      "kind": "Osd",
+      "interactive": false,
+      "layer": 800,
+      "bounds": [
+        540,
+        672,
+        200,
+        52
+      ],
+      "payload": {
+        "Osd": {
+          "volume": 0.64
+        }
+      }
+    },
+    {
+      "id": 9,
+      "kind": "Notification",
+      "interactive": false,
+      "layer": 850,
+      "bounds": [
+        1008,
+        42,
+        248,
+        160
+      ],
+      "payload": {
+        "Notif": {
+          "stack": 2
+        }
+      }
+    },
+    {
+      "id": 10,
+      "kind": "ScreenCorner",
+      "interactive": false,
+      "layer": 880,
+      "bounds": [
+        0,
+        0,
+        1280,
+        800
+      ],
+      "payload": {
+        "ScreenCorner": {
+          "radius": 14
+        }
+      }
+    }
+  ],
+  "damage": []
+}

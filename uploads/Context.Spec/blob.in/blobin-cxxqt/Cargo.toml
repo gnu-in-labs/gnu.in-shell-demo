@@ -1,0 +1,21 @@
+[package]
+name = "blobin-cxxqt"
+version = "0.4.0"
+edition = "2021"
+description = "Reactive Qt bindings for blob.in (Q6) — QObject surface over blobin-core."
+
+# Q6 — surface réactive parallèle au cxx::bridge brut.
+# Le crate `blobin-qt` reste valide pour les hosts qui veulent du C++ direct ;
+# `blobin-cxxqt` est la cible idiomatique Qt avec Q_PROPERTY + signaux.
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+blobin-core = { path = "../blobin-core" }
+cxx        = "1"
+cxx-qt     = "0.6"
+cxx-qt-lib = "0.6"
+
+[build-dependencies]
+cxx-qt-build = "0.6"

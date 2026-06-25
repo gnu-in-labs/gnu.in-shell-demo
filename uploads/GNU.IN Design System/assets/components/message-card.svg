@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" role="img" aria-labelledby="title desc">
+  <title id="title">GNU6-shell message card component template</title>
+  <desc>System dialogue card component. Text remains editable.</desc>
+  <path id="message-card" d="M 66 42 H 598 Q 620 42 620 64 V 178 Q 620 200 598 200 H 66 Q 44 200 44 178 V 126 L 20 106 L 44 86 V 64 Q 44 42 66 42 Z" fill="#FFFFFF" stroke="#E6E8EB" stroke-width="3"></path>
+  <g id="mark" transform="translate(78 58) scale(0.38)">
+    <g id="message-cube-dialogue-symbol">
+      <path id="message-dialogue-frame" d="M 194 52 H 256 Q 268 52 268 64 V 178 Q 268 190 256 190 H 184 L 160 214 V 190 H 146" fill="none" stroke="#FF6A00" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+      <g id="message-cube-terminal">
+      <polygon id="message-cube-top" points="66,66 128,32 190,66 128,100" fill="#FF6A00"></polygon>
+      <polygon id="message-cube-left" points="60,78 122,113 122,181 60,146" fill="#FF6A00"></polygon>
+      <polygon id="message-terminal-face" points="134,113 196,78 196,146 134,181" fill="#111418"></polygon>
+      <g id="message-prompt" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+        <polyline id="message-prompt-chevron" points="151,115 166,130 151,145"></polyline>
+        <line id="message-prompt-cursor" x1="167" y1="153" x2="184" y2="153"></line>
+      </g>
+    </g>
+    </g>
+  </g>
+  <g id="editable-text" font-family="Montreal, Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="218" y="102" font-size="31" font-weight="750" fill="#111418">Commande reçue.</text>
+    <text x="218" y="142" font-size="28" fill="#667085">Exécution planifiée.</text>
+    <text x="218" y="174" font-size="24" font-family="IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#FF6A00">&gt;_</text>
+  </g>
+
+</svg>

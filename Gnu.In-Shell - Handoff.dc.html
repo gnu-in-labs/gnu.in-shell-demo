@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9/colors_and_type.css">
+<link rel="stylesheet" href="_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9/styles.css">
+<script src="_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9/_ds_bundle.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..800&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..0&display=block" rel="stylesheet">
+</helmet>
+
+<!-- ═══════════ COVER ═══════════ -->
+<div data-drags-parent="0" style="position:absolute; left:80px; top:56px; width:2560px; font:600 11px/1 'Montreal','Inter',system-ui; letter-spacing:0.18em; text-transform:uppercase; color:#667085; display:flex; align-items:center; gap:10px;"><span style="width:8px;height:8px;border-radius:2px;background:#FF6A00;"></span>Handoff · board → code · engine 100% Rust · render-first GPUI · gnu.in-os v0.12.0</div>
+<div data-screen-label="Cover" style="position:absolute; left:80px; top:92px; width:2560px; height:230px; border-radius:16px; overflow:hidden; box-shadow:0 14px 40px rgba(17,20,24,0.16); background:#0D1014;">
+  <div style="position:absolute; inset:0; padding:34px 48px; font-family:'Montreal','Inter',system-ui;">
+    <div style="font:600 11px/1 'Montreal'; letter-spacing:0.2em; text-transform:uppercase; color:#7c828a;">render-first Rust/GPUI · tokens → gnuin-* crates · hôte Quickshell/QML</div>
+    <div style="font-weight:700; font-size:52px; line-height:1.0; letter-spacing:-0.025em; color:#f3eee9; margin-top:14px;">Handoff moteur</div>
+    <div style="font-size:16px; line-height:1.45; color:#9aa0a8; margin-top:12px; max-width:1000px;">Du board au code, sans perte. Quelle molécule sert quel archétype, comment compiler les tokens, le layout du repo, la surface API, et le singleton <span style="font-family:'JetBrains Mono'; color:#cbc5ca;">ContextMenuService</span> — plus comment dégrader proprement quand une feature manque.</div>
+  </div>
+  <div style="position:absolute; right:44px; top:50%; transform:translateY(-50%); display:flex; gap:8px;">
+    <span style="font:700 12px/1 'JetBrains Mono'; color:#FF8E40; padding:9px 12px; border:1px solid #4a3320; border-radius:8px;">6 portes fermées</span>
+    <span style="font:700 12px/1 'JetBrains Mono'; color:#8DA982; padding:9px 12px; border:1px solid #2c3a2c; border-radius:8px;">gnu.in-os · v0.12.0 beta</span>
+  </div>
+</div>
+
+<!-- ═══════════ ◆.1 · MATRICE MOLÉCULE × ARCHÉTYPE ═══════════ -->
+<div style="position:absolute; left:80px; top:374px; width:2560px; font-family:'Montreal','Inter',system-ui; display:flex; align-items:baseline; gap:16px;">
+  <span style="font:700 13px/1 'JetBrains Mono'; color:#FF6A00; letter-spacing:0.1em;">◆.1</span>
+  <span style="font:700 24px/1 'Montreal'; letter-spacing:-0.01em; color:#111418;">Matrice · molécule × archétype</span>
+  <span style="font:400 13px/1 'Montreal'; color:#667085;">quelle composition sert quel contract · ● requis · ○ optionnel</span>
+  <span style="flex:1; height:1px; background:#D7DADF;"></span>
+</div>
+<div data-screen-label="◆.1 · Matrice" style="position:absolute; left:80px; top:418px; width:2560px; height:520px; background:#fff; border:1px solid #E6E8EB; border-radius:14px; box-shadow:0 8px 24px rgba(17,20,24,0.08); padding:24px; font-family:'Montreal','Inter',system-ui; box-sizing:border-box;">
+  <div style="display:grid; grid-template-columns:230px repeat(8,1fr); gap:1px; background:#E6E8EB; border:1px solid #E6E8EB; border-radius:10px; overflow:hidden; height:100%;">
+    <!-- header row -->
+    <div style="background:#F7F8FA; padding:10px 12px; display:flex; align-items:flex-end; font:600 10px 'Montreal'; letter-spacing:0.1em; text-transform:uppercase; color:#A1A6AD;">molécule ↓ / archétype →</div>
+    <div style="background:#0D1014; padding:10px 8px; font:700 10px 'JetBrains Mono'; color:#cbc5ca; display:flex; align-items:flex-end;">R.01<br>Empty</div>
+    <div style="background:#0D1014; padding:10px 8px; font:700 10px 'JetBrains Mono'; color:#cbc5ca; display:flex; align-items:flex-end;">R.02<br>Widget</div>
+    <div style="background:#0D1014; padding:10px 8px; font:700 10px 'JetBrains Mono'; color:#cbc5ca; display:flex; align-items:flex-end;">R.03<br>Window</div>
+    <div style="background:#0D1014; padding:10px 8px; font:700 10px 'JetBrains Mono'; color:#cbc5ca; display:flex; align-items:flex-end;">R.04<br>Audio</div>
+    <div style="background:#0D1014; padding:10px 8px; font:700 10px 'JetBrains Mono'; color:#cbc5ca; display:flex; align-items:flex-end;">R.05<br>Net</div>
+    <div style="background:#1c1716; padding:10px 8px; font:700 10px 'JetBrains Mono'; color:#FF8E40; display:flex; align-items:flex-end;">R.06<br>Bubble★</div>
+    <div style="background:#0D1014; padding:10px 8px; font:700 10px 'JetBrains Mono'; color:#cbc5ca; display:flex; align-items:flex-end;">R.07<br>Power</div>
+    <div style="background:#1c1716; padding:10px 8px; font:700 10px 'JetBrains Mono'; color:#FF8E40; display:flex; align-items:flex-end;">R.08<br>Launch✦</div>
+
+    <!-- rows -->
+    <div style="background:#fff; padding:11px 12px; font:600 12px 'Montreal'; color:#111418;">CM.01 GnuMenu</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#C9B8A8;">○</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#C9B8A8;">○</div>
+
+    <div style="background:#fff; padding:11px 12px; font:600 12px 'Montreal'; color:#111418;">CM.08 MascotRow</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+
+    <div style="background:#fff; padding:11px 12px; font:600 12px 'Montreal'; color:#111418;">CM.11 DeviceRow</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#C9B8A8;">○</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+
+    <div style="background:#fff; padding:11px 12px; font:600 12px 'Montreal'; color:#111418;">CM.12 VolumeSlider</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#C9B8A8;">○</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+
+    <div style="background:#fff; padding:11px 12px; font:600 12px 'Montreal'; color:#111418;">CM.14 CommandLine</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#C9B8A8;">○</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+
+    <div style="background:#fff; padding:11px 12px; font:600 12px 'Montreal'; color:#111418;">CM.16 Toast</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#D7DADF;">·</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#C9B8A8;">○</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#fff; display:grid; place-items:center; font:600 15px 'JetBrains Mono'; color:#FF6A00;">●</div>
+    <div style="background:#FFFBF6; display:grid; place-items:center; font:600 14px 'JetBrains Mono'; color:#C9B8A8;">○</div>
+  </div>
+</div>
+
+<!-- ═══════════ ◆.2 · 3 PAQUETS · ◆.3 REPO ═══════════ -->
+<div style="position:absolute; left:80px; top:990px; width:2560px; font-family:'Montreal','Inter',system-ui; display:flex; align-items:baseline; gap:16px;">
+  <span style="font:700 13px/1 'JetBrains Mono'; color:#FF6A00; letter-spacing:0.1em;">◆.2 · ◆.3</span>
+  <span style="font:700 24px/1 'Montreal'; letter-spacing:-0.01em; color:#111418;">3 couches · repo réel · render-first Rust</span>
+  <span style="font:400 13px/1 'Montreal'; color:#667085;">tokens → engine Rust/GPUI → surface QML · le layout gnu.in-os</span>
+  <span style="flex:1; height:1px; background:#D7DADF;"></span>
+</div>
+<div data-screen-label="◆.2 · Paquets / ◆.3 · Repo" style="position:absolute; left:80px; top:1034px; width:2560px; height:520px; background:#F7F3ED; border:1px solid #E2DCCB; border-radius:14px; box-shadow:0 8px 24px rgba(17,20,24,0.08); padding:28px; font-family:'Montreal','Inter',system-ui; box-sizing:border-box;">
+  <div style="display:flex; gap:24px; height:100%;">
+    <!-- packages -->
+    <div style="width:1280px;">
+      <div style="font:600 10px/1 'Montreal'; letter-spacing:0.16em; text-transform:uppercase; color:#667085;">Les 3 couches · render-first Rust</div>
+      <div style="display:flex; flex-direction:column; gap:14px; margin-top:18px;">
+        <div style="background:#fff; border:1px solid #ECE7DC; border-radius:11px; padding:18px 20px;">
+          <div style="display:flex; align-items:center; gap:12px;"><span style="width:32px; height:32px; border-radius:8px; background:#FF6A00; display:grid; place-items:center; font:700 14px 'JetBrains Mono'; color:#fff;">1</span><div style="flex:1;"><div style="font:700 15px 'Montreal'; color:#111418;">tokens · la source</div><div style="font:400 11px 'JetBrains Mono'; color:#667085;">gnu.in-design-reference · gnuin-settings-schema</div></div><span style="font:600 9.5px 'JetBrains Mono'; color:#5F7F52; padding:4px 9px; background:#EEF3EC; border-radius:6px;">json/toml</span></div>
+          <div style="margin-top:12px; font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1.7; color:#56606a; padding:10px 12px; background:#F7F8FA; border-radius:7px;"><div>couleur + motion + density + shape → codegen</div><div style="padding-left:14px;"><span style="color:#C95400;">gnuin-gpui-theme</span> (Rust) · source unique</div></div>
+        </div>
+        <div style="background:#fff; border:1px solid #ECE7DC; border-radius:11px; padding:18px 20px;">
+          <div style="display:flex; align-items:center; gap:12px;"><span style="width:32px; height:32px; border-radius:8px; background:#5F7F52; display:grid; place-items:center; font:700 14px 'JetBrains Mono'; color:#fff;">2</span><div style="flex:1;"><div style="font:700 15px 'Montreal'; color:#111418;">engine · 100% Rust · render-first</div><div style="font:400 11px 'JetBrains Mono'; color:#667085;">gnuin-compose-core · gnuin-vector-core · gnuin-shell-chrome</div></div><span style="font:600 9.5px 'JetBrains Mono'; color:#8DA982; padding:4px 9px; background:#EEF3EC; border-radius:6px;">rust/gpui</span></div>
+          <div style="margin-top:12px; font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1.7; color:#56606a; padding:10px 12px; background:#F7F8FA; border-radius:7px;"><div>gnosis-engine · gnosis-sentinel · <span style="color:#C95400;">GPUI rend en premier</span></div><div style="padding-left:14px;">springs settle·snap·wobbly · 1× tick / frame sale</div></div>
+        </div>
+        <div style="background:#fff; border:1px solid #ECE7DC; border-radius:11px; padding:18px 20px;">
+          <div style="display:flex; align-items:center; gap:12px;"><span style="width:32px; height:32px; border-radius:8px; background:#CE8E3F; display:grid; place-items:center; font:700 14px 'JetBrains Mono'; color:#fff;">3</span><div style="flex:1;"><div style="font:700 15px 'Montreal'; color:#111418;">surface · hôte QML</div><div style="font:400 11px 'JetBrains Mono'; color:#667085;">gnu.in-OS · MembraneHost · Gnu* + recettes + service</div></div><span style="font:600 9.5px 'JetBrains Mono'; color:#CE8E3F; padding:4px 9px; background:#FBF3E8; border-radius:6px;">quickshell</span></div>
+          <div style="margin-top:12px; font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1.7; color:#56606a; padding:10px 12px; background:#F7F8FA; border-radius:7px;"><div>QML ancre + héberge le rendu Rust/GPUI</div><div style="padding-left:14px;">C++ blob.in <span style="color:#A1A6AD;">legacy → retiré</span> · 24+16+8 composants</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="width:1px; background:#E2DCCB;"></div>
+    <!-- repo -->
+    <div style="flex:1;">
+      <div style="font:600 10px/1 'Montreal'; letter-spacing:0.16em; text-transform:uppercase; color:#667085;">Repo · monorepo layout</div>
+      <div style="margin-top:18px; background:#0D1014; border:1px solid #20262E; border-radius:11px; padding:18px 20px; font-family:'JetBrains Mono',monospace; font-size:11.5px; line-height:1.8; color:#9aa0a8;">
+        <div style="color:#cbc5ca;">gnu.in-os/<span style="color:#7c828a;"> · v0.12.0 · authority</span></div>
+        <div><span style="color:#5F7F52;">├─</span> engine/ <span style="color:#FF8E40;">· 100% Rust</span></div>
+        <div style="padding-left:16px;"><span style="color:#5F7F52;">├─</span> gnuin-compose-core/ <span style="color:#7c828a;">· .rs</span></div>
+        <div style="padding-left:16px;"><span style="color:#5F7F52;">├─</span> gnuin-vector-core/ <span style="color:#7c828a;">· .rs</span></div>
+        <div style="padding-left:16px;"><span style="color:#5F7F52;">├─</span> gnuin-gpui-theme/ <span style="color:#7c828a;">· tokens</span></div>
+        <div style="padding-left:16px;"><span style="color:#5F7F52;">├─</span> gnuin-shell-chrome/ <span style="color:#7c828a;">· render</span></div>
+        <div style="padding-left:16px;"><span style="color:#5F7F52;">├─</span> gnosis-engine/ · gnosis-sentinel/</div>
+        <div style="padding-left:16px;"><span style="color:#5F7F52;">└─</span> blob.in/ <span style="color:#A1A6AD;">· legacy C++</span></div>
+        <div><span style="color:#5F7F52;">├─</span> contracts/ · state/ · release/</div>
+        <div><span style="color:#5F7F52;">└─</span> components.lock.toml <span style="color:#7c828a;">· pins</span></div>
+        <div style="margin-top:6px; color:#cbc5ca;">gnu.in-shell/<span style="color:#7c828a;"> · surface QML</span></div>
+        <div style="padding-left:16px;"><span style="color:#5F7F52;">├─</span> shell.qml · MembraneHost · qmldir</div>
+        <div style="padding-left:16px;"><span style="color:#5F7F52;">└─</span> components/ <span style="color:#FF8E40;">· ContextMenuService</span></div>
+      </div>
+      <div style="margin-top:14px; display:flex; gap:8px;">
+        <span style="flex:1.3; text-align:center; font:600 9.5px 'JetBrains Mono'; color:#5F7F52; padding:8px; background:#EEF3EC; border:1px solid #cfe0c8; border-radius:7px;">GPUI render-first<br><span style="color:#8DA982;">Rust · primaire</span></span>
+        <span style="flex:1; text-align:center; font:600 9.5px 'JetBrains Mono'; color:#667085; padding:8px; background:#fff; border:1px solid #ECE7DC; border-radius:7px;">Quickshell<br><span style="color:#A1A6AD;">QML hôte</span></span>
+        <span style="flex:1; text-align:center; font:600 9.5px 'JetBrains Mono'; color:#A1A6AD; padding:8px; background:#fff; border:1px solid #ECE7DC; border-radius:7px;">blob.in<br><span style="color:#C9B8A8;">C++ legacy</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ◆.5 API · ◆.6 SERVICE · ◆.4 SPRINT ═══════════ -->
+<div style="position:absolute; left:80px; top:1606px; width:2560px; font-family:'Montreal','Inter',system-ui; display:flex; align-items:baseline; gap:16px;">
+  <span style="font:700 13px/1 'JetBrains Mono'; color:#FF6A00; letter-spacing:0.1em;">◆.5 · ◆.6 · ◆.4</span>
+  <span style="font:700 24px/1 'Montreal'; letter-spacing:-0.01em; color:#111418;">Surface API · ContextMenuService · sprint</span>
+  <span style="font:400 13px/1 'Montreal'; color:#667085;">5 symboles · le singleton · dégradation propre · 10 semaines</span>
+  <span style="flex:1; height:1px; background:#D7DADF;"></span>
+</div>
+<div data-screen-label="◆.5 · API / ◆.6 · Service / ◆.4 · Sprint" style="position:absolute; left:80px; top:1650px; width:2560px; height:600px; background:#fff; border:1px solid #E6E8EB; border-radius:14px; box-shadow:0 8px 24px rgba(17,20,24,0.08); padding:28px; font-family:'Montreal','Inter',system-ui; box-sizing:border-box;">
+  <div style="display:flex; gap:24px; height:100%;">
+    <!-- API surface -->
+    <div style="width:840px; display:flex; flex-direction:column;">
+      <div style="font:600 10px/1 'Montreal'; letter-spacing:0.16em; text-transform:uppercase; color:#667085;">API surface · 5 symboles</div>
+      <div style="margin-top:16px; background:#0D1014; border:1px solid #20262E; border-radius:11px; padding:18px 20px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.85; flex:1;">
+        <div style="color:#7c828a;">// 1 · ouvrir un contract</div>
+        <div style="color:#cbc5ca;"><span style="color:#FF8E40;">ContextMenuService</span>.open(</div>
+        <div style="padding-left:16px; color:#9aa0a8;">anchor, <span style="color:#8DA982;">Archetype</span>::Widget, ctx)</div>
+        <div style="height:8px;"></div>
+        <div style="color:#7c828a;">// 2 · enregistrer une recette</div>
+        <div style="color:#cbc5ca;">.register(<span style="color:#8DA982;">"R.08"</span>, launcher_recipe)</div>
+        <div style="height:8px;"></div>
+        <div style="color:#7c828a;">// 3 · binder l'état moteur (Rust)</div>
+        <div style="color:#cbc5ca;">.bind(gnosis_engine.state) <span style="color:#7c828a;">// idle…veille</span></div>
+        <div style="height:8px;"></div>
+        <div style="color:#7c828a;">// 4 · thème dérivé</div>
+        <div style="color:#cbc5ca;">gnuTheme({ dark, brand, <span style="color:#8DA982;">seed</span> })</div>
+        <div style="height:8px;"></div>
+        <div style="color:#7c828a;">// 5 · densité réactive</div>
+        <div style="color:#cbc5ca;">.density(<span style="color:#8DA982;">"mouse"</span> | <span style="color:#8DA982;">"touch"</span>)</div>
+      </div>
+    </div>
+    <div style="width:1px; background:#E6E8EB;"></div>
+    <!-- ContextMenuService + degradation -->
+    <div style="width:680px; display:flex; flex-direction:column;">
+      <div style="font:600 10px/1 'Montreal'; letter-spacing:0.16em; text-transform:uppercase; color:#667085;">ContextMenuService · singleton</div>
+      <div style="margin-top:16px; padding:16px 18px; background:#F7F3ED; border:1px solid #E2DCCB; border-radius:11px;">
+        <div style="display:flex; align-items:center; gap:10px;"><span style="width:30px; height:30px; border-radius:8px; background:#FF6A00; display:grid; place-items:center; font-family:'Material Symbols Rounded'; color:#fff; font-size:17px;">hub</span><div><div style="font:700 13px 'Montreal'; color:#111418;">un seul point d'entrée</div><div style="font:400 10px 'JetBrains Mono'; color:#667085;">right-click anywhere → service.open()</div></div></div>
+      </div>
+      <div style="font:600 10px/1 'Montreal'; letter-spacing:0.16em; text-transform:uppercase; color:#667085; margin-top:22px;">Dégradation propre</div>
+      <div style="margin-top:14px; display:flex; flex-direction:column; gap:9px;">
+        <div style="display:flex; align-items:center; gap:10px; padding:10px 13px; background:#F7F8FA; border:1px solid #E6E8EB; border-radius:8px;"><span style="font-family:'Material Symbols Rounded'; font-size:16px; color:#5F7F52;">check_circle</span><span style="font:400 12px 'Montreal'; color:#3a4048; flex:1;">pas de GPUI → fallback rendu QML</span><span style="font:600 9px 'JetBrains Mono'; color:#5F7F52;">OK</span></div>
+        <div style="display:flex; align-items:center; gap:10px; padding:10px 13px; background:#F7F8FA; border:1px solid #E6E8EB; border-radius:8px;"><span style="font-family:'Material Symbols Rounded'; font-size:16px; color:#5F7F52;">check_circle</span><span style="font:400 12px 'Montreal'; color:#3a4048; flex:1;">pas de matugen → schéma neutre</span><span style="font:600 9px 'JetBrains Mono'; color:#5F7F52;">OK</span></div>
+        <div style="display:flex; align-items:center; gap:10px; padding:10px 13px; background:#F7F8FA; border:1px solid #E6E8EB; border-radius:8px;"><span style="font-family:'Material Symbols Rounded'; font-size:16px; color:#5F7F52;">check_circle</span><span style="font:400 12px 'Montreal'; color:#3a4048; flex:1;">pas de Material Symbols → Lucide</span><span style="font:600 9px 'JetBrains Mono'; color:#5F7F52;">OK</span></div>
+        <div style="display:flex; align-items:center; gap:10px; padding:10px 13px; background:#F7F8FA; border:1px solid #E6E8EB; border-radius:8px;"><span style="font-family:'Material Symbols Rounded'; font-size:16px; color:#5F7F52;">check_circle</span><span style="font:400 12px 'Montreal'; color:#3a4048; flex:1;">recette manquante → GnuMenu fallback</span><span style="font:600 9px 'JetBrains Mono'; color:#5F7F52;">OK</span></div>
+      </div>
+    </div>
+    <div style="width:1px; background:#E6E8EB;"></div>
+    <!-- sprint -->
+    <div style="flex:1; display:flex; flex-direction:column;">
+      <div style="font:600 10px/1 'Montreal'; letter-spacing:0.16em; text-transform:uppercase; color:#667085;">Sprint · 10 semaines</div>
+      <div style="margin-top:16px; display:flex; flex-direction:column; gap:11px;">
+        <div><div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font:600 11.5px 'Montreal'; color:#111418;">S1–2 · tokens + codegen</span><span style="font:400 9.5px 'JetBrains Mono'; color:#A1A6AD;">2w</span></div><div style="height:6px; border-radius:3px; background:#E6E8EB; margin-top:5px;"><div style="width:20%; height:100%; background:#FF6A00; border-radius:3px;"></div></div></div>
+        <div><div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font:600 11.5px 'Montreal'; color:#111418;">S3–4 · blobin core</span><span style="font:400 9.5px 'JetBrains Mono'; color:#A1A6AD;">2w</span></div><div style="height:6px; border-radius:3px; background:#E6E8EB; margin-top:5px;"><div style="width:40%; height:100%; background:#5F7F52; border-radius:3px;"></div></div></div>
+        <div><div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font:600 11.5px 'Montreal'; color:#111418;">S5–6 · atomes + molécules</span><span style="font:400 9.5px 'JetBrains Mono'; color:#A1A6AD;">2w</span></div><div style="height:6px; border-radius:3px; background:#E6E8EB; margin-top:5px;"><div style="width:60%; height:100%; background:#CE8E3F; border-radius:3px;"></div></div></div>
+        <div><div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font:600 11.5px 'Montreal'; color:#111418;">S7–8 · recettes + service</span><span style="font:400 9.5px 'JetBrains Mono'; color:#A1A6AD;">2w</span></div><div style="height:6px; border-radius:3px; background:#E6E8EB; margin-top:5px;"><div style="width:80%; height:100%; background:#3D8DCC; border-radius:3px;"></div></div></div>
+        <div><div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font:600 11.5px 'Montreal'; color:#111418;">S9–10 · cibles + polish ★</span><span style="font:400 9.5px 'JetBrains Mono'; color:#A1A6AD;">2w</span></div><div style="height:6px; border-radius:3px; background:#E6E8EB; margin-top:5px;"><div style="width:100%; height:100%; background:#111418; border-radius:3px;"></div></div></div>
+      </div>
+      <div style="margin-top:auto; padding-top:16px; padding:14px 16px; background:#0D1014; border-radius:10px;"><div style="font:400 11px/1.5 'Montreal'; color:#cbc5ca;"><b style="color:#FF8E40;">Portes :</b> chaque sprint ferme une porte. Les 2 signatures ★ (R.06 · R.08) restent en WATCH jusqu'à S9–10.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- footer -->
+<div style="position:absolute; left:80px; top:2290px; width:2560px; font-family:'JetBrains Mono',monospace; font-size:12px; color:#A1A6AD; display:flex; justify-content:space-between;">
+  <span>&gt;_ handoff · board → code · engine 100% Rust · render-first GPUI · gnu.in-os</span>
+  <span>gnu.in-OS · handoff · v0.12.0</span>
+</div>
+
+</x-dc>
+</body>
+</html>

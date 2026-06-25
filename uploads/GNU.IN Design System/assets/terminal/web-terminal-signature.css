@@ -1,0 +1,32 @@
+:root {
+  --gnu6-orange: #FF6A00;
+  --gnu6-ink: #111418;
+  --gnu6-white: #FFFFFF;
+  --gnu6-gray: #E6E8EB;
+  --gnu6-soft: #F7F8FA;
+  --gnu6-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --gnu6-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; /* @kind font */
+}
+
+.gnu6-terminal-signature {
+  font-family: var(--gnu6-mono);
+  color: var(--gnu6-ink);
+  white-space: pre;
+  line-height: 1.08;
+}
+
+.gnu6-terminal-signature .orange { color: var(--gnu6-orange); }
+.gnu6-terminal-signature .muted { color: #667085; }
+
+.gnu6-tui {
+  font-family: var(--gnu6-mono);
+  background: var(--gnu6-ink);
+  color: var(--gnu6-white);
+  border: 1px solid #2b3037;
+  border-radius: 14px;
+  padding: 16px;
+  max-width: 720px;
+}
+
+.gnu6-tui .orange { color: var(--gnu6-orange); }
+.gnu6-tui .muted { color: #98A2B3; }

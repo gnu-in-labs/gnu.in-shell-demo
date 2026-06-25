@@ -1,0 +1,68 @@
+<!doctype html>
+<!-- @dsCard group="Colors" name="Core Palette" subtitle="Anthracite · Signal Orange · Beret Green · Shell White" viewport="700x260" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Core palette</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .swatch-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .swatch {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--line-2);
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+  .swatch .chip { height: 90px; }
+  .swatch .meta {
+    padding: 10px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .swatch .name { font-weight: 600; font-size: 13px; color: var(--fg1); }
+  .swatch .hex  { font-family: var(--font-mono); font-size: 11px; color: var(--fg2); }
+  .swatch .role { font-size: 11px; color: var(--fg3); margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="swatch-row">
+    <div class="swatch">
+      <div class="chip" style="background:#111418"></div>
+      <div class="meta">
+        <span class="name">Anthracite</span>
+        <span class="hex">#111418</span>
+        <span class="role">console face · ink</span>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background:#FF6A00"></div>
+      <div class="meta">
+        <span class="name">Signal Orange</span>
+        <span class="hex">#FF6A00</span>
+        <span class="role">shell body · hot action</span>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background:#5F7F52"></div>
+      <div class="meta">
+        <span class="name">Beret Green</span>
+        <span class="hex">#5F7F52</span>
+        <span class="role">mascot · stable</span>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip" style="background:#F7F3ED;border-bottom:1px solid var(--line-2)"></div>
+      <div class="meta">
+        <span class="name">Shell White</span>
+        <span class="hex">#F7F3ED</span>
+        <span class="role">paper · light UI</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

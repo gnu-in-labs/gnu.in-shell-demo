@@ -1,0 +1,313 @@
+/* =================================================================
+   GNU.IN — colors_and_type.css
+   Source of truth for color tokens, typography tokens, and the
+   semantic mappings used across the OS and brand surfaces.
+   ================================================================= */
+
+/* ---------- WEBFONTS ----------------------------------------------
+   GNU.IN typography direction is "Geometric Sans · Clean · Rational ·
+   System-native". The brand face is **Montreal** (vendored in /fonts);
+   Inter is kept as a fallback for the 500/600 weights we don't have a
+   file for. The CLI face is IBM Plex Mono (Google Fonts CDN).
+   Weight mapping for Montreal: 400 = Regular, 700 = Bold.
+   ----------------------------------------------------------------- */
+@font-face {
+  font-family: "Montreal";
+  src: url("fonts/Montreal-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Montreal";
+  src: url("fonts/Montreal-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+
+:root {
+  /* ============== CORE PALETTE (canonical brand tokens) ============== */
+  --gnu-anthracite: #111418;   /* console face / ink                 */
+  --gnu-orange:     #FF6A00;   /* signal orange / shell body / hot   */
+  --gnu-beret:      #5F7F52;   /* beret green / mascot identity      */
+  --gnu-shell:      #F7F3ED;   /* shell white / paper — canonical surface (blob.in/tokens.json) */
+  --gnu-shell-cream: #F5EEDD;  /* optional warmer cream, for filled backgrounds only */
+
+  /* alt brand neutrals seen in the kits */
+  --gnu-soft:       #F7F8FA;   /* near-white UI background           */
+  --gnu-gray:       #E6E8EB;   /* subtle dividers, chrome            */
+  --gnu-line:       #D7DADF;   /* solid hairline                     */
+  --gnu-stone:      #A1A6AD;   /* muted text / icon                  */
+  --gnu-slate:      #667085;   /* secondary copy                     */
+  --gnu-bezel:      #2B3037;   /* terminal bezel / TUI border        */
+
+  /* tonal variants of the orange (derived; used sparingly) */
+  --gnu-orange-700: #C95400;
+  --gnu-orange-300: #FF8E40;
+  --gnu-orange-100: #FFE5D2;
+  --gnu-orange-shadow: #B84B00;
+
+  /* tonal variants of the beret green */
+  --gnu-beret-700:  #455F3D;
+  --gnu-beret-300:  #8DA982;
+
+  /* SEMANTIC STATE colors (CLI-tinged, not generic web) */
+  --state-listening: var(--gnu-orange);   /* TRANSMIT/LISTEN ping  */
+  --state-ok:        var(--gnu-beret);    /* stable / success      */
+  --state-alert:     #E5484D;             /* breach / failsafe     */
+  --state-warn:      #F5A524;             /* stress / overload     */
+  --state-idle:      var(--gnu-stone);    /* sleep / quiet         */
+  /* canonical semantic colors from blob.in/tokens.json (v4.0.0) */
+  --gnu-transmit:    #5F7F52;             /* transmit / commit (= beret green) */
+  --gnu-info:        #3D8DCC;             /* info */
+  --gnu-rust:        #CE8E3F;             /* rust / warm metal accent */
+
+  /* ============== SURFACES (light theme — default) ============== */
+  --bg:        var(--gnu-shell);
+  --bg-elev1:  #FFFFFF;
+  --bg-elev2:  #FFFFFF;
+  --bg-inset:  var(--gnu-soft);
+  --bg-tui:    var(--gnu-anthracite);   /* dark "console" surface */
+  --bg-tui-2:  #1A1F26;
+
+  --fg1:       var(--gnu-anthracite);   /* primary text */
+  --fg2:       var(--gnu-slate);        /* secondary text */
+  --fg3:       var(--gnu-stone);        /* tertiary / muted */
+  --fg-on-orange: #FFFFFF;
+  --fg-on-tui: var(--gnu-shell);
+
+  --line-1:    var(--gnu-line);
+  --line-2:    var(--gnu-gray);
+  --line-strong: var(--gnu-anthracite);
+
+  --accent:        var(--gnu-orange);
+  --accent-hover:  var(--gnu-orange-700);
+  --accent-soft:   var(--gnu-orange-100);
+
+  /* ============== DYNAMIC COLOR (matugen / Material 3) ==============
+     DECISION (2026-06): OS chrome is *fully dynamic*. Surfaces AND accent
+     are derived from the wallpaper at runtime by matugen — see UPGRADE_PATH.md
+     and the real Appearance.qml. These M3 role tokens mirror the shell 1:1 so
+     product mocks read against QML directly. Values here are a NEUTRAL DEFAULT
+     scheme; swap per wallpaper. The static --gnu-* palette above is the
+     IDENTITY layer (cube, badge, splash, marketing) — NOT chrome. The brand
+     orange survives fully-dynamic only as a fixed identity accent: */
+  --brand-accent: var(--gnu-orange);   /* identity-only; never the chrome accent */
+
+  --m3-bg:                    #141313;
+  --col-layer0:               #141313;  /* bar / base surface            */
+  --col-layer0-border:        #2a2829;
+  --col-layer1:               #1c1b1c;  /* groups / pills                */
+  --col-layer2:               #201f20;  /* cards / popovers              */
+  --col-layer3:               #2b2a2a;  /* raised cards                  */
+  --col-on-layer0:            #e6e1e1;  /* primary on-surface text       */
+  --col-on-layer1:            #cbc5ca;
+  --col-on-layer1-inactive:   #8a868a;
+  --col-subtext:              #948f94;
+  --m3-primary:               #cbc4cb;  /* DYNAMIC accent (default scheme)*/
+  --m3-on-primary:            #322f34;
+  --m3-secondary-container:   #4d4b4d;  /* occupied-state container      */
+  --m3-on-secondary-container:#ece6e9;
+  --m3-outline:               #948f94;
+  --m3-outline-variant:       #49464a;
+
+  /* ============== TYPE FAMILIES ============== */
+  --font-sans:  "Montreal", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono:  "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --font-display: var(--font-sans); /* the geometric sans IS the display face */
+  font-synthesis-weight: auto; /* allow browser to synthesize 500/600 weights from Montreal */
+
+  /* ============== TYPE SCALE (rem-based; mobile-first) ============== */
+  --t-display-xl: 80px;   /* hero brand wordmark, kit headers       */
+  --t-display:    56px;   /* page headlines                         */
+  --t-h1:         40px;
+  --t-h2:         32px;
+  --t-h3:         24px;
+  --t-h4:         20px;
+  --t-body:       16px;   /* default body                            */
+  --t-small:      14px;
+  --t-micro:      12px;
+  --t-caption:    11px;   /* "KIT 01 — PROMPT GATE" tag style       */
+
+  --lh-tight:    1.05; /* @kind font */
+  --lh-snug:     1.2; /* @kind font */
+  --lh-default:  1.45; /* @kind font */
+  --lh-loose:    1.6; /* @kind font */
+
+  --ls-tight:    -0.02em; /* @kind font */
+  --ls-default:  0; /* @kind font */
+  --ls-tag:      0.18em;   /* uppercase label letter-spacing · @kind font */
+  --ls-mono:     0; /* @kind font */
+
+  /* ============== SPACING (4px base, doubled & half-step) ============== */
+  --s-0:  0; /* @kind spacing */
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  20px;
+  --s-6:  24px;
+  --s-8:  32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-20: 80px;
+  --s-24: 96px;
+
+  /* ============== RADII ============== */
+  --r-1:  4px;
+  --r-2:  8px;
+  --r-3:  12px;
+  --r-4:  14px;        /* TUI block default                          */
+  --r-5:  20px;
+  --r-6:  28px;        /* shell-cube vibe radius                     */
+  --r-pill: 999px;
+
+  /* ============== SHADOW SYSTEM ==============
+     Soft, atomic-age — no blue-tinted UI shadows. Drops are warm-ink. */
+  --shadow-1: 0 1px 0 rgba(17,20,24,0.04), 0 1px 2px rgba(17,20,24,0.06);
+  --shadow-2: 0 2px 4px rgba(17,20,24,0.06), 0 6px 12px rgba(17,20,24,0.08);
+  --shadow-3: 0 8px 16px rgba(17,20,24,0.10), 0 16px 32px rgba(17,20,24,0.10);
+  --shadow-glow-orange: 0 0 0 4px rgba(255,106,0,0.18);
+  --shadow-inset-bezel: inset 0 0 0 1px rgba(255,255,255,0.04), inset 0 -2px 8px rgba(0,0,0,0.20);
+
+  /* ============== MOTION ==============
+     Reconciled to the shell's real M3-Expressive springs (Appearance.qml).
+     Chrome should bounce: use the expressive curves for spatial moves, the
+     terminal/identity layer can stay on the calmer --ease-standard. */
+  --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1); /* @kind other */
+  --ease-emphatic: cubic-bezier(0.18, 0.9, 0.22, 1.1); /* @kind other */
+  --ease-snap:     cubic-bezier(0.4, 0, 0.2, 1); /* @kind other */
+  /* expressive springs — overshoot is intentional */
+  --ease-expressive:         cubic-bezier(0.38, 1.21, 0.22, 1.00); /* @kind other */
+  --ease-expressive-fast:    cubic-bezier(0.42, 1.67, 0.21, 0.90); /* @kind other */
+  --ease-expressive-effects: cubic-bezier(0.34, 0.80, 0.34, 1.00); /* @kind other */
+  --dur-fast:   120ms; /* @kind other */
+  --dur-base:   200ms; /* @kind other */
+  --dur-slow:   360ms; /* @kind other */
+  --dur-spatial:      500ms; /* @kind other */
+  --dur-spatial-fast: 350ms; /* @kind other */
+  --dur-pulse:  1400ms; /* @kind other */
+
+  /* ============== CANONICAL MOTION TOKENS (blob.in/tokens.json · v4.0.0) ==============
+     SINGLE SOURCE OF TRUTH. These mirror blob.in/tokens.json exactly and are
+     codegen-linked to the Rust solver (blobin_tokens.rs) + QML/Qt/Flutter themes.
+     The --dur-*/--ease-* above are the older CSS-side aliases; prefer these for
+     anything that must match the shipped engine. See blob.in/Motion-Spec-4.0-Plan.md. */
+  --gnu-dur-instant:  90ms;  /* @kind other */
+  --gnu-dur-quick:    160ms; /* @kind other */
+  --gnu-dur-base:     240ms; /* @kind other */
+  --gnu-dur-calm:     380ms; /* @kind other */
+  --gnu-dur-slow:     560ms; /* @kind other */
+  --gnu-dur-breathe:  4200ms; /* @kind other */
+  --gnu-ease-enter: cubic-bezier(0.2, 0.8, 0.2, 1.0);    /* @kind other */
+  --gnu-ease-exit:  cubic-bezier(0.4, 0.0, 1.0, 1.0);    /* @kind other */
+  --gnu-ease-inout: cubic-bezier(0.45, 0.05, 0.55, 0.95); /* @kind other */
+  --gnu-ease-bloom: cubic-bezier(0.34, 1.56, 0.64, 1.0); /* @kind other */
+  /* springs (for JS/Rust solvers): settle s170 d22 m1 · snap s260 d24 m1 · wobbly s200 d12 m1 */
+
+  /* ============== ELEVATION TIERS ============== */
+  --z-base:    1; /* @kind other */
+  --z-raised:  10; /* @kind other */
+  --z-overlay: 100; /* @kind other */
+  --z-modal:   500; /* @kind other */
+  --z-toast:   900; /* @kind other */
+}
+
+/* ============== DARK THEME (the OS shell's natural home) ============== */
+:root[data-theme="dark"], .gnu-dark {
+  --bg:        var(--gnu-anthracite);
+  --bg-elev1:  #1A1F26;
+  --bg-elev2:  #20262E;
+  --bg-inset:  #0D1014;
+  --bg-tui:    #0D1014;
+  --bg-tui-2:  #1A1F26;
+
+  --fg1:       var(--gnu-shell);
+  --fg2:       #B6BCC4;
+  --fg3:       #7C828A;
+  --fg-on-tui: var(--gnu-shell);
+
+  --line-1:    #2B3037;
+  --line-2:    #1F242B;
+  --line-strong: var(--gnu-shell);
+
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.6);
+  --shadow-2: 0 6px 16px rgba(0,0,0,0.55);
+  --shadow-3: 0 18px 40px rgba(0,0,0,0.6);
+}
+
+/* =================================================================
+   SEMANTIC TYPOGRAPHY CLASSES
+   Use these instead of raw font-size where possible; they encode
+   weight, leading and tracking together.
+   ================================================================= */
+
+.t-display-xl {
+  font-family: var(--font-display);
+  font-size: var(--t-display-xl);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  font-weight: 700;
+}
+.t-display {
+  font-family: var(--font-display);
+  font-size: var(--t-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  font-weight: 700;
+}
+.t-h1 { font-family: var(--font-sans); font-size: var(--t-h1); line-height: var(--lh-snug); letter-spacing: var(--ls-tight); font-weight: 700; }
+.t-h2 { font-family: var(--font-sans); font-size: var(--t-h2); line-height: var(--lh-snug); font-weight: 700; }
+.t-h3 { font-family: var(--font-sans); font-size: var(--t-h3); line-height: var(--lh-snug); font-weight: 600; }
+.t-h4 { font-family: var(--font-sans); font-size: var(--t-h4); line-height: var(--lh-snug); font-weight: 600; }
+.t-body { font-family: var(--font-sans); font-size: var(--t-body); line-height: var(--lh-default); font-weight: 400; }
+.t-body-strong { font-family: var(--font-sans); font-size: var(--t-body); line-height: var(--lh-default); font-weight: 600; }
+.t-small { font-family: var(--font-sans); font-size: var(--t-small); line-height: var(--lh-default); font-weight: 400; }
+.t-micro { font-family: var(--font-sans); font-size: var(--t-micro); line-height: var(--lh-default); font-weight: 500; }
+
+/* "KIT 01 — PROMPT GATE" style tag */
+.t-tag {
+  font-family: var(--font-sans);
+  font-size: var(--t-caption);
+  letter-spacing: var(--ls-tag);
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--fg2);
+}
+.t-tag .accent { color: var(--accent); }
+
+/* CLI / monospace */
+.t-mono { font-family: var(--font-mono); font-size: var(--t-small); line-height: 1.5; }
+.t-mono-small { font-family: var(--font-mono); font-size: var(--t-micro); line-height: 1.5; }
+.t-prompt {
+  font-family: var(--font-mono);
+  color: var(--fg-on-tui);
+  white-space: pre;
+}
+.t-prompt .orange { color: var(--gnu-orange); }
+.t-prompt .muted  { color: #98A2B3; }
+
+/* =================================================================
+   ELEMENT-LEVEL DEFAULTS (opt in by setting on <html> or wrapper)
+   ================================================================= */
+.gnu-base, html.gnu-base body {
+  font-family: var(--font-sans);
+  font-size: var(--t-body);
+  line-height: var(--lh-default);
+  color: var(--fg1);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.gnu-base h1 { font-size: var(--t-h1); line-height: var(--lh-snug); letter-spacing: var(--ls-tight); font-weight: 700; }
+.gnu-base h2 { font-size: var(--t-h2); line-height: var(--lh-snug); font-weight: 700; }
+.gnu-base h3 { font-size: var(--t-h3); line-height: var(--lh-snug); font-weight: 600; }
+.gnu-base h4 { font-size: var(--t-h4); line-height: var(--lh-snug); font-weight: 600; }
+.gnu-base p  { font-size: var(--t-body); line-height: var(--lh-default); }
+.gnu-base small { font-size: var(--t-small); color: var(--fg2); }
+.gnu-base code, .gnu-base pre { font-family: var(--font-mono); }
+.gnu-base a { color: var(--accent); text-decoration: none; }
+.gnu-base a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }

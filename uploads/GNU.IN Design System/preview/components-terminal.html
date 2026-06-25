@@ -1,0 +1,52 @@
+<!doctype html>
+<!-- @dsCard group="Components" name="Terminal Block" subtitle="Prompt, transcript, mascot speech" viewport="700x320" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Terminal block</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .term {
+    background: #0D1014;
+    border: 1px solid #2B3037;
+    border-radius: 14px;
+    padding: 14px 16px;
+    color: #F7F3ED;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.55;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), inset 0 -2px 8px rgba(0,0,0,0.20);
+    white-space: pre;
+    overflow: hidden;
+  }
+  .term .orange { color: #FF6A00; }
+  .term .green  { color: #8DA982; }
+  .term .muted  { color: #98A2B3; }
+  .head {
+    display:flex; align-items:center; gap: 8px;
+    padding-bottom: 10px;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed #2B3037;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #98A2B3;
+  }
+  .head .pip { width: 8px; height: 8px; border-radius: 999px; background: #FF6A00; flex: 0 0 auto; }
+  .head .title-dot { color: #FF6A00; }
+  .head .title-tail { color: #8DA982; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="term"><div class="head"><span class="pip"></span>gnu<span class="title-dot">.</span>in<span class="title-tail">-shell</span> &middot; TUI &middot; main</div><span class="muted">┌─</span> <span class="orange">gnu</span><span class="orange">.</span><span class="orange">in</span><span class="green">-shell</span> <span class="muted">───────────────────────────────────────┐</span>
+<span class="muted">│</span> cube-dialogue: present                              <span class="muted">│</span>
+<span class="muted">│</span> context: gnu.in-shell · local AI · scripts          <span class="muted">│</span>
+<span class="muted">│</span> notifications: <span class="green">3</span>                                <span class="muted">│</span>
+<span class="muted">├─────────────────────────────────────────────────────┤</span>
+<span class="muted">│</span> <span class="orange">>_</span> Commande reçue.                                <span class="muted">│</span>
+<span class="muted">│</span>    Exécution planifiée: ./run                       <span class="muted">│</span>
+<span class="muted">└─────────────────────────────────────────────────────┘</span></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "_template": "Copy this row, fill the fields, append to the matching r{N}-sign-off.json.",
+  "gate": "R?",
+  "date": "YYYY-MM-DD",
+  "commit": "<short SHA>",
+  "reviewer": "<initials>",
+  "result": "pass",
+  "notes": ""
+}

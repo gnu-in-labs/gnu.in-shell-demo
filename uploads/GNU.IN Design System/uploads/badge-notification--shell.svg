@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" data-gnu-variant="shell" aria-labelledby="title desc">
+  <title id="title">GNU6-shell notification badge icon</title>
+  <desc>Icon state for unread notifications. Number is editable text.</desc>
+  <g id="mark" transform="translate(8 24) scale(0.82)">
+    <g id="badge-cube-dialogue-symbol">
+      <path id="badge-dialogue-frame" d="M 194 52 H 256 Q 268 52 268 64 V 178 Q 268 190 256 190 H 184 L 160 214 V 190 H 146" fill="none" stroke="#F7F3ED" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+      <g id="badge-cube-terminal">
+      <polygon id="badge-cube-top" points="66,66 128,32 190,66 128,100" fill="#F7F3ED"></polygon>
+      <polygon id="badge-cube-left" points="60,78 122,113 122,181 60,146" fill="#F7F3ED"></polygon>
+      <polygon id="badge-terminal-face" points="134,113 196,78 196,146 134,181" fill="#F7F3ED"></polygon>
+      <g id="badge-prompt" fill="none" stroke="#111418" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+        <polyline id="badge-prompt-chevron" points="151,115 166,130 151,145"></polyline>
+        <line id="badge-prompt-cursor" x1="167" y1="153" x2="184" y2="153"></line>
+      </g>
+    </g>
+    </g>
+  </g>
+  <g id="notification-count" transform="translate(205 54)">
+    <circle id="notification-dot" cx="0" cy="0" r="25" fill="#F7F3ED"></circle>
+    <text id="notification-number" x="0" y="8" text-anchor="middle" font-family="Montreal, Inter, ui-sans-serif, system-ui, sans-serif" font-size="28" font-weight="800" fill="#111418">3</text>
+  </g>
+
+</svg>

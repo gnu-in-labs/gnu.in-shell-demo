@@ -1,0 +1,57 @@
+<!doctype html>
+<!-- @dsCard group="Components" name="Buttons" subtitle="Primary, secondary, ghost, states" viewport="700x280" -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Buttons</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  .btn {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background var(--dur-fast) var(--ease-snap), color var(--dur-fast) var(--ease-snap), transform var(--dur-fast) var(--ease-snap), box-shadow var(--dur-fast) var(--ease-snap);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary { background: var(--gnu-orange); color: #FFF; }
+  .btn-primary:hover { background: #C95400; }
+  .btn-primary:active { transform: scale(.98); background: #B84B00; }
+  .btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(255,106,0,0.18); }
+  .btn-secondary { background: #FFFFFF; color: var(--fg1); border-color: var(--line-1); }
+  .btn-secondary:hover { background: var(--gnu-soft); }
+  .btn-ghost { background: transparent; color: var(--fg1); }
+  .btn-ghost:hover { background: var(--gnu-soft); }
+  .btn-tui { background: #1A1F26; color: #F7F3ED; border-color: #2B3037; }
+  .btn-tui:hover { background: #20262E; }
+  .btn-disabled { background: var(--gnu-soft); color: var(--fg3); cursor: not-allowed; }
+  .row { display:flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .label { font-family: var(--font-mono); font-size: 11px; color: var(--fg3); width: 70px; }
+  .row-line { display:flex; align-items:center; gap: 14px; padding: 6px 0; border-bottom: 1px solid var(--line-2); }
+  .row-line:last-child { border-bottom: none; }
+  .chev { width: 6px; height: 6px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); display:inline-block; margin-left: 2px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row-line"><span class="label">primary</span>
+    <button class="btn btn-primary">Open shell editor <span class="chev"></span></button>
+    <button class="btn btn-primary" style="background:#C95400">Hover</button>
+    <button class="btn btn-primary" style="background:#B84B00; transform: scale(.98)">Press</button>
+  </div>
+  <div class="row-line"><span class="label">secondary</span>
+    <button class="btn btn-secondary">Configure</button>
+    <button class="btn btn-secondary" style="background:var(--gnu-soft)">Hover</button>
+    <button class="btn btn-disabled">Disabled</button>
+  </div>
+  <div class="row-line"><span class="label">ghost / tui</span>
+    <button class="btn btn-ghost">Cancel</button>
+    <button class="btn btn-tui"><span style="color:var(--gnu-orange); font-family:var(--font-mono)">>_</span> run</button>
+    <button class="btn btn-primary" style="border-radius:999px">Get started</button>
+  </div>
+</div>
+</body>
+</html>

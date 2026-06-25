@@ -1,0 +1,54 @@
+<!-- @dsCard group="Components" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Contract menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..0&display=block" rel="stylesheet" />
+<link rel="stylesheet" href="_card.css" />
+<style>
+  body { background: var(--col-layer0); }
+  .ms { font-family: "Material Symbols Rounded"; font-variation-settings: "FILL" 0, "wght" 450, "opsz" 24; font-size: 19px; }
+  .row { display: flex; gap: 22px; align-items: flex-start; }
+  .menu {
+    width: 248px; padding: 6px;
+    background: var(--col-layer2);
+    border: 1px solid var(--col-layer0-border);
+    border-radius: 17px;
+    box-shadow: 0 14px 36px rgba(0,0,0,0.5);
+    font-size: 13.5px; color: var(--col-on-layer0);
+  }
+  .label { padding: 6px 12px 4px; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--col-subtext); font-weight: 600; }
+  .item { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 11px; color: var(--col-on-layer0); }
+  .item .ms { color: var(--col-on-layer1); }
+  .item.hover { background: rgba(230,225,225,0.09); }
+  .item.accent .ms { color: var(--m3-primary); }
+  .kbd { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--col-subtext); }
+  .sep { height: 1px; background: var(--m3-outline-variant); margin: 5px 8px; }
+  .aside { flex: 1; padding-top: 6px; }
+  .aside h4 { margin: 0 0 6px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; color: var(--col-on-layer1); }
+  .aside p { margin: 0; font-size: 13px; color: var(--col-subtext); line-height: 1.5; }
+  .aside code { font-family: var(--font-mono); font-size: 11px; color: var(--col-on-layer1); display: block; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="row">
+    <div class="menu">
+      <div class="label">Contract — empty space</div>
+      <div class="item accent hover"><span class="ms">add</span><span>Add widget</span><span class="kbd">W</span></div>
+      <div class="item"><span class="ms">wallpaper</span><span>Change wallpaper</span></div>
+      <div class="item"><span class="ms">dashboard</span><span>Overview</span><span class="kbd">Super</span></div>
+      <div class="sep"></div>
+      <div class="item"><span class="ms">terminal</span><span>Open shell editor</span></div>
+      <div class="item"><span class="ms">tune</span><span>Shell settings</span></div>
+    </div>
+    <div class="aside">
+      <h4>Right-click contract</h4>
+      <p>Menus are shell <em>contracts</em>, not loose popups — dark M3, Material Symbols, accent follows the dynamic scheme. Same structure dense for mouse, expanded for touch.</p>
+      <code>[Empty · Widget · Window · Nested · Tray]</code>
+    </div>
+  </div>
+</div>
+</body>
+</html>

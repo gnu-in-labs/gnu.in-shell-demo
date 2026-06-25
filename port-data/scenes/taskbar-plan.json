@@ -1,0 +1,20 @@
+{
+  "$schema": "gnu.in/taskbar-plan-1",
+  "key": "shell.taskbar.modules_json",
+  "note": "Per-output taskbar plan handoff. Consumed by gnuin-bar per monitor. Module ids resolve against the open ModuleRegistry (see taskbar_registry.rs); unknown ids surface a diagnostic and are not dropped.",
+  "output": "eDP-1",
+  "edge": "Top",
+  "visible": true,
+  "density": "Regular",
+  "left":   ["workspaces"],
+  "center": ["clock"],
+  "right":  ["network", "bluetooth", "audio", "battery", "tray", "mascot"],
+  "registry_len": 12,
+  "registry_ids": ["workspaces","clock","active-window","network","bluetooth","audio","battery","tray","mascot","cpu","weather","battery-pct"],
+  "ext_ids": ["cpu", "weather", "battery-pct"],
+  "diagnostics_example": {
+    "input": "zorp",
+    "resolved": "None",
+    "surfaced": "taskbar: reject \"zorp\" (unknown-module-id: absent from registry)"
+  }
+}

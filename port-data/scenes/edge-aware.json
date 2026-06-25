@@ -1,0 +1,36 @@
+{
+  "fixture": "edge-aware",
+  "conforms_to": "gnuin_compose_core::{Rect::clamp_inside, Rect::intersect, submenu_rect} — see compose_core.rs",
+  "thesis": "ONE geometry pass makes every surface aware of its borders — not a per-surface offset. Children clip to their parent (intersect), transient surfaces clamp to the work-area (clamp_inside), submenus flip at the screen edge (submenu_rect). The hit-region and the painted surface share one rect, so a hover/focus outline can never bleed past a panel border or off-screen.",
+  "work_area": { "x": 0.0, "y": 0.0, "w": 1920.0, "h": 1080.0 },
+  "margin": 8.0,
+  "input": { "requested_anchor": [1750.0, 300.0], "panel_size": [280.0, 300.0], "submenu_size": [150.0, 132.0] },
+  "resolved": {
+    "panel": {
+      "note": "requested x=1750 → right=2030 overflows; clamp_inside shifts (not shrinks) left",
+      "rect": { "x": 1632.0, "y": 300.0, "w": 280.0, "h": 300.0 }
+    },
+    "submenu": {
+      "note": "flush-right would reach 2060 > 1912 → FLIP to the left side, then clamp",
+      "side": "Left",
+      "rect": { "x": 1484.0, "y": 358.0, "w": 150.0, "h": 132.0 }
+    },
+    "blob_backing": {
+      "note": "union(panel, submenu) then inflate(6) — stays fully on-screen because both children are clamped",
+      "rect": { "x": 1478.0, "y": 294.0, "w": 440.0, "h": 312.0 }
+    },
+    "row_focus_ring": {
+      "note": "a row hit/focus rect intersected with the panel content box — clipped exactly to the border, never past it",
+      "raw_row": { "x": 1640.0, "y": 340.0, "w": 320.0, "h": 28.0 },
+      "clipped_to_panel": { "x": 1640.0, "y": 340.0, "w": 264.0, "h": 28.0 }
+    }
+  },
+  "invariants": {
+    "panel_within_work_area": true,
+    "submenu_within_work_area": true,
+    "submenu_flips_at_right_edge": true,
+    "row_ring_never_exceeds_panel": true,
+    "shifted_not_shrunk": "clamp_inside preserves w/h",
+    "hit_region_equals_painted_rect": true
+  }
+}

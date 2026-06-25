@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 200" role="img" data-gnu-variant="outline" aria-labelledby="title desc">
+  <title id="title">GNU6-shell assistant contextual badge template</title>
+  <desc>Contextual assistant badge. Text remains editable.</desc>
+  <rect id="assistant-badge-frame" x="18" y="38" width="520" height="124" rx="18" fill="none" stroke="#FF6A00" stroke-width="4"></rect>
+  <g id="mark" transform="translate(38 44) scale(0.38)">
+    <g id="assistant-badge-cube-dialogue-symbol">
+      <path id="assistant-badge-dialogue-frame" d="M 194 52 H 256 Q 268 52 268 64 V 178 Q 268 190 256 190 H 184 L 160 214 V 190 H 146" fill="none" stroke="#FF6A00" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+      <g id="assistant-badge-cube-terminal">
+      <polygon id="assistant-badge-cube-top" points="66,66 128,32 190,66 128,100" fill="#FF6A00"></polygon>
+      <polygon id="assistant-badge-cube-left" points="60,78 122,113 122,181 60,146" fill="#FF6A00"></polygon>
+      <polygon id="assistant-badge-terminal-face" points="134,113 196,78 196,146 134,181" fill="#111418"></polygon>
+      <g id="assistant-badge-prompt" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+        <polyline id="assistant-badge-prompt-chevron" points="151,115 166,130 151,145"></polyline>
+        <line id="assistant-badge-prompt-cursor" x1="167" y1="153" x2="184" y2="153"></line>
+      </g>
+    </g>
+    </g>
+  </g>
+  <g id="editable-text" font-family="Montreal, Inter, ui-sans-serif, system-ui, sans-serif">
+    <text id="assistant-title" x="170" y="88" font-size="28" font-weight="750" fill="#111418">Assistant</text>
+    <text id="assistant-name" x="170" y="124" font-size="25" fill="#111418"><tspan font-weight="800">GNU</tspan><tspan fill="#FF6A00" font-weight="800">6</tspan><tspan>-shell</tspan></text>
+  </g>
+
+</svg>

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Gnu.In-Shell — Motion Spec v0.14.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; height: 100%; overflow: hidden; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- Foundations from the existing project -->
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="menu-primitives.jsx"></script>
+
+<!-- Motion spec -->
+<script type="text/babel" src="motion-tokens.jsx"></script>
+<script type="text/babel" src="motion-engine.jsx"></script>
+<script type="text/babel" src="motion-atoms.jsx"></script>
+<script type="text/babel" src="motion-molecules.jsx"></script>
+<script type="text/babel" src="motion-cards.jsx"></script>
+<script type="text/babel" src="motion-recipes.jsx"></script>
+<script type="text/babel" src="motion-board.jsx"></script>
+<script type="text/babel" src="motion-alaelestia.jsx"></script>
+<script type="text/babel" src="syster-icon-board.jsx"></script>
+<script type="text/babel" src="syster-mini.jsx"></script>
+<script type="text/babel" src="syster-mini-board.jsx"></script>
+
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "filter": "all",
+  "showAtoms": true,
+  "showMolecules": true,
+  "showRecipes": true
+}/*EDITMODE-END*/;
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  return (
+    <>
+      <DesignCanvas>
+
+        {/* ═══════════ Section 1 · Manifeste ═══════════ */}
+        <DCSection
+          id="manifeste"
+          title="Gnu.In-Shell · fiche d'animation v0.14.0"
+          subtitle="Pour des menus contextuels qui cassent fade+transient. Lecture en trois échelles — atomes, molécules, recettes — avec tokens neutres et snippets QML/Qt/GPUI/CSS clé-en-main. Sync avec Context Spec v0.14.0 : 5 recettes motion servent désormais 8 archétypes."
+        >
+          <DCArtboard id="cover" label="∞.0 · Cover" width={1280} height={720}>
+            <MotionCover />
+          </DCArtboard>
+          <DCArtboard id="manifeste" label="∞.1 · Manifeste" width={1280} height={720}>
+            <MotionManifesto />
+          </DCArtboard>
+          <DCArtboard id="taxonomy" label="∞.2 · Taxonomie" width={1280} height={720}>
+            <MotionTaxonomy />
+          </DCArtboard>
+          <DCArtboard id="tokens" label="∞.3 · Tokens" width={1280} height={720}>
+            <MotionTokens />
+          </DCArtboard>
+          <DCArtboard id="syster-icon" label="∞.4 · Icône canonique · Sys.ter" width={1280} height={720}>
+            <SysterIconBoard />
+          </DCArtboard>
+          <DCArtboard id="syster-mini" label="∞.5 · Syster Mini · 4 états animés" width={1280} height={720}>
+            <SysterMiniBoard />
+          </DCArtboard>
+        </DCSection>
+
+        {/* ═══════════ Section 2 · Atomes ═══════════ */}
+        {t.showAtoms && (
+          <DCSection
+            id="atomes"
+            title="Atomes · 15 primitives indépendantes"
+            subtitle="Une animation, un paramètre, une courbe. Chaque atome est branchable sur n'importe quel moteur. Scruber le slider pour figer un instant et lire ses tokens."
+          >
+            {ATOMS.map((a) => (
+              <DCArtboard key={a.id} id={`atom-${a.id}`} label={`${a.id} · ${a.title}`} width={1280} height={720}>
+                <AtomCard atom={a} />
+              </DCArtboard>
+            ))}
+          </DCSection>
+        )}
+
+        {/* ═══════════ Section 3 · Molécules ═══════════ */}
+        {t.showMolecules && (
+          <DCSection
+            id="molecules"
+            title="Molécules · 12 combinaisons nommées"
+            subtitle="Chaque molécule = un moment d'animation précis (open · close · hover · commit · sub · drill · retarget · edge · idle · error). Liste explicite des atomes qui la composent."
+          >
+            {MOLECULES.map((m) => (
+              <DCArtboard key={m.id} id={`mol-${m.id}`} label={`${m.id} · ${m.title}`} width={1280} height={720}>
+                <MoleculeCard mol={m} />
+              </DCArtboard>
+            ))}
+          </DCSection>
+        )}
+
+        {/* ═══════════ Section 4 · Recettes ═══════════ */}
+        {t.showRecipes && (
+          <DCSection
+            id="recettes"
+            title="Recettes · 5 orchestrations clé-en-main"
+            subtitle="Storyboards complets par archétype. Open → hover → commit → sub → close lus sur une timeline unique. Snippets QML / Qt / GPUI / CSS branchables tels quels."
+          >
+            {RECIPES.map((r) => (
+              <DCArtboard key={r.id} id={`rec-${r.id}`} label={`${r.id} · ${r.title}${r.signature ? ' ★' : ''}`} width={1280} height={720}>
+                <RecipeCard recipe={r} />
+              </DCArtboard>
+            ))}
+          </DCSection>
+        )}
+
+        {/* ═══════════ Section 5 · Handoff moteur ═══════════ */}
+        <DCSection
+          id="handoff"
+          title="Handoff moteur · mapping · accessibilité · prochaines étapes"
+          subtitle="Tables de référence pour brancher la fiche dans Quickshell, Qt et GPUI. Reduced-motion, audio, failsafes — tout est explicite."
+        >
+          <DCArtboard id="matrix" label="◆.1 · Moment matrix" width={1280} height={720}>
+            <MotionMomentMatrix />
+          </DCArtboard>
+          <DCArtboard id="engine" label="◆.2 · Engine mapping" width={1280} height={720}>
+            <MotionEngineHandoff />
+          </DCArtboard>
+          <DCArtboard id="rm-audio" label="◆.3 · Reduced-motion · audio · failsafe" width={1280} height={720}>
+            <MotionReducedAudio />
+          </DCArtboard>
+          <DCArtboard id="next" label="◆.4 · Prochaines étapes" width={1280} height={720}>
+            <MotionNext />
+          </DCArtboard>
+          <DCArtboard id="changelog" label="◆.5 · Historique · v1 → v0.14.0" width={1280} height={720}>
+            <MotionChangelog />
+          </DCArtboard>
+          <DCArtboard id="alaelestia" label="∞.6 · blob.in · proxy SVG du moteur" width={1280} height={720}>
+            <MotionAlaelestia />
+          </DCArtboard>
+          <DCArtboard id="engine40" label="∞.7 · Engine 4.0 · C++ → Rust/cxx" width={1280} height={720}>
+            <MotionEngine40 />
+          </DCArtboard>
+          <DCArtboard id="readiness" label="∞.8 · Readiness · P5 gate" width={1280} height={720}>
+            <MotionReadiness />
+          </DCArtboard>
+        </DCSection>
+
+      </DesignCanvas>
+
+      <TweaksPanel title="Motion Spec · Tweaks">
+        <TweakSection label="Sections" />
+        <TweakToggle label="Atomes (15)"    value={t.showAtoms}     onChange={(v) => setTweak('showAtoms', v)} />
+        <TweakToggle label="Molécules (12)" value={t.showMolecules} onChange={(v) => setTweak('showMolecules', v)} />
+        <TweakToggle label="Recettes (5)"   value={t.showRecipes}   onChange={(v) => setTweak('showRecipes', v)} />
+      </TweaksPanel>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>

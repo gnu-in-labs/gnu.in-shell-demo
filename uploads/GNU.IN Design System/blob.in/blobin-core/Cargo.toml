@@ -1,0 +1,41 @@
+[package]
+name = "blobin-core"
+version = "0.14.0"
+edition = "2021"
+rust-version = "1.75"
+description = "blob.in — organic-shape engine for Gnu.In-Shell. Geometry, tessellation, spring/easing solvers, materials and state, computed in Rust and handed to Qt via cxx."
+license = "GPL-3.0-or-later"
+repository = "https://github.com/gnu-in-labs/blob.in"
+
+[lib]
+# staticlib so blobin-qt can link the C++ side; rlib for Rust integration tests.
+crate-type = ["staticlib", "rlib"]
+
+[dependencies]
+# Geometry / tessellation
+lyon = "1.0"                 # path → triangle mesh (Q1: lyon)
+glam = "0.27"                # affine 2D transforms (group.rs)
+
+# FFI
+cxx = "1.0"                  # hot-path bridge (Q6: cxx brut)
+
+[build-dependencies]
+cxx-build = "1.0"
+
+[features]
+default = ["threaded-solver"]
+# Q2: solver runs on a dedicated Rust pool. Compile it out for the P2 baseline
+# where the solver still ticks on the Qt main-thread for golden parity.
+threaded-solver = ["dep:rayon"]
+
+[dependencies.rayon]
+version = "1.10"
+optional = true
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"              # no unwinding across the cxx boundary
+# NOTE: when built inside the blob.in workspace, these live in the workspace
+# root Cargo.toml; kept here for standalone `cargo build` of the crate.
