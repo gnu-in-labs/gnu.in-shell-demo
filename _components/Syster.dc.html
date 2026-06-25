@@ -73,10 +73,10 @@
 
           <span style="position:absolute;left:30%;top:50%;width:0.62em;height:1em;display:grid;place-items:center;transform:translate(-50%,-50%);">{{ noseGlyph }}</span>
 
-          <div style="position:absolute;left:58%;top:50%;width:1.05em;height:1em;display:grid;place-items:center;transform:translate(-50%,calc(-50% - 0.18em));">
+          <div style="position:absolute;left:58%;top:50%;width:1.05em;height:1em;display:grid;place-items:center;transform:translate(-50%,-50%);">
 
           <sc-if value="{{ showCaret }}" hint-placeholder-val="{{ true }}">
-            <span style="display:block;width:0.38em;height:0.08em;border-radius:999px;background:{{ glyph }};{{ caretStyle }}"></span>
+            <span style="display:block;width:0.38em;height:0.08em;border-radius:999px;background:{{ glyph }};transform:translateY(0.24em);{{ caretStyle }}"></span>
           </sc-if>
 
           <sc-if value="{{ isHello }}" hint-placeholder-val="{{ false }}">
@@ -84,7 +84,7 @@
           </sc-if>
 
           <sc-if value="{{ isWork }}" hint-placeholder-val="{{ false }}">
-            <span style="display:inline-flex;gap:0.13em;align-items:center;">
+            <span style="display:inline-flex;gap:0.13em;align-items:center;transform:translateY(0.24em);">
               <span style="width:0.17em;height:0.17em;border-radius:50%;background:#FF6A00;animation:sysDot 1000ms ease-in-out infinite;"></span>
               <span style="width:0.17em;height:0.17em;border-radius:50%;background:#FF6A00;animation:sysDot 1000ms ease-in-out 200ms infinite;"></span>
               <span style="width:0.17em;height:0.17em;border-radius:50%;background:#FF6A00;animation:sysDot 1000ms ease-in-out 400ms infinite;"></span>
@@ -92,7 +92,7 @@
           </sc-if>
 
           <sc-if value="{{ isWait }}" hint-placeholder-val="{{ false }}">
-            <span style="display:inline-flex;gap:0.13em;align-items:center;">
+            <span style="display:inline-flex;gap:0.13em;align-items:center;transform:translateY(0.24em);">
               <span style="width:0.17em;height:0.17em;border-radius:50%;background:{{ glyph }};animation:sysDot 1300ms ease-in-out infinite;"></span>
               <span style="width:0.17em;height:0.17em;border-radius:50%;background:{{ glyph }};animation:sysDot 1300ms ease-in-out 220ms infinite;"></span>
               <span style="width:0.17em;height:0.17em;border-radius:50%;background:{{ glyph }};animation:sysDot 1300ms ease-in-out 440ms infinite;"></span>
