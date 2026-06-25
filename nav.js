@@ -61,18 +61,12 @@
       "#gid-nav a.gid-active{color:#0d1114;background:#F5EEDD;font-weight:600}",
       "#gid-nav .gid-sep{flex:0 0 auto;width:1px;height:16px;background:rgba(245,238,221,.18);margin:0 6px}",
       "#gid-nav .gid-tag{flex:0 0 auto;margin-left:auto;padding-left:14px;color:#6f7b76;font-size:11px;white-space:nowrap}",
-      "#gid-reader{display:none}",
-      "html.gid-reader-on:not([data-gid-vp='desktop']) #dc-root{display:none!important}",
-      "html.gid-reader-on:not([data-gid-vp='desktop']) #gid-reader{display:block;min-height:calc(100dvh - var(--gid-nav-h));padding:var(--gid-edge);background:#F5EEDD;color:#111418;font-family:'Montreal','Inter',system-ui,sans-serif}",
-      "#gid-reader .gid-reader-shell{max-width:980px;margin:0 auto}",
-      "#gid-reader .gid-reader-kicker{font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#C95400}",
-      "#gid-reader .gid-reader-title{font-weight:700;font-size:clamp(34px,9vw,58px);line-height:1.02;letter-spacing:0;color:#111418;margin-top:12px}",
-      "#gid-reader .gid-reader-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;color:#56606a;font:600 11px/1 'JetBrains Mono',monospace}",
-      "#gid-reader .gid-reader-meta span{padding:8px 10px;border:1px solid #D7DADF;border-radius:7px;background:#fff}",
-      "#gid-reader .gid-reader-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:12px;margin-top:22px}",
-      "#gid-reader .gid-reader-card{border:1px solid #E2DCCB;border-radius:8px;background:#fff;padding:16px;box-shadow:0 6px 18px rgba(17,20,24,.07)}",
-      "#gid-reader .gid-reader-label{font:700 12px/1.25 'JetBrains Mono',monospace;color:#FF6A00}",
-      "#gid-reader .gid-reader-text{margin-top:10px;font:400 14px/1.55 'Montreal','Inter',system-ui,sans-serif;color:#3a4048;overflow-wrap:anywhere}",
+      "#gid-rail{position:fixed;left:10px;top:calc(var(--gid-nav-h) + 12px);z-index:2147483590;display:flex;flex-direction:column;gap:6px;padding:6px;border:1px solid rgba(245,238,221,.12);border-radius:12px;background:rgba(13,17,20,.68);-webkit-backdrop-filter:blur(10px) saturate(1.1);backdrop-filter:blur(10px) saturate(1.1);box-shadow:0 12px 32px rgba(0,0,0,.22);opacity:.86}",
+      "#gid-rail:hover,#gid-rail:focus-within{opacity:1}",
+      "#gid-rail a,#gid-rail button{width:30px;height:30px;display:grid;place-items:center;margin:0;padding:0;border:1px solid rgba(245,238,221,.10);border-radius:8px;background:rgba(245,238,221,.05);color:#d6ddd8;text-decoration:none;font:800 10px/1 ui-monospace,'JetBrains Mono',monospace;cursor:pointer;transition:background .15s,color .15s,border-color .15s,transform .12s}",
+      "#gid-rail a:hover,#gid-rail button:hover{color:#F5EEDD;background:rgba(245,238,221,.12);border-color:rgba(245,238,221,.22);transform:translateX(1px)}",
+      "#gid-rail .gid-active{background:#F5EEDD;color:#0d1114;border-color:#F5EEDD}",
+      "#gid-rail .gid-accent{color:#FF8E40}",
       ".gid-container{max-width:min(var(--gid-container-native,1280px),calc(100vw - var(--gid-edge) - var(--gid-edge)))!important;padding-left:var(--gid-edge)!important;padding-right:var(--gid-edge)!important;}",
       ".gid-grid{gap:var(--gid-card-gap)!important;}",
       ".gid-grid-3{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))!important;}",
@@ -82,6 +76,12 @@
       ".gid-table-grid>*{min-width:0;}",
       ".gid-flexline>*{min-width:0;}",
       ".gid-hero-type{font-size:clamp(42px,7.1vw,var(--gid-font-native,80px))!important;letter-spacing:0!important;}",
+      "#dc-root.gid-canvas-root{width:100%!important;max-width:100vw!important;overflow:visible!important;}",
+      "#gid-canvas-viewport{width:100%;max-width:100vw;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;background:#F5EEDD;}",
+      "#gid-canvas-stage{position:relative;min-width:100%;}",
+      "#gid-canvas-stage>.sc-host{position:relative!important;min-width:0!important;max-width:none!important;transform-origin:0 0;will-change:transform;}",
+      "html[data-gid-vp='mobile'] #gid-canvas-viewport{padding-bottom:12px;}",
+      "html[data-gid-vp='tablet'] #gid-canvas-viewport{padding-bottom:14px;}",
       "html.gid-surface-central #dc-root [style*='height:100vh']{height:calc(100dvh - var(--gid-nav-h))!important;}",
       "html.gid-surface-index #dc-root [style*='height:430px']{height:auto!important;min-height:clamp(360px,58dvh,430px)!important;}",
       "html[data-gid-vp='tablet'] .gid-container{padding-left:clamp(24px,4vw,48px)!important;padding-right:clamp(24px,4vw,48px)!important;}",
@@ -90,6 +90,8 @@
       "html[data-gid-vp='mobile'] #gid-nav .gid-dot{width:7px;height:7px;margin-right:5px;}",
       "html[data-gid-vp='mobile'] #gid-nav a{padding:7px 8px;border-radius:6px;}",
       "html[data-gid-vp='mobile'] #gid-nav .gid-tag{display:none;}",
+      "html[data-gid-vp='mobile'] #gid-rail{left:8px;top:calc(var(--gid-nav-h) + 8px);gap:4px;padding:4px;border-radius:10px;opacity:.78}",
+      "html[data-gid-vp='mobile'] #gid-rail a,html[data-gid-vp='mobile'] #gid-rail button{width:28px;height:28px;border-radius:7px;font-size:9px}",
       "html[data-gid-vp='mobile'] .gid-container{padding-left:var(--gid-edge)!important;padding-right:var(--gid-edge)!important;}",
       "html[data-gid-vp='mobile'] .gid-flexline{flex-wrap:wrap!important;}",
       "html[data-gid-vp='mobile'] .gid-hero-type{font-size:clamp(38px,13vw,var(--gid-font-native,80px))!important;line-height:1.02!important;}",
@@ -102,8 +104,22 @@
       "html.gid-surface-plan-complet[data-gid-vp='mobile'] #dc-root [style*='flex:1']{width:100%!important;}",
       "html.gid-surface-plan-complet[data-gid-vp='mobile'] #dc-root .gid-flexline{flex-direction:column!important;align-items:stretch!important;}",
       "html.gid-surface-plan-complet[data-gid-vp='mobile'] #dc-root .gid-grid{grid-template-columns:1fr!important;}",
+      "html.gid-surface-central:not([data-gid-vp='desktop']) #dc-root{height:auto!important;min-height:calc(100dvh - var(--gid-nav-h))!important;overflow:visible!important;background:#0a0c0f!important;}",
+      "html.gid-surface-central:not([data-gid-vp='desktop']) #dc-root>.sc-host{height:auto!important;min-height:calc(100dvh - var(--gid-nav-h))!important;overflow:visible!important;}",
+      "html.gid-surface-central:not([data-gid-vp='desktop']) #dc-root>.sc-host>div[style*='height:100vh'],html.gid-surface-central:not([data-gid-vp='desktop']) #dc-root>.sc-host>div[style*='height: 100vh']{height:auto!important;min-height:calc(100dvh - var(--gid-nav-h))!important;overflow:visible!important;}",
+      "html.gid-surface-central:not([data-gid-vp='desktop']) #dc-root header{flex-wrap:wrap!important;align-items:flex-start!important;padding-left:58px!important;row-gap:10px!important;}",
+      "html.gid-surface-central:not([data-gid-vp='desktop']) #dc-root header>div:nth-child(3){width:100%!important;flex-wrap:wrap!important;justify-content:flex-start!important;}",
+      "html.gid-surface-central:not([data-gid-vp='desktop']) #dc-root main{flex-direction:column!important;min-height:auto!important;overflow:visible!important;}",
+      "html.gid-surface-central:not([data-gid-vp='desktop']) #dc-root main>section{min-height:660px!important;padding-left:58px!important;}",
+      "html.gid-surface-central:not([data-gid-vp='desktop']) #dc-root main>aside{width:100%!important;max-width:none!important;border-left:0!important;border-top:1px solid #20262E!important;min-height:720px!important;}",
+      "html.gid-surface-central:not([data-gid-vp='desktop']) #dc-root footer{flex-wrap:wrap!important;align-items:flex-start!important;padding-left:58px!important;}",
+      "html.gid-surface-central[data-gid-vp='mobile'] #dc-root header{padding:12px 12px 12px 54px!important;}",
+      "html.gid-surface-central[data-gid-vp='mobile'] #dc-root header>div:first-child{align-items:flex-start!important;}",
+      "html.gid-surface-central[data-gid-vp='mobile'] #dc-root main>section{min-height:560px!important;padding:12px 12px 12px 54px!important;}",
+      "html.gid-surface-central[data-gid-vp='mobile'] #dc-root main>aside{min-height:780px!important;}",
+      "html.gid-surface-central[data-gid-vp='mobile'] #dc-root footer{padding:10px 12px 12px 54px!important;}",
       "html[data-gid-aspect='tall'] .gid-grid-3,html[data-gid-aspect='tall'] .gid-grid-4{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))!important;}",
-      "@media (prefers-reduced-motion:reduce){#gid-nav,.idx-card,.idx-arrow{transition:none!important;animation:none!important;}}"
+      "@media (prefers-reduced-motion:reduce){#gid-nav,#gid-rail a,#gid-rail button,.idx-card,.idx-arrow{transition:none!important;animation:none!important;}}"
     ].join("");
   }
 
@@ -149,71 +165,13 @@
     document.documentElement.style.setProperty("--gid-vw", w + "px");
     document.documentElement.style.setProperty("--gid-vh", h + "px");
     document.documentElement.style.setProperty("--gid-dpr", String(window.devicePixelRatio || 1));
-    updateReaderMode();
-  }
-
-  function textFor(el) {
-    var raw = (el.innerText || el.textContent || "").replace(/\s+/g, " ").trim();
-    raw = raw.replace(/\barrow_forward\b/g, "").replace(/\beast\b/g, "").replace(/\s+/g, " ").trim();
-    if (raw.length > 760) raw = raw.slice(0, 740).replace(/\s+\S*$/, "") + "…";
-    return raw;
-  }
-
-  function make(tag, className, text) {
-    var el = document.createElement(tag);
-    if (className) el.className = className;
-    if (text) el.textContent = text;
-    return el;
-  }
-
-  function buildReader(root) {
-    if (document.getElementById("gid-reader")) return true;
-    var panels = root.querySelectorAll("[data-screen-label]");
-    if (!panels.length) return false;
-
-    var reader = document.createElement("main");
-    reader.id = "gid-reader";
-    reader.setAttribute("aria-label", currentSurfaceLabel());
-
-    var shell = make("div", "gid-reader-shell");
-    shell.appendChild(make("div", "gid-reader-kicker", "gnu.in-OS · v0.14.2 beta"));
-    shell.appendChild(make("div", "gid-reader-title", currentSurfaceLabel()));
-
-    var meta = make("div", "gid-reader-meta");
-    meta.appendChild(make("span", "", "auto " + (document.documentElement.dataset.gidVp || "desktop")));
-    meta.appendChild(make("span", "", panels.length + " sections"));
-    meta.appendChild(make("span", "", "render-first GPUI"));
-    shell.appendChild(meta);
-
-    var grid = make("div", "gid-reader-grid");
-    for (var i = 0; i < panels.length; i++) {
-      var label = panels[i].getAttribute("data-screen-label") || ("Section " + (i + 1));
-      var body = textFor(panels[i]);
-      if (!body) continue;
-      var card = make("section", "gid-reader-card");
-      card.appendChild(make("div", "gid-reader-label", label));
-      card.appendChild(make("div", "gid-reader-text", body));
-      grid.appendChild(card);
-    }
-
-    shell.appendChild(grid);
-    reader.appendChild(shell);
-    root.parentNode.insertBefore(reader, root.nextSibling);
-    return true;
-  }
-
-  function updateReaderMode() {
-    var reader = document.getElementById("gid-reader");
-    var narrow = document.documentElement.dataset.gidVp !== "desktop";
-    if (reader && narrow) document.documentElement.classList.add("gid-reader-on");
-    else document.documentElement.classList.remove("gid-reader-on");
   }
 
   function annotateInlineLayouts() {
     var root = document.getElementById("dc-root");
     if (!root) return false;
     root.classList.add("gid-adaptive-root");
-    if (buildReader(root)) updateReaderMode();
+    setupCanvasViewport(root);
 
     var nodes = root.querySelectorAll("[style]");
     for (var i = 0; i < nodes.length; i++) {
@@ -246,6 +204,89 @@
         el.classList.add("gid-flexline");
       }
     }
+    return true;
+  }
+
+  function px(value) {
+    var n = parseFloat(value || "0");
+    return isFinite(n) ? n : 0;
+  }
+
+  function directCanvasMetrics(host) {
+    var maxX = 0;
+    var maxY = 0;
+    var children = host ? host.children : [];
+    for (var i = 0; i < children.length; i++) {
+      var el = children[i];
+      var cs = window.getComputedStyle(el);
+      if (cs.position !== "absolute") continue;
+      var left = px(cs.left);
+      var top = px(cs.top);
+      var width = el.offsetWidth || px(cs.width);
+      var height = el.offsetHeight || px(cs.height);
+      maxX = Math.max(maxX, left + width);
+      maxY = Math.max(maxY, top + height);
+    }
+    return { width: Math.ceil(maxX + 24), height: Math.ceil(maxY + 24) };
+  }
+
+  function unwrapCanvas(root, viewport, stage, host) {
+    if (viewport && stage && host) root.insertBefore(host, viewport);
+    if (viewport && viewport.parentNode) viewport.parentNode.removeChild(viewport);
+    root.classList.remove("gid-canvas-root");
+    root.style.removeProperty("height");
+    root.style.removeProperty("min-height");
+    root.style.removeProperty("overflow");
+    if (host) {
+      host.style.removeProperty("width");
+      host.style.removeProperty("height");
+      host.style.removeProperty("transform");
+      host.style.removeProperty("transform-origin");
+      host.style.removeProperty("position");
+    }
+  }
+
+  function setupCanvasViewport(root) {
+    var viewport = root.querySelector(":scope > #gid-canvas-viewport");
+    var stage = viewport ? viewport.querySelector("#gid-canvas-stage") : null;
+    var host = stage ? stage.querySelector(".sc-host") : root.querySelector(":scope > .sc-host");
+    if (!host || !host.querySelector("[data-screen-label]")) return false;
+
+    var vp = document.documentElement.dataset.gidVp || "desktop";
+    if (vp === "desktop") {
+      unwrapCanvas(root, viewport, stage, host);
+      return false;
+    }
+
+    if (!viewport) {
+      viewport = document.createElement("div");
+      viewport.id = "gid-canvas-viewport";
+      stage = document.createElement("div");
+      stage.id = "gid-canvas-stage";
+      root.appendChild(viewport);
+      viewport.appendChild(stage);
+      stage.appendChild(host);
+    }
+
+    var metrics = directCanvasMetrics(host);
+    if (!metrics.width || !metrics.height) return false;
+
+    var scale = vp === "mobile" ? 0.62 : 0.72;
+    if (metrics.width <= 1440) scale = vp === "mobile" ? 0.78 : 0.9;
+
+    var stageW = Math.ceil(metrics.width * scale);
+    var stageH = Math.ceil(metrics.height * scale);
+    root.classList.add("gid-canvas-root");
+    root.style.setProperty("height", (stageH + 18) + "px", "important");
+    root.style.setProperty("min-height", "0", "important");
+    viewport.style.height = (stageH + 18) + "px";
+    stage.style.width = stageW + "px";
+    stage.style.height = stageH + "px";
+    host.style.width = metrics.width + "px";
+    host.style.height = metrics.height + "px";
+    host.style.transform = "scale(" + scale + ")";
+    host.style.transformOrigin = "0 0";
+    host.style.position = "relative";
     return true;
   }
 
@@ -294,11 +335,64 @@
     }, { passive: true });
   }
 
+  function makeRailItem(tag, label, title, className) {
+    var el = document.createElement(tag);
+    el.textContent = label;
+    el.title = title;
+    el.setAttribute("aria-label", title);
+    if (className) el.className = className;
+    return el;
+  }
+
+  function buildRail() {
+    if (document.getElementById("gid-rail")) return;
+    var currentIndex = -1;
+    var real = SURFACES.filter(function (s) { return !s.sep && !s.external && s.file; });
+    for (var i = 0; i < real.length; i++) {
+      if (real[i].file === current) currentIndex = i;
+    }
+    if (currentIndex < 0) currentIndex = 0;
+
+    var rail = document.createElement("aside");
+    rail.id = "gid-rail";
+    rail.setAttribute("aria-label", "Quick tools");
+
+    var home = makeRailItem("a", "IN", "Index", current === real[0].file ? "gid-active" : "");
+    home.href = encodeURIComponent(real[0].file);
+    rail.appendChild(home);
+
+    var prev = makeRailItem("a", "<", "Surface précédente", "");
+    prev.href = encodeURIComponent(real[(currentIndex + real.length - 1) % real.length].file);
+    rail.appendChild(prev);
+
+    var next = makeRailItem("a", ">", "Surface suivante", "");
+    next.href = encodeURIComponent(real[(currentIndex + 1) % real.length].file);
+    rail.appendChild(next);
+
+    var top = makeRailItem("button", "^", "Retour en haut", "gid-accent");
+    top.type = "button";
+    top.addEventListener("click", function () {
+      var canvas = document.getElementById("gid-canvas-viewport");
+      if (canvas) canvas.scrollLeft = 0;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    rail.appendChild(top);
+
+    var gh = makeRailItem("a", "GH", "GitHub", "");
+    gh.href = "https://github.com/gnu-in-labs/gnu.in-shell-docs";
+    gh.target = "_blank";
+    gh.rel = "noreferrer";
+    rail.appendChild(gh);
+
+    document.body.appendChild(rail);
+  }
+
   function boot() {
     ensureFavicon();
     injectCss();
     setViewportState();
     buildNav();
+    buildRail();
     annotateInlineLayouts();
 
     window.addEventListener("resize", setViewportState, { passive: true });
@@ -307,6 +401,7 @@
     var tries = 0;
     var iv = setInterval(function () {
       if (!document.getElementById("gid-nav") && document.body) buildNav();
+      if (!document.getElementById("gid-rail") && document.body) buildRail();
       annotateInlineLayouts();
       if (++tries > 30) clearInterval(iv);
     }, 350);
