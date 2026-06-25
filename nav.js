@@ -48,7 +48,7 @@
       "html.gid-adaptive #dc-root *{box-sizing:border-box;min-width:0;}",
       "html.gid-adaptive #dc-root img,html.gid-adaptive #dc-root svg{max-width:100%;height:auto;}",
       "html.gid-adaptive #dc-root{min-height:calc(100dvh - var(--gid-nav-h));}",
-      "#gid-nav{position:fixed;top:0;left:0;right:0;z-index:2147483600;display:flex;align-items:center;gap:2px;",
+      "#gid-nav{position:fixed;top:0;left:0;right:0;z-index:2147483600;display:flex;align-items:center;gap:2px;box-sizing:border-box;max-width:100vw;",
       "height:var(--gid-nav-h);padding:0 max(12px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left));overflow-x:auto;overflow-y:hidden;scrollbar-width:none;",
       "font:500 12px/1 ui-monospace,'IBM Plex Mono','JetBrains Mono',SFMono-Regular,Menlo,monospace;",
       "letter-spacing:.04em;color:#cdd3d0;background:rgba(13,17,20,.86);",
@@ -84,6 +84,9 @@
       "html[data-gid-vp='mobile'] #dc-root.gid-canvas-root{padding:10px 10px 10px 52px!important;}",
       "html[data-gid-vp='mobile'] #gid-canvas-viewport{border-radius:12px;}",
       "html[data-gid-vp='tablet'] #dc-root.gid-canvas-root{padding:16px 16px 16px 58px!important;}",
+      "#dc-root.gid-longform-root .gid-cover-panel{overflow:hidden!important;}",
+      "#dc-root.gid-longform-root .gid-cover-tools{max-width:100%;}",
+      ".gid-mobile-stack{min-width:0;}",
       "html.gid-surface-central #dc-root [style*='height:100vh']{height:calc(100dvh - var(--gid-nav-h))!important;}",
       "html.gid-surface-index #dc-root [style*='height:430px']{height:auto!important;min-height:clamp(360px,58dvh,430px)!important;}",
       "html[data-gid-vp='tablet'] .gid-container{padding-left:clamp(24px,4vw,48px)!important;padding-right:clamp(24px,4vw,48px)!important;}",
@@ -102,6 +105,16 @@
       "html[data-gid-vp='mobile'] #dc-root [style*='margin:0 -48px']{margin-left:calc(-1 * var(--gid-edge))!important;margin-right:calc(-1 * var(--gid-edge))!important;}",
       "html[data-gid-vp='mobile'] #dc-root [style*='margin: 0px -48px']{margin-left:calc(-1 * var(--gid-edge))!important;margin-right:calc(-1 * var(--gid-edge))!important;}",
       "html[data-gid-vp='mobile'] #dc-root [style*='right:48px'][style*='top:40px']{position:relative!important;right:auto!important;top:auto!important;margin-bottom:18px!important;flex-wrap:wrap!important;}",
+      "html[data-gid-vp='mobile'] #dc-root.gid-longform-root .gid-cover-panel{padding:28px 16px 30px!important;}",
+      "html[data-gid-vp='mobile'] #dc-root.gid-longform-root .gid-cover-tools{position:relative!important;right:auto!important;top:auto!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:6px!important;align-items:end!important;margin:0 0 16px!important;}",
+      "html[data-gid-vp='mobile'] #dc-root.gid-longform-root .gid-cover-tools>*{width:auto!important;height:42px!important;min-width:0!important;max-width:100%!important;margin-left:0!important;}",
+      "html[data-gid-vp='mobile'] #dc-root.gid-longform-root .gid-cover-tools>*:last-child{height:52px!important;}",
+      "html[data-gid-vp='mobile'] #dc-root.gid-longform-root .gid-hero-type{font-size:clamp(34px,11vw,var(--gid-font-native,56px))!important;line-height:1.02!important;letter-spacing:0!important;}",
+      "html[data-gid-vp='mobile'] #dc-root.gid-longform-root .gid-flexline{row-gap:10px!important;}",
+      "html[data-gid-vp='mobile'] #dc-root .gid-mobile-stack{flex-direction:column!important;align-items:stretch!important;gap:16px!important;padding:20px!important;}",
+      "html[data-gid-vp='mobile'] #dc-root .gid-mobile-stack>[style*='width:1px'],html[data-gid-vp='mobile'] #dc-root .gid-mobile-stack>[style*='width: 1px']{width:100%!important;height:1px!important;align-self:stretch!important;}",
+      "html[data-gid-vp='mobile'] #dc-root .gid-mobile-stack>[style*='flex:1'],html[data-gid-vp='mobile'] #dc-root .gid-mobile-stack>[style*='flex: 1']{width:100%!important;flex:none!important;display:grid!important;grid-template-columns:1fr!important;gap:8px!important;}",
+      "html[data-gid-vp='mobile'] #dc-root .gid-mobile-stack>[style*='flex:1']>span,html[data-gid-vp='mobile'] #dc-root .gid-mobile-stack>[style*='flex: 1']>span{width:auto!important;display:flex!important;align-items:center!important;justify-content:space-between!important;white-space:normal!important;overflow-wrap:anywhere!important;}",
       "html[data-gid-vp='mobile'] #dc-root [style*='min-width:300px'],html[data-gid-vp='mobile'] #dc-root [style*='min-width:260px']{min-width:min(300px,calc(100vw - var(--gid-edge) - var(--gid-edge)))!important;}",
       "html.gid-surface-plan-complet[data-gid-vp='mobile'] #dc-root [style*='display:flex'][style*='gap:12px'],html.gid-surface-plan-complet[data-gid-vp='mobile'] #dc-root [style*='display:flex'][style*='gap:14px'],html.gid-surface-plan-complet[data-gid-vp='mobile'] #dc-root [style*='display:flex'][style*='gap:20px']{flex-direction:column!important;align-items:stretch!important;}",
       "html.gid-surface-plan-complet[data-gid-vp='mobile'] #dc-root [style*='display:flex'][style*='gap:10px']{flex-wrap:wrap!important;align-items:flex-start!important;}",
@@ -176,6 +189,7 @@
     if (!root) return false;
     root.classList.add("gid-adaptive-root");
     setupCanvasViewport(root);
+    setupLongformMode(root);
 
     var nodes = root.querySelectorAll("[style]");
     for (var i = 0; i < nodes.length; i++) {
@@ -207,8 +221,48 @@
       if (/display\s*:\s*flex/.test(style) && /gap\s*:/.test(style) && !/position\s*:\s*absolute/.test(style) && el.childElementCount > 1) {
         el.classList.add("gid-flexline");
       }
+
+      if (/background\s*:\s*(#0d1014|rgb\(\s*13\s*,\s*16\s*,\s*20\s*\))/.test(style) && /overflow\s*:\s*hidden/.test(style) && /padding\s*:\s*46px\s+48px\s+40px/.test(style)) {
+        el.classList.add("gid-cover-panel");
+      }
+
+      if (/right\s*:\s*48px/.test(style) && /top\s*:\s*40px/.test(style) && /display\s*:\s*flex/.test(style)) {
+        el.classList.add("gid-cover-tools");
+      }
+
+      if (/display\s*:\s*flex/.test(style) && /gap\s*:\s*(24|28|30|32)px/.test(style) && /background\s*:\s*(#111418|rgb\(\s*17\s*,\s*20\s*,\s*24\s*\))/.test(style) && /border-radius\s*:\s*(12|16)px/.test(style)) {
+        el.classList.add("gid-mobile-stack");
+      }
     }
     return true;
+  }
+
+  function setupLongformMode(root) {
+    if (!root || root.classList.contains("gid-canvas-root")) {
+      if (root) root.classList.remove("gid-longform-root");
+      return false;
+    }
+    if (document.documentElement.classList.contains("gid-surface-central")) {
+      root.classList.remove("gid-longform-root");
+      return false;
+    }
+
+    var host = root.querySelector(":scope > .sc-host") || root;
+    var hasInlineShell = hasInlineStyle(host, /max-width\s*:\s*(1340|1280)px/);
+    var hasReportCover = hasInlineStyle(host, /margin\s*:\s*0(px)?\s+-48px/);
+    var hasNamedClasses = !!host.querySelector("[class*='road-'],[class*='ani-'],[class*='kit-'],[class*='idx-'],[class*='cx-']");
+    var enable = hasInlineShell && hasReportCover && !hasNamedClasses;
+    root.classList.toggle("gid-longform-root", enable);
+    return enable;
+  }
+
+  function hasInlineStyle(scope, pattern) {
+    var nodes = scope ? scope.querySelectorAll("[style]") : [];
+    for (var i = 0; i < nodes.length; i++) {
+      var style = String(nodes[i].getAttribute("style") || "").toLowerCase();
+      if (pattern.test(style)) return true;
+    }
+    return false;
   }
 
   function px(value) {
