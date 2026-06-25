@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="assets/symbols/cube.svg">
+<script src="./support.js"></script>
+<script src="nav.js" defer></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9/colors_and_type.css">
+<link rel="stylesheet" href="_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..800&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..0&display=block" rel="stylesheet">
+<style>
+body{margin:0;background:#111418;}
+.ani-page{min-height:100%;background:#111418;color:#F5EEDD;font-family:'Montreal',system-ui,sans-serif;padding:44px 0 72px;}
+.ani-shell{width:min(1180px,calc(100% - 48px));margin:0 auto;}
+.ani-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:26px;align-items:stretch;}
+.ani-panel{border:1px solid #2B3037;border-radius:10px;background:#171B21;box-shadow:0 18px 42px rgba(0,0,0,.28);overflow:hidden;}
+.ani-copy{padding:34px;display:flex;flex-direction:column;justify-content:space-between;min-height:390px;}
+.ani-kicker{font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#FF8E40;}
+.ani-title{font-weight:700;font-size:clamp(44px,8vw,92px);line-height:.94;letter-spacing:0;margin-top:18px;}
+.ani-sub{font-size:17px;line-height:1.55;color:#B6BCC4;max-width:680px;margin-top:18px;}
+.ani-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px;}
+.ani-tags span{font:700 11px/1 'JetBrains Mono',monospace;color:#C8CED6;border:1px solid #303741;border-radius:7px;padding:8px 10px;background:#111418;}
+.ani-stage{position:relative;min-height:390px;background:radial-gradient(95% 80% at 28% 16%,#272D36 0%,#141820 60%,#0E1116 100%);display:flex;align-items:center;justify-content:center;padding:28px;}
+.ani-orbit{position:absolute;border:1px solid rgba(255,106,0,.22);border-radius:999px;inset:54px;animation:aniPulse 3400ms ease-in-out infinite;}
+.ani-orbit:nth-child(2){inset:88px;animation-delay:480ms;border-color:rgba(95,127,82,.34);}
+.ani-orbit:nth-child(3){inset:122px;animation-delay:960ms;border-color:rgba(245,238,221,.18);}
+.ani-mascot{width:min(260px,58vw);height:auto;position:relative;z-index:2;filter:drop-shadow(0 24px 22px rgba(0,0,0,.35));}
+.ani-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px;}
+.ani-card{border:1px solid #2B3037;border-radius:10px;background:#171B21;padding:18px;min-height:174px;display:flex;flex-direction:column;justify-content:space-between;}
+.ani-card img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;border:1px solid #2B3037;background:#0E1116;margin-top:14px;}
+.ani-label{font:700 12px/1 'JetBrains Mono',monospace;color:#FF8E40;letter-spacing:.12em;text-transform:uppercase;}
+.ani-card h2{font-size:23px;line-height:1.08;margin:12px 0 0;color:#F5EEDD;}
+.ani-card p{font-size:13px;line-height:1.5;color:#AAB1BA;margin:10px 0 0;}
+.ani-states{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:24px;}
+.ani-state{border:1px solid #2B3037;border-radius:10px;background:#101318;padding:12px;text-align:center;}
+.ani-state dc-import{display:block;margin:0 auto;}
+.ani-state div{font:700 11px/1 'JetBrains Mono',monospace;color:#C8CED6;letter-spacing:.12em;text-transform:uppercase;margin-top:8px;}
+@keyframes aniPulse{0%,100%{transform:scale(1);opacity:.54}50%{transform:scale(1.04);opacity:.9}}
+@media(max-width:860px){.ani-page{padding-top:28px}.ani-shell{width:min(100% - 32px,720px)}.ani-hero,.ani-grid{grid-template-columns:1fr}.ani-copy{min-height:auto;padding:24px}.ani-stage{min-height:320px}.ani-card{min-height:auto}}
+</style>
+</helmet>
+<main class="ani-page">
+  <div class="ani-shell">
+    <section class="ani-hero">
+      <div class="ani-panel ani-copy">
+        <div>
+          <div class="ani-kicker">motion board · v0.14.2 beta</div>
+          <div class="ani-title">Animations</div>
+          <div class="ani-sub">Surface de lecture pour les états, transitions et preuves visuelles du shell. Les mouvements restent au service de la hiérarchie: signal, focus, confirmation, échec, attente.</div>
+          <div class="ani-tags">
+            <span>state grammar</span>
+            <span>dock affordance</span>
+            <span>context surfaces</span>
+            <span>reduced-motion aware</span>
+          </div>
+        </div>
+        <div style="font:600 12px/1.6 'JetBrains Mono',monospace;color:#7C858F;margin-top:24px;">&gt; motion should explain state, not decorate uncertainty</div>
+      </div>
+      <div class="ani-panel ani-stage">
+        <div class="ani-orbit"></div>
+        <div class="ani-orbit"></div>
+        <div class="ani-orbit"></div>
+        <div class="ani-mascot"><dc-import name="Syster" state="work" hint-size="260px,296px"></dc-import></div>
+      </div>
+    </section>
+
+    <section class="ani-grid" aria-label="Animation proofs">
+      <article class="ani-card">
+        <div>
+          <div class="ani-label">01 · motion section</div>
+          <h2>Sequence map</h2>
+          <p>Une section pour relier les micro-états aux surfaces visibles: apparition, focus, confirmation, sortie.</p>
+        </div>
+        <img src="screenshots/01-motion-section.png" alt="Motion section screenshot">
+      </article>
+      <article class="ani-card">
+        <div>
+          <div class="ani-label">02 · radial</div>
+          <h2>Spatial affordance</h2>
+          <p>Les interactions radiales doivent rester lisibles en mouvement, même lorsque la surface se densifie.</p>
+        </div>
+        <img src="screenshots/01-radial.png" alt="Radial motion screenshot">
+      </article>
+      <article class="ani-card">
+        <div>
+          <div class="ani-label">03 · handoff</div>
+          <h2>Runtime path</h2>
+          <p>Le motion design rejoint le moteur quand les recettes deviennent vérifiables par surface.</p>
+        </div>
+        <img src="screenshots/handoff-pipeline.png" alt="Handoff pipeline screenshot">
+      </article>
+    </section>
+
+    <section class="ani-states" aria-label="Sys.ter animation states">
+      <sc-for list="{{ states }}" as="st" hint-placeholder-count="8">
+        <div class="ani-state">
+          <dc-import name="Syster" state="{{ st.id }}" style="width:86px;height:98px" hint-size="86px,98px"></dc-import>
+          <div>{{ st.label }}</div>
+        </div>
+      </sc-for>
+    </section>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      states: [
+        { id: "idle", label: "idle" },
+        { id: "hello", label: "listening" },
+        { id: "work", label: "work" },
+        { id: "wait", label: "wait" },
+        { id: "review", label: "review" },
+        { id: "success", label: "success" },
+        { id: "fail", label: "fail" },
+        { id: "veille", label: "sleep" }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
