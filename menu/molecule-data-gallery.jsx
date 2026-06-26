@@ -367,6 +367,14 @@ const I = {
   power:     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%"><path d="M12 2v10M5 7a9 9 0 1 0 14 0"/></svg>,
   bell:      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9zM10 21a2 2 0 0 0 4 0"/></svg>,
   search:    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%"><circle cx="11" cy="11" r="7"/><path d="m20 20-4.3-4.3"/></svg>,
+  // ── agentic family icons ──
+  plan:      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 12h10"/><path d="m15 8 4 4-4 4"/></svg>,
+  suggest:   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%"><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>,
+  privacy:   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%"><rect x="5" y="11" width="14" height="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>,
+  scope:     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M12 5V3M12 21v-2M5 12H3M21 12h-2"/></svg>,
+  back:      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%"><path d="M15 18l-6-6 6-6"/></svg>,
+  rename:    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+  file:      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="100%" height="100%"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 2v6h6"/></svg>,
 };
 
 // Search row at the top of menus.
@@ -813,6 +821,180 @@ function MoleculeRenderer({ m, theme, dpref }) {
         i === 0 ? h('div', { style: { display: 'flex', gap: 4 } }, (b.leaves || []).slice(0, 3).map((lf, li) => h('span', { key: li, style: { fontSize: 9.5, padding: '3px 8px', borderRadius: 999, background: theme.kbdBg, color: theme.textDim, border: `.5px solid ${theme.border}` } }, lf))) : null)));
   }
 
+  // ── AGENTIC family ──
+  if (L === 'agentic-panel') {
+    const ag = mm.agent || {};
+    const sug = mm.suggest;
+    const planF = mm.plan;
+    const privacy = mm.privacy;
+    const riskC = { observe: theme.green, local: '#E8B341', system: '#FF5040' };
+    const agHdr = h('div', { key: 'ah', style: {
+      display: 'flex', alignItems: 'center', gap: 8,
+      padding: '9px 12px 8px', borderBottom: '.5px solid ' + theme.border,
+      background: theme.accentDim,
+    }},
+      h(window.SysterGlyph, { size: 17, hover: !!ag.pulse }),
+      h('div', { style: { flex: 1, minWidth: 0 } },
+        h('span', { style: { fontSize: 11.5, fontWeight: 700 } }, ag.task || 'Agent actif')),
+      ag.badge ? h('span', { style: {
+        fontSize: 8.5, padding: '2px 7px', borderRadius: 999,
+        background: theme.accent, color: '#fff', fontWeight: 700, letterSpacing: '0.04em',
+      }}, ag.badge) : null,
+      ag.pulse ? h('span', { style: {
+        width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
+        background: theme.green, boxShadow: '0 0 0 2.5px ' + theme.green + '44',
+      }}) : null,
+    );
+    const sugBand = sug ? h('div', { key: 'sb', style: {
+      display: 'flex', alignItems: 'center', gap: 7,
+      padding: '6px 12px', borderBottom: '.5px solid ' + theme.border,
+      background: theme.mode === 'dark' ? 'rgba(255,106,0,.06)' : 'rgba(255,106,0,.05)',
+    }},
+      h('span', { style: { width: 12, height: 12, color: theme.accent, flexShrink: 0 } }, Icons.suggest || Icons.bell),
+      h('span', { style: { flex: 1, fontSize: 11, color: theme.text, fontStyle: 'italic' } }, sug.text || sug),
+      sug.kbd ? h(window.KbdHint, { keys: sug.kbd, theme, density: d }) : null,
+    ) : null;
+    const RiskRow = (r, i) => {
+      const rc = r.risk ? riskC[r.risk] : null;
+      return h('div', { key: r.id || i, style: { position: 'relative' } },
+        rc ? h('div', { style: {
+          position: 'absolute', left: 0, top: '18%', bottom: '18%', width: 2.5,
+          background: rc, borderRadius: 2, zIndex: 3, pointerEvents: 'none',
+        } }) : null,
+        h(window.MenuRow, {
+          theme, shape, density: d,
+          icon: r.icon ? Icons[r.icon] : undefined,
+          label: r.label, sub: r.sub, kbd: r.kbd,
+          accent: r.accent, danger: r.danger,
+          hasSubmenu: r.kind === 'submenu' || undefined,
+          toggle: r.kind === 'toggle' ? true : undefined, toggleOn: r.on,
+          hovered: i === 0 && !r.danger && !r.accent,
+        }),
+        (r.badge && !r.kbd) ? h('span', { style: {
+          position: 'absolute', right: 9, top: '50%', transform: 'translateY(-50%)',
+          fontSize: 8, padding: '1.5px 6px', borderRadius: 999, zIndex: 4,
+          background: rc ? rc + '20' : theme.kbdBg,
+          color: rc || theme.textDim, fontWeight: 700,
+          border: '.5px solid ' + (rc ? rc + '55' : theme.border),
+          letterSpacing: '0.06em', pointerEvents: 'none',
+        } }, r.badge) : null,
+      );
+    };
+    const parts = [agHdr];
+    if (sugBand) parts.push(sugBand);
+    (mm.groups || []).forEach((g, gi, arr) => {
+      parts.push(h(window.MenuSection, { key: 'gs' + gi, label: g.head || undefined, theme, density: d },
+        (g.rows || []).map(RiskRow)));
+      if (gi < arr.length - 1) parts.push(h(window.MenuSeparator, { key: 'sp' + gi, theme }));
+    });
+    if (planF) {
+      const pc = planF.risk ? riskC[planF.risk] : theme.accent;
+      parts.push(h('div', { key: 'pf', style: {
+        display: 'flex', alignItems: 'center', gap: 8,
+        padding: '6px 10px', borderTop: '.5px solid ' + theme.border,
+        background: theme.mode === 'dark' ? 'rgba(255,255,255,.025)' : 'rgba(17,20,24,.025)',
+      } },
+        h('span', { style: { width: 12, height: 12, color: pc } }, Icons.plan || Icons.layout),
+        h('span', { style: { flex: 1, fontSize: 10, color: theme.textDim } }, planF.label || 'Plan'),
+        h('button', { style: {
+          border: 'none', cursor: 'pointer', fontSize: 10, fontWeight: 700,
+          padding: '3px 10px', borderRadius: 6,
+          background: theme.green, color: '#fff', fontFamily: 'inherit',
+        } }, 'Appliquer →'),
+      ));
+    }
+    if (privacy) {
+      parts.push(h('div', { key: 'prv', style: {
+        display: 'flex', alignItems: 'center', gap: 5, padding: '4px 10px 5px',
+      } },
+        h('span', { style: { width: 10, height: 10, color: theme.textFaint } }, Icons.privacy || Icons.info),
+        h('span', { style: { fontSize: 9, color: theme.textFaint, fontFamily: 'ui-monospace,monospace' } }, privacy),
+      ));
+    }
+    return shell(parts, width);
+  }
+
+  if (L === 'agentic-confirm') {
+    const plan = mm.plan || {};
+    const aff = mm.affected || [];
+    const riskC = { observe: theme.green, local: '#E8B341', system: '#FF5040' };
+    const hdr = h('div', { key: 'hd', style: {
+      padding: '10px 12px 8px', borderBottom: '.5px solid ' + theme.border,
+      background: theme.accentDim,
+    } },
+      h('div', { style: { display: 'flex', alignItems: 'center', gap: 7 } },
+        h(window.SysterGlyph, { size: 15, hover: true }),
+        h('span', { style: { fontSize: 12.5, fontWeight: 700 } }, plan.title || 'Appliquer ?'),
+      ),
+      plan.scope ? h('div', { style: {
+        fontSize: 9.5, color: theme.textDim, fontFamily: 'ui-monospace,monospace', marginTop: 4,
+      } }, plan.scope) : null,
+    );
+    const steps = h('div', { key: 'sl', style: { padding: '6px 8px' } },
+      aff.map((s, i) => {
+        const rc = s.risk ? riskC[s.risk] : theme.textFaint;
+        const isD = s.risk === 'system';
+        return h('div', { key: s.id || i, style: {
+          display: 'flex', alignItems: 'center', gap: 8,
+          padding: '5px 6px', borderRadius: shape.rowRadius,
+          background: isD ? 'rgba(255,80,60,.07)' : 'transparent', marginBottom: 2,
+        } },
+          h('div', { style: { width: 7, height: 7, borderRadius: '50%', background: rc, flexShrink: 0 } }),
+          h('span', { style: {
+            fontSize: 11, flex: 1, color: isD ? '#FF6044' : theme.text,
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          } }, s.label),
+        );
+      }),
+    );
+    const footer = h('div', { key: 'ft', style: {
+      display: 'flex', gap: 7, padding: '8px 10px',
+      borderTop: '.5px solid ' + theme.border,
+    } },
+      h('button', { style: {
+        flex: 1, border: 'none', cursor: 'pointer', borderRadius: 7,
+        background: theme.green, color: '#fff',
+        fontSize: 11.5, fontWeight: 700, padding: '7px 0', fontFamily: 'inherit',
+      } }, (mm.apply || {}).label || 'Appliquer'),
+      h('button', { style: {
+        flex: 1, border: '.5px solid ' + theme.border, cursor: 'pointer', borderRadius: 7,
+        background: 'transparent', color: theme.textDim,
+        fontSize: 11.5, fontWeight: 500, padding: '7px 0', fontFamily: 'inherit',
+      } }, (mm.cancel || {}).label || 'Annuler'),
+    );
+    return shell([hdr, steps, footer], width);
+  }
+
+  if (L === 'agentic-suggest') {
+    const sug = typeof mm.suggest === 'string' ? mm.suggest : '';
+    return h('div', { style: {
+      display: 'inline-flex', alignItems: 'center', gap: 10,
+      padding: '9px 14px', borderRadius: 999,
+      background: theme.surface, boxShadow: theme.shadow,
+      border: '.5px solid ' + theme.accent,
+      maxWidth: 280, width: 'max-content',
+      fontFamily: 'ui-sans-serif,system-ui,sans-serif', color: theme.text,
+    } },
+      h(window.SysterGlyph, { size: 20, hover: true }),
+      h('span', { style: {
+        fontSize: 11.5, color: theme.text,
+        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 160,
+      } }, sug),
+      h('div', { style: { display: 'flex', gap: 4, flexShrink: 0 } },
+        mm.accept ? h('span', { style: {
+          fontSize: 10, padding: '2px 7px', borderRadius: 5,
+          background: theme.accentDim, color: theme.accent,
+          fontFamily: 'ui-monospace,monospace', fontWeight: 700,
+        } }, mm.accept[0] || '⏎') : null,
+        mm.dismiss ? h('span', { style: {
+          fontSize: 10, padding: '2px 7px', borderRadius: 5,
+          background: theme.kbdBg, color: theme.textDim,
+          fontFamily: 'ui-monospace,monospace',
+        } }, mm.dismiss[0] || 'Esc') : null,
+      ),
+    );
+  }
+
   // ── fallback summary (should be unreachable — every layout is mapped) ──
   const items = mm.ring || mm.discs || mm.pills || mm.bar || mm.targets || mm.swatches || mm.branches || mm.modes || mm.inner || mm.L1 || mm.tiles || [];
   return h('div', { style: { background: theme.surface, border: `.5px solid ${theme.border}`, borderRadius: shape.menuRadius, boxShadow: theme.shadow, padding: 14, color: theme.text, fontFamily: 'ui-sans-serif,system-ui,sans-serif', width: 240 } },
@@ -827,9 +1009,9 @@ Object.assign(window, { MoleculeRenderer });
 /* ════════════ DATA GALLERY · every molecule rendered FROM molecule_specs.json ════════════ */
 const MOLECULE_SPECS = {
   "spec": "molecule-specs",
-  "role": "SINGLE SOURCE OF TRUTH for the 27 context-menu molecules, expressed as ENGINE SCENE-GRAPH COMPOSITIONS (not bespoke JSX). Each molecule is data the engine's reduce() lays out into a Scene the host paints. Central, the gallery, and the Rust host all consume THIS — killing the double-implementation (JSX preview + hand-built host).",
+  "role": "SINGLE SOURCE OF TRUTH for the 30 context-menu molecules, expressed as ENGINE SCENE-GRAPH COMPOSITIONS (not bespoke JSX). Each molecule is data the engine's reduce() lays out into a Scene the host paints. Central, the gallery, and the Rust host all consume THIS — killing the double-implementation (JSX preview + hand-built host).",
   "resolves": {
-    "23_vs_27": "molecules and styles are ORTHOGONAL axes. The engine has 23 MenuStyle layout KINDS; a molecule is a COMPOSITION (style + MenuModel + density + motion). The 21 archetypes use 18 distinct styles; the 6 recipes reuse existing styles (list / trayaudio) with composed content — they are NOT new engine kinds. So '27 molecules over 23 styles' is consistent, not a contradiction.",
+    "23_vs_30": "molecules and styles are ORTHOGONAL axes. The engine has 23 MenuStyle layout KINDS; a molecule is a COMPOSITION (style + MenuModel + density + motion). The 21 archetypes use 18 distinct styles; the 6 recipes reuse existing styles (list / trayaudio) with composed content, and the 3 agentic molecules reuse existing list/bubble strategies with model-level risk, plan, privacy, and suggestion fields. So '30 molecules over 23 styles' is consistent, not a contradiction.",
     "double_implementation": "a molecule = { style, layout, model{groups[rows]}, motion }. reduce(style, model) already emits MenuPanel + MenuRow nodes + (chrome) Blob. The renderer paints from tokens. No molecule needs bespoke render code — only this data."
   },
   "engine_styles": {
@@ -930,7 +1112,48 @@ const MOLECULE_SPECS = {
     { "id": "ShareGrid", "family": "recipe", "style": "list", "layout": "target-grid", "backed": true, "density": "mouse",
       "composition_of": "list + 3-col target grid",
       "model": { "title": "rapport-q2.pdf", "targets": [ {"id":"air","icon":"share","label":"Proximité"}, {"id":"mail","icon":"mail","label":"Mail"}, {"id":"msg","icon":"bell","label":"Message"}, {"id":"copy","icon":"copy","label":"Copier lien"}, {"id":"dl","icon":"download","label":"Télécharger"}, {"id":"term","icon":"terminal","label":"Terminal"} ] },
-      "motion": ["A.04 mask", "target-lift"] }
+      "motion": ["A.04 mask", "target-lift"] },
+    { "id": "AgenticGnuContextMenu", "family": "agentic", "style": "list", "layout": "agentic-panel", "backed": true, "density": "mouse",
+      "composition_of": "list + syster-header + deferred-suggest band + risk-tagged rows + plan-footer + privacy chip",
+      "model": {
+        "agent": { "task": "Renommer 3 fichiers\u2026", "badge": "3 actions", "pulse": true },
+        "suggest": { "text": "Fermer les fen\u00eatres inutilis\u00e9es\u00a0?", "kbd": ["\u23ce"] },
+        "groups": [
+          { "head": "Actions sugg\u00e9r\u00e9es", "rows": [
+            { "id": "rename", "kind": "item", "icon": "rename", "label": "Renommer rapport-q2.pdf", "risk": "local", "badge": "\u00e9criture" },
+            { "id": "move",   "kind": "item", "icon": "move",   "label": "D\u00e9placer vers Archives/",  "risk": "local" },
+            { "id": "open",   "kind": "item", "icon": "terminal","label": "Ouvrir dans le terminal", "risk": "observe",  "kbd": ["\u2318","T"] }
+          ]},
+          { "head": "", "rows": [
+            { "id": "plan",   "kind": "item", "icon": "plan",   "label": "Voir le plan complet\u2026", "accent": true, "kbd": ["\u2318","P"] },
+            { "id": "cancel", "kind": "item", "icon": "close",  "label": "Annuler la session",    "danger": true }
+          ]}
+        ],
+        "plan": { "steps": 3, "risk": "local", "label": "Plan \u00b7 3 \u00e9tapes" },
+        "privacy": "Contexte local \u00b7 rien n\u2019est transmis"
+      },
+      "motion": ["A.04 mask", "A.01 fade", "suggest-slide-in"] },
+    { "id": "AgenticPlanConfirm", "family": "agentic", "style": "list", "layout": "agentic-confirm", "backed": true, "density": "mouse",
+      "composition_of": "list + plan-header + risk-tagged step list + apply/cancel footer",
+      "model": {
+        "plan": { "title": "Appliquer le plan\u00a0?", "steps": 3, "scope": "3 fichiers \u00b7 workspace 2" },
+        "affected": [
+          { "id": "s1", "label": "Renommer rapport-q2.pdf \u2192 rapport-q2-final.pdf", "risk": "local" },
+          { "id": "s2", "label": "D\u00e9placer vers Archives/2025/",                   "risk": "local" },
+          { "id": "s3", "label": "Supprimer rapport-q2-brouillon.pdf",              "risk": "system" }
+        ],
+        "apply": { "label": "Appliquer", "kbd": ["\u23ce"] },
+        "cancel": { "label": "Annuler",   "kbd": ["Esc"] }
+      },
+      "motion": ["A.07 origami", "A.01 fade"] },
+    { "id": "AgenticSuggestBubble", "family": "agentic", "style": "bubble", "layout": "agentic-suggest", "backed": false, "density": "mouse",
+      "composition_of": "floating pill \u00b7 syster pulse + suggestion text + accept/dismiss kbd",
+      "model": {
+        "suggest": "Regrouper les fen\u00eatres de ce workspace\u00a0?",
+        "accept": ["\u23ce"],
+        "dismiss": ["Esc"]
+      },
+      "motion": ["A.14 spring", "suggest-slide-in"] }
   ],
   "consumers": {
     "engine": "reduce(style, model, anchor, density) → Scene{ Blob? · MenuPanel · MenuRow[] · sub } — layout drives geometry; backed drives the membrane Blob",
@@ -953,8 +1176,8 @@ function DataGallery() {
   const theme = gnuTheme({ dark: mode === 'dark', brand: 'medium' });
   const mols = MOLECULE_SPECS.molecules;
   const mono = 'ui-monospace, "JetBrains Mono", monospace';
-  const fams = ['empty','widget','window','nested','tray','recipe','experiment'];
-  const famLabel = { empty:'01 · Espace vide', widget:'02 · Widget', window:'03 · Fenêtre', nested:'04 · Cascade', tray:'05 · Tray', recipe:'06 · Recettes', experiment:'07 · Expérimentations' };
+  const fams = ['empty','widget','window','nested','tray','recipe','experiment','agentic'];
+  const famLabel = { empty:'01 · Espace vide', widget:'02 · Widget', window:'03 · Fenêtre', nested:'04 · Cascade', tray:'05 · Tray', recipe:'06 · Recettes', experiment:'07 · Expérimentations', agentic:'08 · Agentique' };
   const layoutsCovered = new Set(mols.map(m => m.layout)).size;
   const pageBg = mode === 'dark' ? '#07090B' : '#E5DFD2';
   const pageFg = mode === 'dark' ? '#F7F3ED' : '#111418';

@@ -26,6 +26,12 @@ body{margin:0;background:var(--ctx-bg);color:var(--ctx-text);font-family:Montrea
 .ctx-ledger-num{font:900 13px/1 JetBrains Mono,ui-monospace,monospace;color:var(--ctx-orange);}
 .ctx-ledger b{display:block;font:800 11px/1.2 JetBrains Mono,ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;}
 .ctx-ledger span span{display:block;margin-top:5px;color:var(--ctx-muted);font-size:12px;line-height:1.45;}
+.ctx-contract{margin-top:24px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
+.ctx-contract-card{min-height:148px;border:1px solid var(--ctx-line);border-radius:10px;background:#14191F;padding:15px;box-shadow:0 14px 32px rgba(0,0,0,.18);}
+.ctx-contract-card span{display:block;font:900 10px/1 JetBrains Mono,ui-monospace,monospace;color:var(--ctx-orange-2);letter-spacing:.12em;text-transform:uppercase;}
+.ctx-contract-card h2{margin:14px 0 0;font-size:22px;line-height:1.05;letter-spacing:0;color:var(--ctx-text);}
+.ctx-contract-card p{margin:9px 0 0;color:var(--ctx-muted);font-size:12.5px;line-height:1.48;}
+.ctx-contract-card strong{color:#F5EEDD;font-weight:800;}
 .ctx-board{margin-top:26px;display:grid;grid-template-columns:310px minmax(0,1fr);border:1px solid var(--ctx-line);border-radius:12px;overflow:hidden;background:var(--ctx-panel);box-shadow:0 22px 54px rgba(0,0,0,.34);}
 .ctx-console{padding:24px;border-right:1px solid var(--ctx-line);background:linear-gradient(180deg,#151A20,#101419);}
 .ctx-console h2{font-size:30px;line-height:1.05;letter-spacing:0;margin:12px 0 0;}
@@ -78,8 +84,9 @@ body{margin:0;background:var(--ctx-bg);color:var(--ctx-text);font-family:Montrea
 @media(prefers-reduced-motion:no-preference){.ctx-node,.ctx-card{transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}.ctx-card:hover{transform:translateY(-2px)}.ctx-node.is-active{animation:ctxPulse 1600ms ease-in-out infinite}@keyframes ctxPulse{0%,100%{box-shadow:0 0 0 1px rgba(255,106,0,.24),0 22px 38px rgba(0,0,0,.34)}50%{box-shadow:0 0 0 6px rgba(255,106,0,.08),0 22px 38px rgba(0,0,0,.34)}}}
 @keyframes ctxCue{0%,100%{opacity:.62;transform:translate(-50%,-50%) scale(.9)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}}
 @keyframes ctxBlink{0%,72%{opacity:1}77%,94%{opacity:0}100%{opacity:1}}
-@media(max-width:980px){.ctx-page{padding-top:46px}.ctx-shell{width:min(100% - 32px,760px);margin:0 auto}.ctx-hero,.ctx-board,.ctx-mascot{grid-template-columns:1fr}.ctx-console{border-right:0;border-bottom:1px solid var(--ctx-line)}.ctx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ctx-stage{min-height:390px}}
+@media(max-width:980px){.ctx-page{padding-top:46px}.ctx-shell{width:min(100% - 32px,760px);margin:0 auto}.ctx-hero,.ctx-board,.ctx-mascot{grid-template-columns:1fr}.ctx-contract{grid-template-columns:repeat(2,minmax(0,1fr))}.ctx-console{border-right:0;border-bottom:1px solid var(--ctx-line)}.ctx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ctx-stage{min-height:390px}}
 @media(max-width:560px){.ctx-page{padding-top:30px}.ctx-shell{width:min(100% - 24px,520px)}.ctx-title{font-size:48px;text-shadow:5px 5px 0 #000}.ctx-lede{font-size:16px}.ctx-ledger{padding:14px}.ctx-switches button{width:calc(100% - 62px)}.ctx-stage{min-height:360px}.ctx-node{width:74px;height:62px;font-size:9px}.ctx-node[data-id="menus"]{left:5%;top:16%}.ctx-node[data-id="renderer"]{left:37%;top:10%}.ctx-node[data-id="animations"]{right:4%;top:22%}.ctx-node[data-id="motion"]{left:13%;bottom:36%}.ctx-node[data-id="syster"]{right:10%;bottom:31%}.ctx-readout{left:16px;right:16px;grid-template-columns:1fr}.ctx-readout h3{font-size:24px}.ctx-grid{grid-template-columns:1fr}.ctx-card{min-height:178px}.ctx-mascot-stage{min-height:210px}}
+@media(max-width:560px){.ctx-contract{grid-template-columns:1fr}.ctx-contract-card{min-height:0}}
 </style>
 </head>
 <body>
@@ -96,6 +103,13 @@ body{margin:0;background:var(--ctx-bg);color:var(--ctx-text);font-family:Montrea
         <div class="ctx-ledger-row"><span class="ctx-ledger-num">02</span><span><b>Référencer</b><span>Chaque guide expose un comportement, un statut et une preuve attendue.</span></span></div>
         <div class="ctx-ledger-row"><span class="ctx-ledger-num">03</span><span><b>Limiter</b><span>Les pistes non validées restent visibles comme candidates, pas comme canon.</span></span></div>
       </aside>
+    </section>
+
+    <section class="ctx-contract" aria-label="Context ownership ledger">
+      <article class="ctx-contract-card"><span>ownership</span><h2>Guides réactifs</h2><p><strong>Context</strong> possède les surfaces qui changent d'état: menus, renderer, animations, motion et kit Syster.</p></article>
+      <article class="ctx-contract-card"><span>relation</span><h2>Atlas reste statique</h2><p>Les canevas Atlas servent de planches de lecture. Context décrit le comportement activable et les preuves attendues.</p></article>
+      <article class="ctx-contract-card"><span>canon</span><h2>Candidate explicite</h2><p>Le kit Syster peut présenter une direction UI/UX, mais la mascotte courante reste la source utilisée.</p></article>
+      <article class="ctx-contract-card"><span>proof</span><h2>Gates associés</h2><p>Showcase smoke vérifie switchers, favicon, nav, rail, copie publique et renderer hydraté.</p></article>
     </section>
 
     <section class="ctx-board" data-context-board data-focus="menus" aria-label="Context reference switcher">

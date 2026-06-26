@@ -21,7 +21,7 @@
         <p>La preuve transforme une surface en documentation crédible: source, capture, fixture, interaction, gate et limite connue.</p>
       </div>
       <aside class="doc-hero-panel" aria-label="Evidence">
-        <div class="doc-fact"><b>gates</b><span>Les smokes Index et Docs vérifient navigation, favicon, rail, canvas, pages, liens, focus, overflow et copie publique.</span></div>
+        <div class="doc-fact"><b>gates</b><span>Les smokes Index, Docs, Showcase et Central vérifient navigation, favicon, rail, interactions, pages, focus, overflow et copie publique.</span></div>
         <div class="doc-fact"><b>captures</b><span>`artifacts/index-smoke/` et `artifacts/docs-smoke/` conservent les sorties visuelles locales.</span></div>
         <div class="doc-fact"><b>fixtures</b><span>`port-data/scenes/` conserve les scènes et états à inspecter.</span></div>
       </aside>
@@ -46,14 +46,15 @@
     <div class="doc-section-head">
       <span class="doc-num">01</span>
       <h2>Gates actuels</h2>
-      <p>Les gates actuels couvrent la porte d'entrée et les pages documentaires. Central demande encore des gates spécialisés par sous-système.</p>
+      <p>Les gates actuels couvrent la porte d'entrée, les pages documentaires, les surfaces Context et la simulation Central. Les prochains gates doivent élargir le filet aux canevas Atlas et à la navigation publique complète.</p>
     </div>
     <table class="doc-table">
       <thead><tr><th>Gate</th><th>Prouve</th><th>Limite</th></tr></thead>
       <tbody>
         <tr><td>Index smoke</td><td>Favicon cube, nav, rail drag/collapse, menus cascade, Carte vivante, canvas non vide, overflow.</td><td>Ne prouve pas chaque sous-système Central.</td></tr>
         <tr><td>Docs smoke</td><td>Index, pages docs, menu Docs, liens, focus visible, favicon cube, copie publique, overflow desktop/mobile.</td><td>Ne remplace pas une passe rédactionnelle humaine.</td></tr>
-        <tr><td>Central live state</td><td>Central compositor, engine inspector, settings, input, edge, diff/damage, motion, render, topbar et chantiers ouverts.</td><td>Doit être relié à des pages et gates spécifiques avant promotion complète.</td></tr>
+        <tr><td>Showcase smoke</td><td>Context, Roadmap, Syster kit, Animations, Motion, Menus et Renderer avec comportements interactifs.</td><td>Ne couvre pas encore les canevas Atlas statiques.</td></tr>
+        <tr><td>Central smoke</td><td>Central, Control, compositor profile, settings pages, agentic menu, favicon, rail, mobile overflow et copie publique.</td><td>Ne mesure pas encore chaque transition ni chaque mutation de réglage.</td></tr>
         <tr><td>Visual captures</td><td>Desktop, tablet et mobile rendent la hiérarchie principale.</td><td>Une capture ne prouve pas seule la logique de contenu.</td></tr>
         <tr><td>Text checks</td><td>Les surfaces publiques évitent certains termes internes ou confus.</td><td>Ne remplace pas une vraie passe éditoriale.</td></tr>
       </tbody>
@@ -94,12 +95,33 @@
   <section class="doc-wrap doc-section">
     <div class="doc-section-head">
       <span class="doc-num">04</span>
+      <h2>Ledger de claims</h2>
+      <p>Cette table sert de protocole de publication: un claim peut apparaître sur une page publique seulement si son statut et sa preuve sont compréhensibles.</p>
+    </div>
+    <table class="doc-table">
+      <thead><tr><th>Claim public</th><th>Statut</th><th>Preuve minimale</th><th>Prochaine prévention</th></tr></thead>
+      <tbody>
+        <tr><td>Central est une simulation inspectable.</td><td>Current</td><td>Smoke Central + page Central Live + scènes port-data.</td><td>Ajouter snapshots de mutations Control par section.</td></tr>
+        <tr><td>Le renderer couvre 30 molécules.</td><td>Current</td><td>Smoke Showcase + molecule_specs.json + Molecule Renderer.</td><td>Gate de count, layout et actions suggérées à chaque drop.</td></tr>
+        <tr><td>La mascotte est en redesign.</td><td>Current</td><td>Assets + Context + Syster kit, avec canon courant conservé.</td><td>Empêcher toute promotion de source candidate sans décision écrite.</td></tr>
+        <tr><td>Le corpus sépare Atlas, Context et Docs.</td><td>Current</td><td>Nav cascade + Index + Context overview.</td><td>Gate de top-nav: Roadmap, Full Plan, Animations et Syster restent scindés.</td></tr>
+        <tr><td>Les canevas Atlas restent bornés.</td><td>Partiel</td><td>Wrapper canvas et contrôle visuel manuel.</td><td>Ajouter smoke-canvas-surfaces avec frame focusable et scroll borné.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="doc-wrap doc-section">
+    <div class="doc-section-head">
+      <span class="doc-num">05</span>
       <h2>Commandes locales</h2>
       <p>Ces commandes forment la base minimale avant de publier ou d'absorber un nouveau drop.</p>
     </div>
     <pre class="doc-code">git diff --check
+node --check nav.js tools/smoke-doc-pages.js tools/smoke-showcase-surfaces.js tools/smoke-index-surface.js tools/smoke-central-surface.js
 node tools/smoke-index-surface.js
 node tools/smoke-doc-pages.js
+node tools/smoke-showcase-surfaces.js
+node tools/smoke-central-surface.js
 git status --short</pre>
   </section>
 

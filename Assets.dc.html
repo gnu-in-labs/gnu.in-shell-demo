@@ -54,6 +54,8 @@
         <tr><td>Mascotte courante</td><td>_components/Syster.dc.html + mascot/*</td><td>Current · redesign en cours</td><td>Repère visuel utilisé par l'Index et les états; aucun remplacement n'est encore promu.</td></tr>
         <tr><td>Tokens</td><td>port-data/tokens.json</td><td>Current</td><td>Palette, rayons, spacing, durées, couches et springs.</td></tr>
         <tr><td>Scenes</td><td>port-data/scenes/*.json</td><td>Current</td><td>Fixtures de surfaces et de comportements.</td></tr>
+        <tr><td>Central mirrors</td><td>port-data/bar_settings.rs, compositor_profile.rs, panel_family.rs, settings_pages.rs</td><td>Current</td><td>Mirroirs de portage utilisés par Central Live et Evidence.</td></tr>
+        <tr><td>Molecules</td><td>port-data/molecule_specs.json + menu/*</td><td>Current</td><td>Registry de 30 molécules et rendu hydraté.</td></tr>
         <tr><td>Captures</td><td>screenshots/*.png</td><td>Evidence</td><td>Preuves visuelles à rattacher aux pages.</td></tr>
       </tbody>
     </table>
@@ -62,6 +64,23 @@
   <section class="doc-wrap doc-section">
     <div class="doc-section-head">
       <span class="doc-num">02</span>
+      <h2>Statut par famille</h2>
+      <p>Un drop peut contenir des assets utiles, candidats ou à tenir hors publication. Cette classification protège le corpus contre les remplacements accidentels.</p>
+    </div>
+    <table class="doc-table">
+      <thead><tr><th>Famille</th><th>Current</th><th>Candidate</th><th>Hold</th></tr></thead>
+      <tbody>
+        <tr><td>Identité</td><td>Cube favicon, dot orange, grammaire sombre/claire.</td><td>Variantes de symboles seulement si reliées à une décision.</td><td>Tout favicon concurrent non promu.</td></tr>
+        <tr><td>Mascotte</td><td>Rig courant dans `_components/Syster.dc.html` et `mascot/`.</td><td>Kit Syster et itérations de redesign visibles comme références.</td><td>Remplacement de source ou géométrie non validée.</td></tr>
+        <tr><td>Runtime data</td><td>`port-data/` et scènes JSON vérifiables.</td><td>Nouveaux miroirs de portage après smoke et audit.</td><td>Source qui change un contrat sans preuve visible.</td></tr>
+        <tr><td>Uploads</td><td>Sources documentaires reliées à une page.</td><td>Captures et références utiles mais non triées.</td><td>Dossiers dupliqués, wrappers qui retirent nav/favicon, média narratif non publié.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="doc-wrap doc-section">
+    <div class="doc-section-head">
+      <span class="doc-num">03</span>
       <h2>Règles d'usage</h2>
       <p>Les assets doivent servir le corpus sans créer de confusion sur ce qui est validé.</p>
     </div>
@@ -70,6 +89,21 @@
       <article class="doc-card dark"><span class="doc-tag">candidate</span><h3>Exploration nommée</h3><p>Un asset candidat peut être exposé, mais il doit être marqué comme tel et isolé des sources courantes.</p></article>
       <article class="doc-card dark"><span class="doc-tag">proof</span><h3>Capture contextualisée</h3><p>Une capture doit dire quelle surface, quel viewport et quel état elle montre.</p></article>
       <article class="doc-card dark"><span class="doc-tag">reuse</span><h3>Réutilisation traçable</h3><p>Un asset réutilisé par plusieurs pages doit pointer vers une source unique ou une règle de duplication claire.</p></article>
+    </div>
+  </section>
+
+  <section class="doc-wrap doc-section">
+    <div class="doc-section-head">
+      <span class="doc-num">04</span>
+      <h2>Protocole de drop</h2>
+      <p>Avant qu'un asset entre dans le site, il doit passer par une intake isolée, un classement et un gate de publication.</p>
+    </div>
+    <div class="doc-flow" aria-label="Protocole assets">
+      <article class="doc-flow-node"><span>01</span><h3>Extraire</h3><p>Le drop est lu en scratch, avec hash et inventaire de chemins.</p></article>
+      <article class="doc-flow-node"><span>02</span><h3>Classer</h3><p>Chaque fichier devient Current, Candidate, Reference, Archive ou Hold.</p></article>
+      <article class="doc-flow-node"><span>03</span><h3>Porter</h3><p>On cherry-pick les données utiles sans écraser les canons du site.</p></article>
+      <article class="doc-flow-node"><span>04</span><h3>Scrubber</h3><p>La copie publique est nettoyée des termes internes et des chemins locaux.</p></article>
+      <article class="doc-flow-node"><span>05</span><h3>Prouver</h3><p>Les smokes et captures relient l'asset à un comportement visible.</p></article>
     </div>
   </section>
 

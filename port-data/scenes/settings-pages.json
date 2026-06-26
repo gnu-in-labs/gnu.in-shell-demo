@@ -1,0 +1,22 @@
+{
+  "spec": "settings-pages",
+  "role": "Scaffolds for the 4 GnuSettingsApp pages Central did not cover (Displays/Input/Services/Developer). The other 4 of the 8-page app map to existing sections.",
+  "source": "ShellSettingsService + DisplaysPage/InputPage/ServicesPage/DeveloperPage settings views",
+  "page_map_8": {
+    "Appearance": "Central · General + Panel Family",
+    "Shell": "Central · Taskbar (modules + apparence + widgets)",
+    "Surfaces": "Central · Compositor + Dock",
+    "Gnosis": "Central · Sidebar (Gnosis assistant)",
+    "Displays": "scaffold (this file)",
+    "Input": "scaffold (this file)",
+    "Services": "scaffold (this file)",
+    "Developer": "scaffold (this file · 2 flags tied to live engine state)"
+  },
+  "defaults": {
+    "display": { "output": "eDP-1", "resolution": "2560x1440", "scale": 1.0, "refresh_hz": 144, "vrr": false },
+    "input": { "repeat_rate": 40, "repeat_delay_ms": 300, "mouse_accel": false, "natural_scroll": true, "tap_to_click": true },
+    "services": { "portal": "healthy (derived)", "notifications": "running", "polkit": "running", "clipboard_manager": true, "idle_inhibitor": false },
+    "developer": { "verbose_logging": false, "scene_inspector": "←live showDamage", "experimental_flags": "←live compositor.experimental", "reload_on_save": true }
+  },
+  "note": "Generic renderer in Central: one template (toggle/select/slider/status rows) drives all 4 pages from appPageControls; portal health derives from the compositor capture+experimental, identical to compositor_profile.rs."
+}

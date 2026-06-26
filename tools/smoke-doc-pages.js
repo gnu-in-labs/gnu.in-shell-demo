@@ -52,7 +52,7 @@ const DOC_PAGES = [
   {
     file: "Central Live.dc.html",
     h1: "Central Live",
-    requiredText: ["surface vivante", "Contrat de simulation", "Sous-systèmes", "Chantiers ouverts", "Propagation documentaire"],
+    requiredText: ["surface vivante", "Ledger de livraison", "Compositor profile", "Contrat de simulation", "Sous-systèmes", "Chantiers ouverts", "Propagation documentaire"],
     requiredLinks: ["Evidence.dc.html"]
   },
   {
@@ -64,13 +64,13 @@ const DOC_PAGES = [
   {
     file: "Assets.dc.html",
     h1: "Assets",
-    requiredText: ["Cube favicon", "Mascotte courante", "Règles d'usage"],
+    requiredText: ["Cube favicon", "Mascotte courante", "Central mirrors", "Statut par famille", "Protocole de drop", "Règles d'usage"],
     requiredLinks: ["Methodology.dc.html"]
   },
   {
     file: "Evidence.dc.html",
     h1: "Evidence",
-    requiredText: ["Force de preuve", "Docs smoke", "Matrice Central Live", "Commandes locales"],
+    requiredText: ["Force de preuve", "Docs smoke", "Showcase smoke", "Central smoke", "Matrice Central Live", "Ledger de claims", "Commandes locales"],
     requiredLinks: ["Communications.dc.html"]
   },
   {

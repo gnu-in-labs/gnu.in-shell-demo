@@ -1,0 +1,13 @@
+{
+  "spec": "panel-family",
+  "role": "Golden treatments for panel_family.rs — shellMode resolves one PanelTreatment (fill/blur/border/radius/elevation) applied to every panel node shell-wide.",
+  "source": "ShellSettingsService.shellMode (port-data/shell_settings.json group panel_family, options_ref shellModeFamilies — backend ships the list dynamically; these 4 are the canonical set)",
+  "families": [
+    { "shellMode": "glass",   "fill": "rgba(28, 27, 28, 0.94)", "blur_px": 14, "border_px": 1.0, "radius_px": 14, "elevation": "High",   "translucent": true },
+    { "shellMode": "solid",   "fill": "#1c1b1c",                "blur_px": 0,  "border_px": 1.0, "radius_px": 12, "elevation": "Medium", "translucent": false },
+    { "shellMode": "outline", "fill": "rgba(20, 19, 20, 0.5)",  "blur_px": 6,  "border_px": 1.5, "radius_px": 12, "elevation": "Low",    "translucent": true },
+    { "shellMode": "soft",    "fill": "rgba(30, 28, 30, 0.96)", "blur_px": 16, "border_px": 1.0, "radius_px": 18, "elevation": "High",   "translucent": true }
+  ],
+  "applies_to": ["sidebar", "launcher", "menu-panel", "settings-popover"],
+  "note": "No panel hard-codes its look; each reads the resolved treatment. Central threads famBg/famBlur/famBorder/famRadius/famShadow into the sidebar + launcher live, with a 4-swatch preview in the General section."
+}

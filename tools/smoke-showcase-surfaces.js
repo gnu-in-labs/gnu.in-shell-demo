@@ -41,7 +41,7 @@ const PAGES = [
   {
     file: "Context.dc.html",
     h1: "Context",
-    requiredText: ["dynamic reference layer", "Menus contextuels", "Renderer", "Animations", "Motion", "Syster kit"],
+    requiredText: ["dynamic reference layer", "ownership", "Guides réactifs", "Showcase smoke", "Menus contextuels", "Renderer", "Animations", "Motion", "Syster kit"],
     checkContext: true
   },
   {
@@ -63,7 +63,7 @@ const PAGES = [
   {
     file: "Motion.dc.html",
     h1: "Motion",
-    requiredText: ["Comportement vérifiable", "settle", "reveal", "handoff", "reduced"],
+    requiredText: ["Comportement vérifiable", "Deux couches, un contrat", "Engine", "UI kit", "settle", "reveal", "handoff", "reduced"],
     checkRecipe: true
   },
   {
@@ -74,7 +74,7 @@ const PAGES = [
   {
     file: "Molecule Renderer.dc.html",
     h1: "Renderer générique · hydraté depuis les données",
-    requiredText: ["source", "layouts", "renderer", "densité"]
+    requiredText: ["source", "layouts", "renderer", "densité", "30 molécules", "agentic", "Actions suggérées"]
   }
 ];
 

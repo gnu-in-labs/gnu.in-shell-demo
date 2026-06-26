@@ -103,13 +103,20 @@
     "scenes/edge-aware.json",
     "scenes/diff-damage.json",
     "scenes/render-frame.json",
-    "scenes/wire-protocol.json"
+    "scenes/wire-protocol.json",
+    "scenes/compositor-profile.json",
+    "scenes/panel-family.json",
+    "scenes/settings-pages.json"
   ],
   "files": {
     "types": "scene_types.rs",
     "tokens": "tokens.json",
     "motion": "motion.spec.json",
     "taskbar": "taskbar_registry.rs",
+    "bar_settings": "bar_settings.rs",
+    "compositor_profile": "compositor_profile.rs",
+    "panel_family": "panel_family.rs",
+    "settings_pages": "settings_pages.rs",
     "dock_affordance": "dock_affordance.rs",
     "dock_settings": "dock_settings.rs",
     "shell_settings": "shell_settings.json",
@@ -128,7 +135,7 @@
     "files": { "motion_driver": "host_motion_driver.rs", "menu_state": "host_menu_state.rs", "protocol": "host_protocol.rs" },
     "motion_driver": "per-surface frame-tick adoption of the engine motion: MotionDriver{ open/dismiss (retarget via interrupt_motion), tick(dt), sample(), is_animating() } — exactly Central's menu-lifecycle wiring; 5 tests",
     "menu_state": "pure overlay lifecycle SM enforcing AT-MOST-ONE surface: open(replace)/configure(promote;no-op-if-dismissed)/dismiss(zero-all)/on_hit(MenuRow->Action,Panel/Blob->KeepOpen,None->Dismiss)/surface_action(Reuse same-output|Recreate) — 8 tests",
-    "protocol": "newline-delimited JSON over a Unix socket (legacy UI ContextMenuService ↔ Rust host): HostMessage{Open{request,screen}|Close} · Envelope{version,#[flatten] message} (version-negotiated, is_supported) · HostEvent{Action{id}}; canonical wire frames in scenes/wire-protocol.json (TRANSITIONAL — bridge cutover bridge; the destination is in-process: the host links compose-core directly, no bridge / no socket)",
+    "protocol": "newline-delimited JSON over a Unix socket (legacy UI ContextMenuService ↔ Rust host): HostMessage{Open{request,screen}|Close} · Envelope{version,#[flatten] message} (version-negotiated, is_supported) · HostEvent{Action{id}}; canonical wire frames in scenes/wire-protocol.json (TRANSITIONAL — bridge cutover; the destination is in-process: the host links compose-core directly, no bridge / no socket)",
     "ties_to_central": "MotionDriver == cmMotion + advanceCmMotion + openK-interrupt; MenuState.on_hit == Central input-model click intents; surface_action == per-output Reuse/Recreate"
   },
   "compose_engine": {

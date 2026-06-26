@@ -48,10 +48,20 @@ body{margin:0;background:#101318;color:#F5EEDD;font-family:Montreal,system-ui,sa
 .mot-card span{font:800 10px/1 JetBrains Mono,ui-monospace,monospace;color:#FF8E40;letter-spacing:.14em;text-transform:uppercase;}
 .mot-card h3{font-size:22px;line-height:1.05;margin:14px 0 0;letter-spacing:0;}
 .mot-card p{font-size:13px;line-height:1.5;color:#AAB1BA;margin:10px 0 0;}
+.mot-matrix{margin-top:24px;border:1px solid #2B3037;border-radius:12px;background:#151A20;overflow:hidden;box-shadow:0 18px 42px rgba(0,0,0,.24);}
+.mot-matrix-head{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px;padding:22px 24px;border-bottom:1px solid #2B3037;background:#101419;}
+.mot-matrix-head h2{margin:0;font-size:30px;line-height:1.05;letter-spacing:0;}
+.mot-matrix-head p{margin:0;color:#AAB1BA;font-size:13px;line-height:1.55;}
+.mot-table{display:grid;grid-template-columns:170px repeat(4,minmax(0,1fr));}
+.mot-cell{min-height:82px;padding:14px;border-right:1px solid #2B3037;border-bottom:1px solid #2B3037;color:#AAB1BA;font-size:12px;line-height:1.45;}
+.mot-cell:nth-child(5n){border-right:0;}
+.mot-cell:nth-last-child(-n+5){border-bottom:0;}
+.mot-cell.head{background:#0F1318;color:#FF8E40;font:900 10px/1.35 JetBrains Mono,ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;}
+.mot-cell b{display:block;color:#F5EEDD;font-size:13px;margin-bottom:5px;}
 @keyframes motTravel{0%{transform:translateX(0);opacity:.2}12%{opacity:1}88%{opacity:1}100%{transform:translateX(min(520px,58vw));opacity:.2}}
 @keyframes motPop{0%,100%{transform:scale(.7);opacity:.48}50%{transform:scale(1.18);opacity:1}}
 @media(min-width:861px){.mot-shell{width:min(1080px,calc(100% - 148px));margin-left:max(116px,calc((100% - 1080px)/2));margin-right:auto;}}
-@media(max-width:860px){.mot-page{padding-top:28px}.mot-shell{width:min(100% - 32px,760px)}.mot-head,.mot-lab,.mot-grid{grid-template-columns:1fr}.mot-copy{border-right:0;border-bottom:1px solid #2B3037}.mot-stage{min-height:260px}.mot-panel{margin-top:12px}}
+@media(max-width:860px){.mot-page{padding-top:28px}.mot-shell{width:min(100% - 32px,760px)}.mot-head,.mot-lab,.mot-grid,.mot-matrix-head{grid-template-columns:1fr}.mot-copy{border-right:0;border-bottom:1px solid #2B3037}.mot-stage{min-height:260px}.mot-panel{margin-top:12px}.mot-table{display:block}.mot-cell{border-right:0}.mot-cell.head:not(:first-child){display:none}.mot-cell:nth-last-child(-n+5){border-bottom:1px solid #2B3037}.mot-cell:last-child{border-bottom:0}}
 @media(max-width:520px){.mot-shell{width:min(100% - 24px,520px)}.mot-title{font-size:48px}.mot-copy{padding:22px}.mot-stage{min-height:236px}.mot-node{width:56px;height:56px}.mot-lab[data-mode="settle"] .mot-line,.mot-lab[data-mode="reduced"] .mot-line{left:calc(12% + 56px);right:calc(12% + 56px)}}
 </style>
 </head>
@@ -90,6 +100,30 @@ body{margin:0;background:#101318;color:#F5EEDD;font-family:Montreal,system-ui,sa
         <div class="mot-line"></div>
         <div class="mot-pulse"></div>
         <div class="mot-stage-label">motion contract sketch</div>
+      </div>
+    </section>
+
+    <section class="mot-matrix" aria-label="Motion source reconciliation">
+      <div class="mot-matrix-head">
+        <h2>Deux couches, un contrat</h2>
+        <p>La couche engine porte les tokens et springs de référence. La couche UI kit traduit ces primitives en recettes lisibles pour menus, rail, panels et états Syster. Une recette ne devient publique que si sa source et sa preuve sont nommées.</p>
+      </div>
+      <div class="mot-table">
+        <div class="mot-cell head">Couche</div>
+        <div class="mot-cell head">Source</div>
+        <div class="mot-cell head">Responsabilité</div>
+        <div class="mot-cell head">Preuve</div>
+        <div class="mot-cell head">Limite</div>
+        <div class="mot-cell head">Engine</div>
+        <div class="mot-cell"><b>tokens + springs</b>port-data/tokens.json et valeurs settle, snap, wobbly.</div>
+        <div class="mot-cell">Définir les durées, curves, couches et budgets utilisables par le runtime.</div>
+        <div class="mot-cell">Central Live, Evidence, motion.spec.json et mutations visibles.</div>
+        <div class="mot-cell">Ne décrit pas seul la grammaire des menus ou des états mascotte.</div>
+        <div class="mot-cell head">UI kit</div>
+        <div class="mot-cell"><b>recipes</b>settle, reveal, handoff, reduced et états de surface.</div>
+        <div class="mot-cell">Traduire le mouvement en intention: focus, attente, confirmation, transfert ou réduction.</div>
+        <div class="mot-cell">Showcase smoke, Motion switcher et captures de surface.</div>
+        <div class="mot-cell">Doit rester aligné sur l'engine pour éviter les gestes décoratifs.</div>
       </div>
     </section>
 

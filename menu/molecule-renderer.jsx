@@ -216,6 +216,180 @@ function MoleculeRenderer({ m, theme, dpref }) {
         i === 0 ? h('div', { style: { display: 'flex', gap: 4 } }, (b.leaves || []).slice(0, 3).map((lf, li) => h('span', { key: li, style: { fontSize: 9.5, padding: '3px 8px', borderRadius: 999, background: theme.kbdBg, color: theme.textDim, border: `.5px solid ${theme.border}` } }, lf))) : null)));
   }
 
+  // ── AGENTIC family ──
+  if (L === 'agentic-panel') {
+    const ag = mm.agent || {};
+    const sug = mm.suggest;
+    const planF = mm.plan;
+    const privacy = mm.privacy;
+    const riskC = { observe: theme.green, local: '#E8B341', system: '#FF5040' };
+    const agHdr = h('div', { key: 'ah', style: {
+      display: 'flex', alignItems: 'center', gap: 8,
+      padding: '9px 12px 8px', borderBottom: '.5px solid ' + theme.border,
+      background: theme.accentDim,
+    }},
+      h(window.SysterGlyph, { size: 17, hover: !!ag.pulse }),
+      h('div', { style: { flex: 1, minWidth: 0 } },
+        h('span', { style: { fontSize: 11.5, fontWeight: 700 } }, ag.task || 'Agent actif')),
+      ag.badge ? h('span', { style: {
+        fontSize: 8.5, padding: '2px 7px', borderRadius: 999,
+        background: theme.accent, color: '#fff', fontWeight: 700, letterSpacing: '0.04em',
+      }}, ag.badge) : null,
+      ag.pulse ? h('span', { style: {
+        width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
+        background: theme.green, boxShadow: '0 0 0 2.5px ' + theme.green + '44',
+      }}) : null,
+    );
+    const sugBand = sug ? h('div', { key: 'sb', style: {
+      display: 'flex', alignItems: 'center', gap: 7,
+      padding: '6px 12px', borderBottom: '.5px solid ' + theme.border,
+      background: theme.mode === 'dark' ? 'rgba(255,106,0,.06)' : 'rgba(255,106,0,.05)',
+    }},
+      h('span', { style: { width: 12, height: 12, color: theme.accent, flexShrink: 0 } }, Icons.suggest || Icons.bell),
+      h('span', { style: { flex: 1, fontSize: 11, color: theme.text, fontStyle: 'italic' } }, sug.text || sug),
+      sug.kbd ? h(window.KbdHint, { keys: sug.kbd, theme, density: d }) : null,
+    ) : null;
+    const RiskRow = (r, i) => {
+      const rc = r.risk ? riskC[r.risk] : null;
+      return h('div', { key: r.id || i, style: { position: 'relative' } },
+        rc ? h('div', { style: {
+          position: 'absolute', left: 0, top: '18%', bottom: '18%', width: 2.5,
+          background: rc, borderRadius: 2, zIndex: 3, pointerEvents: 'none',
+        } }) : null,
+        h(window.MenuRow, {
+          theme, shape, density: d,
+          icon: r.icon ? Icons[r.icon] : undefined,
+          label: r.label, sub: r.sub, kbd: r.kbd,
+          accent: r.accent, danger: r.danger,
+          hasSubmenu: r.kind === 'submenu' || undefined,
+          toggle: r.kind === 'toggle' ? true : undefined, toggleOn: r.on,
+          hovered: i === 0 && !r.danger && !r.accent,
+        }),
+        (r.badge && !r.kbd) ? h('span', { style: {
+          position: 'absolute', right: 9, top: '50%', transform: 'translateY(-50%)',
+          fontSize: 8, padding: '1.5px 6px', borderRadius: 999, zIndex: 4,
+          background: rc ? rc + '20' : theme.kbdBg,
+          color: rc || theme.textDim, fontWeight: 700,
+          border: '.5px solid ' + (rc ? rc + '55' : theme.border),
+          letterSpacing: '0.06em', pointerEvents: 'none',
+        } }, r.badge) : null,
+      );
+    };
+    const parts = [agHdr];
+    if (sugBand) parts.push(sugBand);
+    (mm.groups || []).forEach((g, gi, arr) => {
+      parts.push(h(window.MenuSection, { key: 'gs' + gi, label: g.head || undefined, theme, density: d },
+        (g.rows || []).map(RiskRow)));
+      if (gi < arr.length - 1) parts.push(h(window.MenuSeparator, { key: 'sp' + gi, theme }));
+    });
+    if (planF) {
+      const pc = planF.risk ? riskC[planF.risk] : theme.accent;
+      parts.push(h('div', { key: 'pf', style: {
+        display: 'flex', alignItems: 'center', gap: 8,
+        padding: '6px 10px', borderTop: '.5px solid ' + theme.border,
+        background: theme.mode === 'dark' ? 'rgba(255,255,255,.025)' : 'rgba(17,20,24,.025)',
+      } },
+        h('span', { style: { width: 12, height: 12, color: pc } }, Icons.plan || Icons.layout),
+        h('span', { style: { flex: 1, fontSize: 10, color: theme.textDim } }, planF.label || 'Plan'),
+        h('button', { style: {
+          border: 'none', cursor: 'pointer', fontSize: 10, fontWeight: 700,
+          padding: '3px 10px', borderRadius: 6,
+          background: theme.green, color: '#fff', fontFamily: 'inherit',
+        } }, 'Appliquer →'),
+      ));
+    }
+    if (privacy) {
+      parts.push(h('div', { key: 'prv', style: {
+        display: 'flex', alignItems: 'center', gap: 5, padding: '4px 10px 5px',
+      } },
+        h('span', { style: { width: 10, height: 10, color: theme.textFaint } }, Icons.privacy || Icons.info),
+        h('span', { style: { fontSize: 9, color: theme.textFaint, fontFamily: 'ui-monospace,monospace' } }, privacy),
+      ));
+    }
+    return shell(parts, width);
+  }
+
+  if (L === 'agentic-confirm') {
+    const plan = mm.plan || {};
+    const aff = mm.affected || [];
+    const riskC = { observe: theme.green, local: '#E8B341', system: '#FF5040' };
+    const hdr = h('div', { key: 'hd', style: {
+      padding: '10px 12px 8px', borderBottom: '.5px solid ' + theme.border,
+      background: theme.accentDim,
+    } },
+      h('div', { style: { display: 'flex', alignItems: 'center', gap: 7 } },
+        h(window.SysterGlyph, { size: 15, hover: true }),
+        h('span', { style: { fontSize: 12.5, fontWeight: 700 } }, plan.title || 'Appliquer ?'),
+      ),
+      plan.scope ? h('div', { style: {
+        fontSize: 9.5, color: theme.textDim, fontFamily: 'ui-monospace,monospace', marginTop: 4,
+      } }, plan.scope) : null,
+    );
+    const steps = h('div', { key: 'sl', style: { padding: '6px 8px' } },
+      aff.map((s, i) => {
+        const rc = s.risk ? riskC[s.risk] : theme.textFaint;
+        const isD = s.risk === 'system';
+        return h('div', { key: s.id || i, style: {
+          display: 'flex', alignItems: 'center', gap: 8,
+          padding: '5px 6px', borderRadius: shape.rowRadius,
+          background: isD ? 'rgba(255,80,60,.07)' : 'transparent', marginBottom: 2,
+        } },
+          h('div', { style: { width: 7, height: 7, borderRadius: '50%', background: rc, flexShrink: 0 } }),
+          h('span', { style: {
+            fontSize: 11, flex: 1, color: isD ? '#FF6044' : theme.text,
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          } }, s.label),
+        );
+      }),
+    );
+    const footer = h('div', { key: 'ft', style: {
+      display: 'flex', gap: 7, padding: '8px 10px',
+      borderTop: '.5px solid ' + theme.border,
+    } },
+      h('button', { style: {
+        flex: 1, border: 'none', cursor: 'pointer', borderRadius: 7,
+        background: theme.green, color: '#fff',
+        fontSize: 11.5, fontWeight: 700, padding: '7px 0', fontFamily: 'inherit',
+      } }, (mm.apply || {}).label || 'Appliquer'),
+      h('button', { style: {
+        flex: 1, border: '.5px solid ' + theme.border, cursor: 'pointer', borderRadius: 7,
+        background: 'transparent', color: theme.textDim,
+        fontSize: 11.5, fontWeight: 500, padding: '7px 0', fontFamily: 'inherit',
+      } }, (mm.cancel || {}).label || 'Annuler'),
+    );
+    return shell([hdr, steps, footer], width);
+  }
+
+  if (L === 'agentic-suggest') {
+    const sug = typeof mm.suggest === 'string' ? mm.suggest : '';
+    return h('div', { style: {
+      display: 'inline-flex', alignItems: 'center', gap: 10,
+      padding: '9px 14px', borderRadius: 999,
+      background: theme.surface, boxShadow: theme.shadow,
+      border: '.5px solid ' + theme.accent,
+      maxWidth: 280, width: 'max-content',
+      fontFamily: 'ui-sans-serif,system-ui,sans-serif', color: theme.text,
+    } },
+      h(window.SysterGlyph, { size: 20, hover: true }),
+      h('span', { style: {
+        fontSize: 11.5, color: theme.text,
+        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 160,
+      } }, sug),
+      h('div', { style: { display: 'flex', gap: 4, flexShrink: 0 } },
+        mm.accept ? h('span', { style: {
+          fontSize: 10, padding: '2px 7px', borderRadius: 5,
+          background: theme.accentDim, color: theme.accent,
+          fontFamily: 'ui-monospace,monospace', fontWeight: 700,
+        } }, mm.accept[0] || '⏎') : null,
+        mm.dismiss ? h('span', { style: {
+          fontSize: 10, padding: '2px 7px', borderRadius: 5,
+          background: theme.kbdBg, color: theme.textDim,
+          fontFamily: 'ui-monospace,monospace',
+        } }, mm.dismiss[0] || 'Esc') : null,
+      ),
+    );
+  }
+
   // ── fallback summary (should be unreachable — every layout is mapped) ──
   const items = mm.ring || mm.discs || mm.pills || mm.bar || mm.targets || mm.swatches || mm.branches || mm.modes || mm.inner || mm.L1 || mm.tiles || [];
   return h('div', { style: { background: theme.surface, border: `.5px solid ${theme.border}`, borderRadius: shape.menuRadius, boxShadow: theme.shadow, padding: 14, color: theme.text, fontFamily: 'ui-sans-serif,system-ui,sans-serif', width: 240 } },

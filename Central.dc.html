@@ -90,6 +90,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
         <div class="cx-btn" onClick="{{ openSettingsBtn }}" style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:7px 11px;border-radius:8px;background:{{ stBtnBg }};border:1px solid {{ stBtnBd }};color:{{ stBtnFg }};"><span class="ms" style="font-size:15px;">tune</span>Control</div>
         <span style="width:1px;height:22px;background:#2b2a2a;margin:0 3px;"></span>
         <div class="cx-btn" onClick="{{ closeAll }}" style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:7px 11px;border-radius:8px;background:#1c1b1c;border:1px solid #2b2a2a;color:#948f94;"><span class="ms" style="font-size:15px;">close_fullscreen</span>Close</div>
+        <div class="cx-btn" onClick="{{ toggleSyster }}" style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:7px 12px;border-radius:8px;background:{{ systerBg }};border:1px solid {{ systerBd }};color:{{ systerFg }};"><span style="width:7px;height:7px;border-radius:50%;background:{{ systerDot }};"></span>{{ systerLabel }}</div>
         <div class="cx-btn" onClick="{{ toggleAuto }}" style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:7px 12px;border-radius:8px;background:{{ autoBg }};border:1px solid {{ autoBd }};color:{{ autoFg }};"><span class="ms" style="font-size:15px;">{{ autoIcon }}</span>Auto-preview</div>
       </div>
 
@@ -111,7 +112,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
 
           <!-- windows (band 10) -->
           <sc-for list="{{ windows }}" as="w" hint-placeholder-count="0">
-            <div style="position:absolute;left:{{ w.left }}%;top:{{ w.top }}%;width:{{ w.w }}%;height:{{ w.h }}%;z-index:10;opacity:{{ w.op }};transform:scale({{ w.scale }});transform-origin:center;border-radius:12px;overflow:hidden;background:#1c1b1c;border:1px solid #2b2a2a;box-shadow:0 18px 40px rgba(0,0,0,0.5);">
+            <div style="position:absolute;left:{{ w.left }}%;top:{{ w.top }}%;width:{{ w.w }}%;height:{{ w.h }}%;z-index:10;opacity:{{ w.op }};transform:scale({{ w.scale }});transform-origin:center;border-radius:12px;overflow:hidden;background:#1c1b1c;border:{{ w.borderW }}px solid {{ w.borderCol }};box-shadow:0 18px 40px rgba(0,0,0,0.5);">
               <div style="display:flex;align-items:center;gap:8px;height:28px;padding:0 10px;background:#201f20;border-bottom:1px solid #2a2829;">
                 <span style="display:flex;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#E5675F;"></span><span style="width:8px;height:8px;border-radius:50%;background:#E8B341;"></span><span style="width:8px;height:8px;border-radius:50%;background:#5F7F52;"></span></span>
                 <span class="ms" style="font-size:14px;color:{{ accent }};margin-left:3px;">{{ w.icon }}</span>
@@ -124,11 +125,15 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
             </div>
           </sc-for>
 
+          <!-- compositor edge-gesture zones (hyprlandPlugin edge candidate · visible) -->
+          <div style="position:absolute;left:0;top:0;bottom:0;width:5px;z-index:25;display:{{ edgeLeftShow }};background:linear-gradient(90deg,{{ accent }},transparent);opacity:0.55;pointer-events:none;"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;height:5px;z-index:25;display:{{ edgeBottomShow }};background:linear-gradient(0deg,{{ accent }},transparent);opacity:0.55;pointer-events:none;"></div>
+
           <!-- bar (band 30) · composed live from the taskbar module registry (slots: left/center/right) -->
           <sc-if value="{{ barVisible }}" hint-placeholder-val="{{ true }}">
-          <div style="position:absolute;left:0;right:0;top:{{ barTop }};bottom:{{ barBottom }};height:{{ barH }}px;background:rgba(20,19,19,0.86);backdrop-filter:blur(8px);border-bottom:1px solid #2a2829;display:flex;align-items:center;gap:{{ barGap }}px;padding:0 12px;z-index:30;">
+          <div style="position:absolute;left:{{ barL }};right:{{ barR }};top:{{ barTop }};bottom:{{ barBottom }};height:{{ barH }}px;background:rgba(20,19,19,0.86);backdrop-filter:blur(8px);border:{{ barBorder }};border-radius:{{ barRadius }};box-shadow:{{ barShadow }};display:flex;align-items:center;gap:{{ barGap }}px;padding:0 12px;z-index:30;">
             <span class="ms" style="font-size:16px;color:{{ accent }};flex:none;">view_in_ar</span>
-            <div style="display:flex;align-items:center;gap:{{ barGap }}px;flex:none;">
+            <div style="display:flex;align-items:center;gap:{{ barGap }}px;flex:none;background:{{ grpBg }};border:{{ grpBd }};border-radius:{{ grpRad }};padding:{{ grpPad }};">
               <sc-for list="{{ barLeft }}" as="m" hint-placeholder-count="1">
                 <sc-if value="{{ m.isPills }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:5px;"><sc-for list="{{ m.pills }}" as="w" hint-placeholder-count="5"><span class="cx-btn ctl-mono" onClick="{{ w.go }}" style="min-width:18px;height:18px;padding:0 5px;border-radius:5px;display:grid;place-items:center;font-size:10px;font-weight:700;background:{{ w.bg }};color:{{ w.fg }};">{{ w.n }}</span></sc-for></div></sc-if>
                 <sc-if value="{{ m.isText }}" hint-placeholder-val="{{ false }}"><span class="ctl-mono" style="font-size:11px;font-weight:600;color:{{ m.fg }};letter-spacing:0.04em;white-space:nowrap;">{{ m.text }}</span></sc-if>
@@ -137,7 +142,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
               </sc-for>
             </div>
             <div style="flex:1;"></div>
-            <div style="display:flex;align-items:center;gap:{{ barGap }}px;flex:none;">
+            <div style="display:flex;align-items:center;gap:{{ barGap }}px;flex:none;background:{{ grpBg }};border:{{ grpBd }};border-radius:{{ grpRad }};padding:{{ grpPad }};">
               <sc-for list="{{ barCenter }}" as="m" hint-placeholder-count="1">
                 <sc-if value="{{ m.isPills }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:5px;"><sc-for list="{{ m.pills }}" as="w" hint-placeholder-count="5"><span class="cx-btn ctl-mono" onClick="{{ w.go }}" style="min-width:18px;height:18px;padding:0 5px;border-radius:5px;display:grid;place-items:center;font-size:10px;font-weight:700;background:{{ w.bg }};color:{{ w.fg }};">{{ w.n }}</span></sc-for></div></sc-if>
                 <sc-if value="{{ m.isText }}" hint-placeholder-val="{{ false }}"><span class="ctl-mono" style="font-size:11px;font-weight:600;color:{{ m.fg }};letter-spacing:0.04em;white-space:nowrap;">{{ m.text }}</span></sc-if>
@@ -146,7 +151,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
               </sc-for>
             </div>
             <div style="flex:1;"></div>
-            <div style="display:flex;align-items:center;gap:{{ barGap }}px;flex:none;">
+            <div style="display:flex;align-items:center;gap:{{ barGap }}px;flex:none;background:{{ grpBg }};border:{{ grpBd }};border-radius:{{ grpRad }};padding:{{ grpPad }};">
               <sc-for list="{{ barRight }}" as="m" hint-placeholder-count="3">
                 <sc-if value="{{ m.isPills }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:5px;"><sc-for list="{{ m.pills }}" as="w" hint-placeholder-count="5"><span class="cx-btn ctl-mono" onClick="{{ w.go }}" style="min-width:18px;height:18px;padding:0 5px;border-radius:5px;display:grid;place-items:center;font-size:10px;font-weight:700;background:{{ w.bg }};color:{{ w.fg }};">{{ w.n }}</span></sc-for></div></sc-if>
                 <sc-if value="{{ m.isText }}" hint-placeholder-val="{{ false }}"><span class="ctl-mono" style="font-size:11px;font-weight:600;color:{{ m.fg }};letter-spacing:0.04em;white-space:nowrap;">{{ m.text }}</span></sc-if>
@@ -157,9 +162,72 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
           </div>
           </sc-if>
 
+          <!-- Gnosis HUD (band 40) · Syster.App active · contextual bar attached to the focused window -->
+          <sc-if value="{{ hudShow }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;left:50%;top:54px;transform:translateX(-50%);z-index:40;display:flex;flex-direction:column;align-items:center;">
+            <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:14px;background:rgba(20,19,20,0.9);backdrop-filter:blur(16px);border:1px solid #2b2a2a;box-shadow:0 18px 44px rgba(0,0,0,0.5);">
+              <div style="width:22px;height:22px;flex:none;"><dc-import name="Syster" state="{{ mascotState }}" hint-size="22px,22px"></dc-import></div>
+              <span style="width:7px;height:7px;border-radius:50%;background:{{ hudDotColor }};flex:none;animation:{{ hudDotAnim }};"></span>
+              <div style="min-width:0;max-width:90px;overflow:hidden;">
+                <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:13px;font-weight:700;color:#f3eee9;">{{ hudApp }}</span><span class="ctl-mono" style="font-size:8px;letter-spacing:0.08em;color:#5f656d;">{{ hudRole }}</span><span class="ctl-mono" style="font-size:8px;letter-spacing:0.08em;color:#8DA982;">{{ hudState }}</span></div>
+                <div class="ctl-mono" style="font-size:8.5px;color:#7c828a;margin-top:1px;">{{ hudCursor }} · {{ hudBox }}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:4px;padding:4px 6px;border-radius:8px;background:#161516;border:1px solid #2b2a2a;">
+                <span class="ms" style="font-size:14px;color:#8DA982;">bar_chart</span>
+                <div><div class="ctl-mono" style="font-size:8px;font-weight:700;color:#cbc5ca;">{{ hudTier }}</div><div class="ctl-mono" style="font-size:7px;color:#5f656d;">{{ hudTierSub }}</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <sc-for list="{{ hudChips }}" as="c" hint-placeholder-count="4">
+                  <span class="cx-btn" onClick="{{ c.go }}" title="{{ c.label }}" style="display:flex;align-items:center;gap:3px;padding:5px;border-radius:8px;background:{{ c.bg }};border:1px solid {{ c.bd }};color:{{ c.fg }};"><span class="ms" style="font-size:15px;">{{ c.icon }}</span><span style="display:{{ c.badgeShow }};align-items:center;justify-content:center;min-width:13px;height:13px;border-radius:7px;background:#FF6A00;color:#1a1207;font-size:8px;font-weight:700;padding:0 2px;">{{ c.badge }}</span></span>
+                </sc-for>
+                <span class="ms cx-btn" onClick="{{ hudClose }}" style="font-size:16px;color:#7c828a;margin-left:2px;">close</span>
+              </div>
+            </div>
+            <sc-if value="{{ hudHasFeed }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:6px;align-self:stretch;border-radius:14px;background:rgba(16,15,16,0.92);backdrop-filter:blur(16px);border:1px solid #232122;box-shadow:0 18px 44px rgba(0,0,0,0.5);padding:11px 13px;">
+                <div class="ctl-mono" style="font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:#7c828a;margin-bottom:8px;">event feed · gnosis-engine · timeline</div>
+                <div style="display:flex;flex-direction:column;gap:5px;">
+                  <sc-for list="{{ hudFeed }}" as="f" hint-placeholder-count="3">
+                    <div style="display:flex;align-items:center;gap:8px;"><span class="ctl-mono" style="font-size:11px;color:{{ f.color }};">{{ f.dir }}</span><span class="ctl-mono" style="flex:1;min-width:0;font-size:9.5px;color:#948f94;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ f.text }}</span></div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+          </sc-if>
+
           <!-- sidebar (band 60) -->
-          <div style="position:absolute;top:{{ sbTop }}px;bottom:14px;right:10px;width:25%;min-width:190px;border-radius:14px;background:rgba(28,27,28,0.94);backdrop-filter:blur(14px);border:1px solid #2b2a2a;padding:14px;z-index:60;box-shadow:0 18px 40px rgba(0,0,0,0.5);opacity:{{ sbOp }};pointer-events:{{ sbPe }};transform:translateX({{ sbX }}px);">
-            <div class="ctl-mono" style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7c828a;">contrôle</div>
+          <div style="position:absolute;top:{{ sbTop }}px;bottom:14px;right:10px;width:25%;min-width:190px;border-radius:{{ famRadius }};background:{{ famBg }};backdrop-filter:{{ famBlur }};border:{{ famBorder }};padding:14px;overflow-y:auto;z-index:60;box-shadow:{{ famShadow }};opacity:{{ sbOp }};pointer-events:{{ sbPe }};transform:translateX({{ sbX }}px);">
+            <!-- Gnosis assistant (sidebar-left · gnosis-app) -->
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:11px;">
+              <span class="ms" style="font-size:18px;color:{{ accent }};">auto_awesome</span>
+              <span style="flex:1;font-size:13px;font-weight:700;color:#f3eee9;">Gnosis</span>
+              <span style="width:7px;height:7px;border-radius:50%;background:#5F7F52;"></span>
+            </div>
+            <div class="cx-btn" onClick="{{ gnosisAsk }}" style="display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:10px;background:#201f20;border:1px solid #2b2a2a;margin-bottom:9px;">
+              <span class="ms" style="font-size:15px;color:#7c828a;">prompt_suggestion</span>
+              <span style="flex:1;font-size:11px;color:#7c828a;">Demander à Gnosis…</span>
+              <span class="ctl-mono" style="font-size:9px;color:#5f656d;">⌘K</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-bottom:13px;">
+              <sc-for list="{{ gnosisChips }}" as="c" hint-placeholder-count="3">
+                <div class="cx-btn" onClick="{{ c.go }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-radius:9px;background:#161516;border:1px solid #232122;">
+                  <span class="ms" style="font-size:16px;color:{{ accent }};">{{ c.icon }}</span>
+                  <span style="font-size:9px;font-weight:600;color:#948f94;">{{ c.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div class="ctl-mono" style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7c828a;margin-bottom:7px;">Activité récente</div>
+            <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:14px;">
+              <sc-for list="{{ sbRecent }}" as="r" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:7px;background:#161516;">
+                  <span class="ctl-mono" style="font-size:11px;color:{{ r.color }};">{{ r.dir }}</span>
+                  <span class="ctl-mono" style="flex:1;min-width:0;font-size:9.5px;color:#948f94;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.text }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="height:1px;background:#232122;margin-bottom:13px;"></div>
+            <div class="ctl-mono" style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7c828a;">Système</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px;">
               <sc-for list="{{ sbToggles }}" as="t" hint-placeholder-count="4">
                 <div class="cx-btn" onClick="{{ t.go }}" style="display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:10px;background:{{ t.bg }};border:1px solid {{ t.bd }};">
@@ -182,7 +250,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
 
           <!-- launcher (band 120) -->
           <div style="position:absolute;left:50%;top:47%;width:36%;min-width:300px;z-index:120;opacity:{{ luOp }};pointer-events:{{ luPe }};transform:translate(-50%,-50%) scale({{ luScale }});transform-origin:center;">
-            <div style="border-radius:16px;background:rgba(28,27,28,0.96);backdrop-filter:blur(16px);border:1px solid #2b2a2a;box-shadow:0 28px 60px rgba(0,0,0,0.6);overflow:hidden;">
+            <div style="border-radius:{{ famRadius }};background:{{ famBg }};backdrop-filter:{{ famBlur }};border:{{ famBorder }};box-shadow:{{ famShadow }};overflow:hidden;">
               <div style="display:flex;align-items:center;gap:9px;padding:13px 15px;border-bottom:1px solid #2a2829;">
                 <span class="ms" style="font-size:17px;color:{{ accent }};">search</span>
                 <input ref="{{ launchInputRef }}" class="cx-in" value="{{ query }}" onInput="{{ onQuery }}" onKeyDown="{{ onLauncherKey }}" placeholder="type to run…  ↵ launches" style="flex:1;font-size:12px;color:#e6e1e1;" />
@@ -280,6 +348,148 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
                             <span style="width:34px;height:19px;border-radius:10px;background:{{ damageTrack }};position:relative;"><span style="position:absolute;top:2px;left:{{ damageKnob }}px;width:15px;height:15px;border-radius:50%;background:#fff;"></span></span>
                           </div>
                         </div>
+                        <div>
+                          <div class="ctl-mono" style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#7c828a;margin-bottom:8px;">panel family · gnosis-engine visual family</div>
+                          <div style="display:flex;gap:8px;">
+                            <sc-for list="{{ famOpts }}" as="f" hint-placeholder-count="4">
+                              <div class="cx-btn" onClick="{{ f.go }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 6px;border-radius:10px;background:{{ f.bg }};border:1px solid {{ f.bd }};">
+                                <span style="width:100%;height:26px;border-radius:{{ f.swRad }};background:{{ f.swBg }};border:{{ f.swBd }};"></span>
+                                <span style="font-size:10px;font-weight:700;color:{{ f.fg }};">{{ f.label }}</span>
+                                <span class="ctl-mono" style="font-size:8px;color:{{ f.fg }};opacity:0.72;">{{ f.desc }}</span>
+                              </div>
+                            </sc-for>
+                          </div>
+                          <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-top:7px;">appliqué en direct à la sidebar, au launcher et aux panneaux · famille active <span style="color:#cbc5ca;">{{ shellModeLabel }}</span></div>
+                        </div>
+                      </div>
+                    </sc-if>
+
+                    <!-- COMPOSITOR · hyprlandPlugin* profile -->
+                    <sc-if value="{{ isSecCompositor }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;flex-direction:column;gap:15px;max-width:680px;">
+                        <div class="ctl-mono" style="font-size:9px;color:#5f656d;line-height:1.6;">profil compositeur · <span style="color:#cbc5ca;">hyprlandPlugin*</span> · un profil = preset qui <span style="color:#cbc5ca;">résout</span> focus/edge/capture · candidats non-stables = plugins expérimentaux requis (sinon diagnostic, jamais silencieux)</div>
+
+                        <div>
+                          <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-bottom:7px;">Profil · <span style="color:#9a8f78;">◦ = expérimental</span></div>
+                          <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                            <sc-for list="{{ compProfileOpts }}" as="o" hint-placeholder-count="5">
+                              <span class="cx-btn ctl-mono" onClick="{{ o.go }}" style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:6px 10px;border-radius:8px;background:{{ o.bg }};border:1px solid {{ o.bd }};color:{{ o.fg }};">{{ o.label }}<sc-if value="{{ o.exp }}" hint-placeholder-val="{{ false }}"><span style="opacity:0.7;">◦</span></sc-if></span>
+                            </sc-for>
+                          </div>
+                        </div>
+
+                        <sc-if value="{{ compHasDiag }}" hint-placeholder-val="{{ false }}">
+                          <div onClick="{{ clearCompDiag }}" class="cx-btn" style="display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:9px;background:rgba(229,72,77,0.1);border:1px solid #5c2b2e;">
+                            <span class="ms" style="font-size:15px;color:#E5484D;">error</span>
+                            <span style="flex:1;font-size:10.5px;color:#E5675F;">{{ compDiag.msg }}</span>
+                            <span class="ms" style="font-size:14px;color:#7c828a;">close</span>
+                          </div>
+                        </sc-if>
+
+                        <div style="background:#121111;border:1px solid #232122;border-radius:10px;padding:12px;">
+                          <div class="ctl-mono" style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#7c828a;margin-bottom:9px;">Stack résolu · profil → candidats</div>
+                          <div style="display:flex;flex-direction:column;gap:6px;">
+                            <sc-for list="{{ compResolved }}" as="r" hint-placeholder-count="3">
+                              <div style="display:flex;align-items:center;gap:9px;">
+                                <span class="ctl-mono" style="font-size:9px;color:#5f656d;width:54px;">{{ r.axis }}</span>
+                                <span class="ctl-mono" style="flex:1;font-size:11px;color:#cbc5ca;">{{ r.val }}</span>
+                                <span class="ctl-mono" style="font-size:8px;letter-spacing:0.08em;text-transform:uppercase;padding:2px 7px;border-radius:5px;background:{{ r.tagBg }};color:{{ r.tagFg }};">{{ r.tag }}</span>
+                              </div>
+                            </sc-for>
+                          </div>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
+                          <div>
+                            <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-bottom:6px;">Focus feedback · <span style="color:#5F7F52;">visible sur les fenêtres</span></div>
+                            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                              <sc-for list="{{ compFocusOpts }}" as="o" hint-placeholder-count="4">
+                                <span class="cx-btn ctl-mono" onClick="{{ o.go }}" style="display:flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;padding:5px 8px;border-radius:7px;background:{{ o.bg }};border:1px solid {{ o.bd }};color:{{ o.fg }};">{{ o.label }}<sc-if value="{{ o.exp }}" hint-placeholder-val="{{ false }}"><span style="opacity:0.7;">◦</span></sc-if></span>
+                              </sc-for>
+                            </div>
+                          </div>
+                          <div>
+                            <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-bottom:6px;">Edge gestures</div>
+                            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                              <sc-for list="{{ compEdgeOpts }}" as="o" hint-placeholder-count="4">
+                                <span class="cx-btn ctl-mono" onClick="{{ o.go }}" style="display:flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;padding:5px 8px;border-radius:7px;background:{{ o.bg }};border:1px solid {{ o.bd }};color:{{ o.fg }};">{{ o.label }}<sc-if value="{{ o.exp }}" hint-placeholder-val="{{ false }}"><span style="opacity:0.7;">◦</span></sc-if></span>
+                              </sc-for>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-bottom:6px;">Capture provider</div>
+                          <div style="display:flex;gap:5px;">
+                            <sc-for list="{{ compCaptureOpts }}" as="o" hint-placeholder-count="2">
+                              <span class="cx-btn ctl-mono" onClick="{{ o.go }}" style="display:flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;padding:5px 10px;border-radius:7px;background:{{ o.bg }};border:1px solid {{ o.bd }};color:{{ o.fg }};">{{ o.label }}<sc-if value="{{ o.exp }}" hint-placeholder-val="{{ false }}"><span style="opacity:0.7;">◦</span></sc-if></span>
+                            </sc-for>
+                          </div>
+                        </div>
+
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;background:{{ portalBg }};border:1px solid #232122;">
+                          <span class="ms" style="font-size:17px;color:{{ portalFg }};">health_and_safety</span>
+                          <div style="flex:1;">
+                            <div class="ctl-mono" style="font-size:10px;font-weight:700;color:{{ portalFg }};">Portal session · {{ portalHealth }}</div>
+                            <div class="ctl-mono" style="font-size:9px;color:#7c828a;margin-top:2px;">{{ portalDesc }}</div>
+                          </div>
+                        </div>
+
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                          <sc-for list="{{ compTogs }}" as="t" hint-placeholder-count="2">
+                            <div class="cx-btn" onClick="{{ t.go }}" style="display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:9px;background:#141313;border:1px solid #232122;">
+                              <div style="flex:1;">
+                                <div style="font-size:11px;font-weight:600;color:#cbc5ca;">{{ t.label }}</div>
+                                <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-top:2px;">{{ t.desc }}</div>
+                              </div>
+                              <span style="position:relative;width:34px;height:19px;border-radius:10px;background:{{ t.track }};flex:none;"><span style="position:absolute;top:2px;left:{{ t.knobX }};width:15px;height:15px;border-radius:50%;background:#fff;"></span></span>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </sc-if>
+
+                    <!-- SETTINGS-APP PAGES · Displays/Input/Services/Developer (real GnuSettingsApp) -->
+                    <sc-if value="{{ isSecAppPage }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;flex-direction:column;gap:14px;max-width:640px;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                          <span class="ms" style="font-size:20px;color:{{ accent }};">{{ appPageIcon }}</span>
+                          <div>
+                            <div style="font-size:15px;font-weight:700;color:#f3eee9;">{{ appPageTitle }}</div>
+                            <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-top:1px;">{{ appPageDesc }}</div>
+                          </div>
+                          <div style="flex:1;"></div>
+                          <span class="ctl-mono" style="font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:#CE8E3F;background:rgba(206,142,63,0.12);padding:3px 8px;border-radius:5px;">scaffold · page réelle</span>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:7px;">
+                          <sc-for list="{{ appPageControls }}" as="c" hint-placeholder-count="4">
+                            <div style="display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:10px;background:#141313;border:1px solid #232122;">
+                              <div style="flex:1;min-width:0;">
+                                <div style="font-size:11.5px;font-weight:600;color:#cbc5ca;">{{ c.label }}</div>
+                                <sc-if value="{{ c.desc }}" hint-placeholder-val="{{ false }}"><div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-top:2px;">{{ c.desc }}</div></sc-if>
+                              </div>
+                              <sc-if value="{{ c.isToggle }}" hint-placeholder-val="{{ false }}">
+                                <div class="cx-btn" onClick="{{ c.go }}" style="width:34px;height:19px;border-radius:10px;background:{{ c.track }};position:relative;flex:none;"><span style="position:absolute;top:2px;left:{{ c.knobX }};width:15px;height:15px;border-radius:50%;background:#fff;"></span></div>
+                              </sc-if>
+                              <sc-if value="{{ c.isSelect }}" hint-placeholder-val="{{ false }}">
+                                <div style="display:flex;gap:4px;flex:none;">
+                                  <sc-for list="{{ c.pills }}" as="p" hint-placeholder-count="3">
+                                    <span class="cx-btn ctl-mono" onClick="{{ p.go }}" style="font-size:10px;font-weight:600;padding:5px 9px;border-radius:6px;background:{{ p.bg }};border:1px solid {{ p.bd }};color:{{ p.fg }};">{{ p.label }}</span>
+                                  </sc-for>
+                                </div>
+                              </sc-if>
+                              <sc-if value="{{ c.isSlider }}" hint-placeholder-val="{{ false }}">
+                                <div style="display:flex;align-items:center;gap:10px;flex:none;width:210px;">
+                                  <input type="range" class="cx-rng" min="{{ c.min }}" max="{{ c.max }}" step="{{ c.step }}" value="{{ c.value }}" onInput="{{ c.onInput }}" style="flex:1;" />
+                                  <span class="ctl-mono" style="font-size:10px;color:{{ accent }};width:52px;text-align:right;">{{ c.valLabel }}</span>
+                                </div>
+                              </sc-if>
+                              <sc-if value="{{ c.isStatus }}" hint-placeholder-val="{{ false }}">
+                                <span class="ctl-mono" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;background:{{ c.bg }};color:{{ c.fg }};flex:none;">{{ c.state }}</span>
+                              </sc-if>
+                            </div>
+                          </sc-for>
+                        </div>
                       </div>
                     </sc-if>
 
@@ -374,10 +584,10 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
                           </div>
                           <div style="display:flex;align-items:center;gap:9px;margin-top:2px;">
                             <span class="ms" style="font-size:14px;color:{{ wireColor }};">cable</span>
-                            <span class="ctl-mono" style="font-size:8.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7c828a;flex:none;">host wire (legacy)</span>
-                            <span class="ctl-mono" style="font-size:8px;color:#5f656d;flex:none;">{{ wireDirLabel }}</span>
-                            <span class="ctl-mono" style="font-size:8.5px;color:#cbc5ca;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ wireFrame }}</span>
-                            <span class="ctl-mono" style="font-size:8px;font-weight:700;color:{{ wireColor }};flex:none;">v1 · ndjson</span>
+                            <span class="ctl-mono" style="font-size:8.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7c828a;flex:none;">host lifecycle</span>
+                            <span class="ctl-mono" style="font-size:8px;color:#5f656d;flex:none;">{{ lifecycleDirLabel }}</span>
+                            <span class="ctl-mono" style="font-size:8.5px;color:#cbc5ca;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ lifecycleFrame }}</span>
+                            <span class="ctl-mono" style="font-size:8px;font-weight:700;color:{{ lifecycleColor }};flex:none;">v1 · ndjson</span>
                           </div>
                         </div>
 
@@ -537,6 +747,66 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
                       </div>
                     </sc-if>
 
+                    <!-- BAR · apparence + widgets (même surface que la Taskbar ci-dessus · band 30) -->
+                    <sc-if value="{{ isSecTaskbar }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;flex-direction:column;gap:16px;max-width:680px;border-top:1px solid #232122;padding-top:18px;">
+                        <div class="ctl-mono" style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7c828a;">Apparence · barre</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
+                          <div>
+                            <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-bottom:6px;">Coins · corner-style</div>
+                            <div style="display:flex;gap:4px;background:#161516;border:1px solid #232122;border-radius:9px;padding:3px;">
+                              <sc-for list="{{ tbCornerSeg }}" as="o" hint-placeholder-count="3">
+                                <span class="cx-btn ctl-mono" onClick="{{ o.go }}" style="flex:1;text-align:center;font-size:10px;font-weight:600;padding:5px 6px;border-radius:6px;background:{{ o.bg }};color:{{ o.fg }};">{{ o.label }}</span>
+                              </sc-for>
+                            </div>
+                          </div>
+                          <div>
+                            <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-bottom:6px;">Groupes · group-style</div>
+                            <div style="display:flex;gap:4px;background:#161516;border:1px solid #232122;border-radius:9px;padding:3px;">
+                              <sc-for list="{{ tbGroupSeg }}" as="o" hint-placeholder-count="3">
+                                <span class="cx-btn ctl-mono" onClick="{{ o.go }}" style="flex:1;text-align:center;font-size:10px;font-weight:600;padding:5px 6px;border-radius:6px;background:{{ o.bg }};color:{{ o.fg }};">{{ o.label }}</span>
+                              </sc-for>
+                            </div>
+                          </div>
+                          <div>
+                            <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-bottom:6px;">Horloge · clock-format</div>
+                            <div style="display:flex;gap:4px;background:#161516;border:1px solid #232122;border-radius:9px;padding:3px;">
+                              <sc-for list="{{ tbClockSeg }}" as="o" hint-placeholder-count="3">
+                                <span class="cx-btn ctl-mono" onClick="{{ o.go }}" style="flex:1;text-align:center;font-size:10px;font-weight:600;padding:5px 6px;border-radius:6px;background:{{ o.bg }};color:{{ o.fg }};">{{ o.label }}</span>
+                              </sc-for>
+                            </div>
+                          </div>
+                          <div style="display:flex;align-items:flex-end;">
+                            <span class="cx-btn ctl-mono" onClick="{{ revealBar }}" style="width:100%;text-align:center;font-size:10px;font-weight:700;padding:7px 8px;border-radius:8px;background:rgba(61,141,204,0.13);border:1px solid #2b3a44;color:#3D8DCC;">⌘ Super → révéler</span>
+                          </div>
+                        </div>
+
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                          <sc-for list="{{ tbTogs }}" as="t" hint-placeholder-count="4">
+                            <div class="cx-btn" onClick="{{ t.go }}" style="display:flex;align-items:center;justify-content:space-between;padding:8px 11px;border-radius:9px;background:#141313;border:1px solid #232122;">
+                              <span style="font-size:11px;font-weight:600;color:{{ t.fg }};">{{ t.label }}</span>
+                              <span style="position:relative;width:34px;height:19px;border-radius:10px;background:{{ t.track }};flex:none;"><span style="position:absolute;top:2px;left:{{ t.knobX }};width:15px;height:15px;border-radius:50%;background:#fff;"></span></span>
+                            </div>
+                          </sc-for>
+                        </div>
+
+                        <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid #232122;padding-top:14px;">
+                          <div class="ctl-mono" style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7c828a;">Widgets · inventaire</div>
+                          <div class="ctl-mono" style="font-size:9px;color:#5f656d;"><span style="color:{{ accent }};">{{ widgetOnCount }}</span> / 12 actifs · <span style="color:#5F7F52;">slot</span> = placé · <span style="color:#3D8DCC;">strip</span> = ajouté</div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                          <sc-for list="{{ widgetView }}" as="w" hint-placeholder-count="12">
+                            <div class="cx-btn" onClick="{{ w.go }}" style="display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:9px;background:{{ w.rowBg }};border:1px solid #232122;">
+                              <span class="ms" style="font-size:16px;color:{{ w.iconFg }};flex:none;">{{ w.icon }}</span>
+                              <span style="flex:1;min-width:0;font-size:11px;font-weight:600;color:{{ w.labelFg }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ w.label }}</span>
+                              <span class="ctl-mono" style="font-size:7.5px;letter-spacing:0.1em;text-transform:uppercase;color:{{ w.zoneFg }};flex:none;">{{ w.zoneLabel }}</span>
+                              <span style="position:relative;width:30px;height:17px;border-radius:9px;background:{{ w.track }};flex:none;"><span style="position:absolute;top:2px;left:{{ w.knobX }};width:13px;height:13px;border-radius:50%;background:#fff;"></span></span>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </sc-if>
+
                     <!-- DOCK -->
                     <sc-if value="{{ isSecDock }}" hint-placeholder-val="{{ false }}">
                       <div style="display:flex;flex-direction:column;gap:15px;max-width:680px;">
@@ -640,8 +910,8 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
                           </div>
                           <div style="flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:center;">
                             <span class="ctl-mono" style="font-size:8px;color:#5f656d;">live preview</span>
-                            <div style="display:flex;align-items:center;gap:{{ sDemo }}px;padding:{{ sDemo }}px;background:#201f20;border:1px solid #2b2a2a;border-radius:{{ rDemo }}px;">
-                              <span style="width:20px;height:20px;border-radius:{{ rDemoInner }}px;background:{{ accent }};"></span>
+                            <div style="display:flex;align-items:center;gap:{{ sPreview }}px;padding:{{ sPreview }}px;background:#201f20;border:1px solid #2b2a2a;border-radius:{{ rPreview }}px;">
+                              <span style="width:20px;height:20px;border-radius:{{ rPreviewInner }}px;background:{{ accent }};"></span>
                               <span style="width:42px;height:10px;border-radius:5px;background:#39363a;"></span>
                             </div>
                           </div>
@@ -797,7 +1067,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
                         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;">
                           <div style="background:#161516;border:1px solid #2b2a2a;border-radius:11px;padding:12px;display:flex;flex-direction:column;gap:9px;">
                             <div style="display:flex;align-items:baseline;gap:7px;"><span class="ctl-mono" style="font-size:9px;font-weight:700;color:{{ accent }};">C.01</span><span style="font-size:11px;font-weight:600;color:#e6e1e1;">GnuRow</span></div>
-                            <div style="display:flex;align-items:center;gap:9px;padding:8px;border-radius:{{ rDemoInner }}px;background:#201f20;"><span class="ms" style="font-size:16px;color:#cbc5ca;">bolt</span><span style="flex:1;font-size:11px;color:#cbc5ca;">Action</span><span class="ms" style="font-size:14px;color:#5f656d;">chevron_right</span></div>
+                            <div style="display:flex;align-items:center;gap:9px;padding:8px;border-radius:{{ rPreviewInner }}px;background:#201f20;"><span class="ms" style="font-size:16px;color:#cbc5ca;">bolt</span><span style="flex:1;font-size:11px;color:#cbc5ca;">Action</span><span class="ms" style="font-size:14px;color:#5f656d;">chevron_right</span></div>
                           </div>
                           <div style="background:#161516;border:1px solid #2b2a2a;border-radius:11px;padding:12px;display:flex;flex-direction:column;gap:9px;">
                             <div style="display:flex;align-items:baseline;gap:7px;"><span class="ctl-mono" style="font-size:9px;font-weight:700;color:{{ accent }};">C.02</span><span style="font-size:11px;font-weight:600;color:#e6e1e1;">GnuActionPill</span></div>
@@ -958,7 +1228,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
                             <div style="display:flex;align-items:center;gap:11px;padding:7px 11px;border-radius:8px;background:#141313;border:1px solid #232122;"><span class="ms" style="font-size:14px;color:#8DA982;">font_download</span><span class="ctl-mono" style="font-size:10.5px;color:#cbc5ca;flex:1;">IBM Plex Mono · Material Symbols Rounded</span><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;">cdn · block</span></div>
                             <div style="display:flex;align-items:center;gap:11px;padding:7px 11px;border-radius:8px;background:#141313;border:1px solid #232122;"><span class="ms" style="font-size:14px;color:{{ accent }};">wallpaper</span><span class="ctl-mono" style="font-size:10.5px;color:#cbc5ca;flex:1;">wallpaper · matugen scheme</span><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;">generative · runtime</span></div>
                             <div style="display:flex;align-items:center;gap:11px;padding:7px 11px;border-radius:8px;background:#141313;border:1px solid #232122;"><span class="ms" style="font-size:14px;color:#8DA982;">data_object</span><span class="ctl-mono" style="font-size:10.5px;color:#cbc5ca;flex:1;">port-data/scenes/*.json · tokens.json</span><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;">fixtures · generated</span></div>
-                            <div style="display:flex;align-items:center;gap:11px;padding:7px 11px;border-radius:8px;background:#141313;border:1px solid #232122;"><span class="ms" style="font-size:14px;color:{{ accent }};">widgets</span><span class="ctl-mono" style="font-size:10.5px;color:#cbc5ca;flex:1;">Syster.dc.html</span><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;">component · ds</span></div>
+                            <div style="display:flex;align-items:center;gap:11px;padding:7px 11px;border-radius:8px;background:#141313;border:1px solid #232122;"><span class="ms" style="font-size:14px;color:{{ accent }};">widgets</span><span class="ctl-mono" style="font-size:10.5px;color:#cbc5ca;flex:1;">_components/Syster.dc.html</span><span class="ctl-mono" style="font-size:8.5px;color:#7c828a;">component · ds</span></div>
                           </div>
                         </div>
                       </div>
@@ -1042,32 +1312,72 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
               <div style="position:absolute;left:{{ blobLeft }}%;top:{{ blobTop }}%;width:{{ blobW }}%;height:{{ blobH }}%;z-index:99;opacity:{{ cmOp }};background:{{ blobBg }};filter:{{ blobFilter }};border-radius:{{ blobRadius }};pointer-events:none;"></div>
             </sc-if>
             <sc-if value="{{ menuChrome }}" hint-placeholder-val="{{ true }}">
-            <div style="position:absolute;left:{{ cmLeftPct }}%;top:{{ cmTopPct }}%;width:216px;z-index:100;opacity:{{ cmOp }};transform-origin:top left;transform:scale({{ cmScale }});">
+            <div style="position:absolute;left:{{ cmLeftPct }}%;top:{{ cmTopPct }}%;width:250px;z-index:100;opacity:{{ cmOp }};transform-origin:top left;transform:scale({{ cmScale }});">
               <div style="border-radius:{{ menuRadius }}px;background:rgba(28,27,28,0.98);backdrop-filter:blur(18px);border:1px solid #2b2a2a;box-shadow:0 20px 48px rgba(0,0,0,0.62);padding:6px;">
-                <sc-for list="{{ cmItems }}" as="it" hint-placeholder-count="8">
-                  <sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ false }}">
-                    <div style="display:flex;align-items:center;gap:9px;padding:7px 8px 9px;border-bottom:1px solid #2a2829;margin-bottom:4px;">
-                      <div style="width:24px;height:24px;"><dc-import name="Syster" state="hello" hint-size="24px,24px"></dc-import></div>
-                      <div><div style="font-size:11px;font-weight:700;color:#f3eee9;">gnu.in-OS</div><div class="ctl-mono" style="font-size:8px;color:#5f656d;">desktop · ws {{ workspace }}</div></div>
-                    </div>
-                  </sc-if>
-                  <sc-if value="{{ it.isSection }}" hint-placeholder-val="{{ false }}">
-                    <div class="ctl-mono" style="font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:#5f656d;padding:6px 9px 4px;">{{ it.label }}</div>
-                  </sc-if>
-                  <sc-if value="{{ it.isDivider }}" hint-placeholder-val="{{ false }}">
-                    <div style="height:1px;background:#2a2829;margin:4px 6px;"></div>
-                  </sc-if>
-                  <sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ false }}">
-                    <div class="cx-btn" onClick="{{ it.go }}" onMouseEnter="{{ it.hover }}" style="display:flex;align-items:center;gap:10px;padding:7px 9px;border-radius:8px;background:{{ it.rowBg }};">
-                      <span class="ms" style="font-size:16px;color:{{ it.iconFg }};">{{ it.icon }}</span>
-                      <div style="flex:1;min-width:0;">
-                        <div style="font-size:12px;font-weight:500;color:{{ it.fg }};">{{ it.name }}</div>
-                        <div class="ctl-mono" style="font-size:8.5px;color:#5f656d;display:{{ it.subShow }};">{{ it.sublabel }}</div>
+                <!-- agentic GnuContextMenu: header · sections(risk) · deferred suggest · footer -->
+                <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 9px 9px;border-bottom:1px solid #2a2829;margin-bottom:4px;">
+                  <div style="width:26px;height:26px;flex:none;"><dc-import name="Syster" state="hello" hint-size="26px,26px"></dc-import></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="ctl-mono" style="font-size:8px;letter-spacing:0.08em;text-transform:uppercase;color:{{ accent }};">{{ cmHead.eyebrow }}</div>
+                    <div style="font-size:12px;font-weight:700;color:#f3eee9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ cmHead.title }}</div>
+                    <div class="ctl-mono" style="font-size:8px;color:#5f656d;margin-top:1px;">{{ cmHead.sub }}</div>
+                    <sc-if value="{{ cmAgentic }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:5px;margin-top:6px;">
+                      <span class="ctl-mono" style="font-size:8px;color:#cbc5ca;background:#201f20;border:1px solid #2b2a2a;padding:2px 6px;border-radius:5px;">{{ cmHead.modeText }}</span>
+                      <span class="ctl-mono" style="font-size:8px;color:{{ cmHead.vramFg }};background:{{ cmHead.vramBg }};padding:2px 6px;border-radius:5px;">{{ cmHead.vramText }}</span>
+                    </div></sc-if>
+                  </div>
+                </div>
+                <sc-if value="{{ cmAgentic }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:3px;padding:2px;margin:2px 6px 4px;background:#161516;border:1px solid #2b2a2a;border-radius:8px;">
+                  <sc-for list="{{ cmFamilyTabs }}" as="t" hint-placeholder-count="3">
+                    <span class="cx-btn ctl-mono" onClick="{{ t.go }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;font-size:9px;font-weight:600;padding:4px 0;border-radius:6px;background:{{ t.bg }};color:{{ t.fg }};"><span class="ms" style="font-size:12px;">{{ t.icon }}</span>{{ t.label }}</span>
+                  </sc-for>
+                </div></sc-if>
+                <sc-for list="{{ cmSections }}" as="sec" hint-placeholder-count="3">
+                  <div class="ctl-mono" style="font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:#5f656d;padding:6px 9px 4px;">{{ sec.label }}</div>
+                  <sc-for list="{{ sec.items }}" as="it" hint-placeholder-count="3">
+                    <sc-if value="{{ it.isConfirm }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;align-items:center;gap:6px;padding:7px 9px;border-radius:8px;background:rgba(229,72,77,0.08);border:1px solid #5c2b2e;margin:1px 0;">
+                        <span style="flex:1;min-width:0;font-size:9.5px;color:#E5675F;"><b>plan prêt</b> · {{ it.confirmNote }}</span>
+                        <span class="cx-btn ctl-mono" onClick="{{ it.cancel }}" style="font-size:9px;color:#948f94;padding:3px 7px;border-radius:5px;background:#201f20;">annuler</span>
+                        <span class="cx-btn ctl-mono" onClick="{{ it.apply }}" style="font-size:9px;font-weight:700;color:#1a1207;padding:3px 8px;border-radius:5px;background:{{ accent }};">appliquer</span>
                       </div>
-                      <span class="ctl-mono" style="font-size:9px;color:#5f656d;">{{ it.kbd }}</span>
+                    </sc-if>
+                    <sc-if value="{{ it.notConfirm }}" hint-placeholder-val="{{ true }}">
+                      <div class="cx-btn" onClick="{{ it.go }}" style="display:flex;align-items:center;gap:10px;padding:7px 9px;border-radius:8px;">
+                        <span class="ms" style="font-size:16px;color:{{ accent }};flex:none;">{{ it.icon }}</span>
+                        <span style="flex:1;min-width:0;font-size:11.5px;font-weight:500;color:#cbc5ca;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ it.label }}</span>
+                        <sc-if value="{{ it.hasBadge }}" hint-placeholder-val="{{ false }}"><span class="ctl-mono" style="font-size:7.5px;font-weight:700;text-transform:uppercase;color:{{ it.badgeFg }};background:{{ it.badgeBg }};padding:2px 6px;border-radius:4px;flex:none;">{{ it.badgeTxt }}</span></sc-if>
+                      </div>
+                    </sc-if>
+                  </sc-for>
+                </sc-for>
+                <sc-if value="{{ cmShowSuggest }}" hint-placeholder-val="{{ false }}">
+                  <div style="height:1px;background:#2a2829;margin:5px 6px;"></div>
+                  <div style="display:flex;align-items:center;gap:7px;padding:5px 9px 4px;">
+                    <span class="ms" style="font-size:13px;color:#8DA982;animation:cxBlink 1000ms ease-in-out infinite;">auto_awesome</span>
+                    <span class="ctl-mono" style="font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:#8DA982;">gnosis suggère</span>
+                  </div>
+                  <sc-if value="{{ cmSuggestThinking }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:6px;padding:4px 9px 6px;">
+                      <div style="display:flex;align-items:center;gap:9px;"><span style="width:16px;height:16px;border-radius:4px;background:#232122;animation:cxBlink 1100ms ease-in-out infinite;"></span><span style="flex:1;height:9px;border-radius:4px;background:#232122;animation:cxBlink 1100ms ease-in-out infinite;"></span></div>
+                      <div style="display:flex;align-items:center;gap:9px;"><span style="width:16px;height:16px;border-radius:4px;background:#232122;animation:cxBlink 1300ms ease-in-out infinite;"></span><span style="flex:1;width:68%;height:9px;border-radius:4px;background:#232122;animation:cxBlink 1300ms ease-in-out infinite;"></span></div>
                     </div>
                   </sc-if>
-                </sc-for>
+                  <sc-if value="{{ cmSuggestReady }}" hint-placeholder-val="{{ false }}">
+                    <sc-for list="{{ cmSuggestItems }}" as="s" hint-placeholder-count="2">
+                      <div class="cx-btn" onClick="{{ s.go }}" style="display:flex;align-items:center;gap:10px;padding:6px 9px;border-radius:8px;">
+                        <span class="ms" style="font-size:15px;color:#8DA982;flex:none;">{{ s.icon }}</span>
+                        <span style="flex:1;min-width:0;font-size:11px;color:#cbc5ca;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ s.label }}</span>
+                      </div>
+                    </sc-for>
+                  </sc-if>
+                </sc-if>
+                <div style="display:flex;align-items:center;gap:8px;padding:8px 9px 4px;margin-top:4px;border-top:1px solid #2a2829;">
+                  <span class="cx-btn" onClick="{{ cmFoot.micGo }}" style="display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:{{ cmFoot.micColor }};"></span><span class="ctl-mono" style="font-size:8px;color:#948f94;">{{ cmFoot.micTxt }}</span></span>
+                  <span style="display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:{{ cmFoot.visColor }};"></span><span class="ctl-mono" style="font-size:8px;color:#948f94;">{{ cmFoot.visTxt }}</span></span>
+                  <span style="flex:1;"></span>
+                  <span class="ctl-mono" style="font-size:8px;color:{{ cmFoot.noteFg }};">{{ cmFoot.note }}</span>
+                </div>
               </div>
             </div>
             <sc-if value="{{ cmSubOpen }}" hint-placeholder-val="{{ false }}">
@@ -1308,7 +1618,7 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:800},&quot;accent&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;orange&quot;,&quot;beret&quot;,&quot;info&quot;,&quot;rust&quot;],&quot;default&quot;:&quot;orange&quot;,&quot;tsType&quot;:&quot;'orange'|'beret'|'info'|'rust'&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mouse&quot;,&quot;touch&quot;],&quot;default&quot;:&quot;mouse&quot;,&quot;tsType&quot;:&quot;'mouse'|'touch'&quot;},&quot;renderer&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;tiny-skia&quot;,&quot;gpui&quot;],&quot;default&quot;:&quot;gpui&quot;,&quot;tsType&quot;:&quot;'tiny-skia'|'gpui'&quot;},&quot;reduceMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:800},&quot;accent&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;orange&quot;,&quot;beret&quot;,&quot;info&quot;,&quot;rust&quot;],&quot;default&quot;:&quot;orange&quot;,&quot;tsType&quot;:&quot;'orange'|'beret'|'info'|'rust'&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mouse&quot;,&quot;touch&quot;],&quot;default&quot;:&quot;mouse&quot;,&quot;tsType&quot;:&quot;'mouse'|'touch'&quot;},&quot;renderer&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;tiny-skia&quot;,&quot;gpui&quot;],&quot;default&quot;:&quot;gpui&quot;,&quot;tsType&quot;:&quot;'tiny-skia'|'gpui'&quot;},&quot;reduceMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;shellMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;glass&quot;,&quot;solid&quot;,&quot;outline&quot;,&quot;soft&quot;],&quot;default&quot;:&quot;glass&quot;,&quot;tsType&quot;:&quot;'glass'|'solid'|'outline'|'soft'&quot;}}">
 class Component extends DCLogic {
   constructor(props){
     super(props);
@@ -1317,10 +1627,14 @@ class Component extends DCLogic {
       accent: props.accent || 'beret',
       density: props.density || 'mouse',
       renderer: props.renderer || 'gpui',
+      shellMode: props.shellMode || 'glass',
       reduceMotion: !!props.reduceMotion,
       wallSource: 'matugen',
       nightShift: false,
       showDamage: false,
+      compositor: { profile:'stable', experimental:false, reload:true, focus:'official-focus', edge:'off', capture:'builtin', diag:null },
+      appPages: { display:{ res:'2560×1440', scale:1.0, refresh:'144', vrr:false }, input:{ repeat:40, delay:300, accel:false, natural:true, tap:true }, services:{ clipboard:true, idle:false }, dev:{ logging:false, reloadOnSave:true } },
+      systerActive: true,
       inspectorOpen: true,
       volume: 64, muted: false, workspace: 2, query: '',
       toggles: { wifi: true, bt: false, dnd: false },
@@ -1328,13 +1642,15 @@ class Component extends DCLogic {
       tbInput: '',
       taskbar: { edge:'top', visible:true, density:'regular',
         slots: { left:['workspaces'], center:['clock'], right:['network','bluetooth','audio','battery','tray','mascot'] },
+        corner:'rounded', group:'capsules', shadow:false, autohide:false, superReveal:true, clockFmt:'24h', tooltips:true, revealUntil:0,
+        widgets:{ 'active-window':false, 'resources':false, 'media':false, 'gnosis-app':false, 'notifications':false, 'weather':false },
         diag: null },
       dock: { style:'row', size:42, arc:42, spread:1, mode:'docked', enabled:true, revealDelay:200, hideDelay:500, pinned:true },
       dockRevealed:false,
       menuStyle: 'list', perfTier: 'sdf',
       profiles: { settle:{stiff:170,damp:22}, snap:{stiff:260,damp:24}, wobbly:{stiff:200,damp:12} }
     };
-    this.fires = {}; this.cmSub = null;
+    this.fires = {}; this.cmSub = null; this.cmSuggest = null; this.cmConfirmId = null; this._suggestT = null; this.cmFamily = 'window'; this.hudLog = false;
     this.prevNodes = []; this.lastDiff = { added:[], removed:[], moved:[], updated:[], reason:'init', damage:null };
     this.MENU_STYLES = {
       list:{label:'list',kind:'chrome',backed:true,render:'panel'},
@@ -1384,6 +1700,31 @@ class Component extends DCLogic {
       'battery-pct':   { label:'Battery %',     icon:'battery_charging_full', type:'text', ext:true }
     };
     this.TB_ORDER = ['left','center','right'];
+    // ── the 12-strong widget inventory (real ShellSettingsService.widgetEnabled set; mod = bound bar module) ──
+    this.WIDGETS = [
+      { id:'sidebar-left',  label:'Sidebar gauche', icon:'left_panel_open' },
+      { id:'active-window', label:'Fen\u00eatre active', icon:'web_asset', mod:'active-window' },
+      { id:'resources',     label:'Ressources',     icon:'memory', mod:'cpu' },
+      { id:'media',         label:'M\u00e9dia',          icon:'music_note' },
+      { id:'workspaces',    label:'Espaces',        icon:'view_column', mod:'workspaces' },
+      { id:'clock',         label:'Horloge',        icon:'schedule', mod:'clock' },
+      { id:'gnosis-app',    label:'Gnosis',         icon:'auto_awesome' },
+      { id:'notifications', label:'Notifications',  icon:'notifications' },
+      { id:'wifi',          label:'Wi-Fi',          icon:'wifi', mod:'network' },
+      { id:'bluetooth',     label:'Bluetooth',      icon:'bluetooth', mod:'bluetooth' },
+      { id:'weather',       label:'M\u00e9t\u00e9o',          icon:'wb_sunny', mod:'weather' },
+      { id:'audio',         label:'Audio',          icon:'volume_up', mod:'audio' }
+    ];
+    // ── compositor profile: a profile is a PRESET that resolves focus/edge/capture candidates (real hyprlandPlugin* surface) ──
+    this.COMP_PROFILES = {
+      'stable':        { focus:'official-focus',    edge:'off',           capture:'builtin'    },
+      'visual-focus':  { focus:'hyprfocus',         edge:'off',           capture:'builtin'    },
+      'gesture-lab':   { focus:'off',               edge:'combined',      capture:'builtin'    },
+      'capture-lab':   { focus:'off',               edge:'hypr-hot-edge', capture:'hyprcapture' },
+      'workspace-lab': { focus:'borders-plus-plus', edge:'hyprgrass',     capture:'builtin'    }
+    };
+    // stable candidate sets per axis; anything else requires experimental plugins enabled
+    this.COMP_STABLE = { profile:['stable'], focus:['off','official-focus'], edge:['off'], capture:['builtin'] };
     const mk = (st,dp)=>({p:0,v:0,open:false,stiff:st,damp:dp});
     this.surf = { launcher:mk(170,22), sidebar:mk(170,22), osd:mk(260,24), modal:mk(170,22), cmenu:mk(260,24), settings:mk(170,22) };
     this.cm = { x: 520, y: 300 };
@@ -1418,7 +1759,7 @@ class Component extends DCLogic {
       { d:0.9, fn:()=>this.setAccent('orange') },
       { d:0.7, fn:()=>this.toggleDamageOn() },
       { d:0.9, fn:()=>this.closeSettings() },
-      { d:0.5, fn:()=>{ this.cm = { x: 380, y: 240 }; this.openK('cmenu', true); } },
+      { d:0.5, fn:()=>{ this.cm = { x: 380, y: 240 }; this.armSuggest(); this.openK('cmenu', true); } },
       { d:1.2, fn:()=>this.openK('cmenu', false) },
       { d:1.2, fn:()=>this.openK('modal', true) },
       { d:1.0, fn:()=>this.openK('modal', false) },
@@ -1492,9 +1833,9 @@ class Component extends DCLogic {
     root.addEventListener('keydown', this._onActivate);
   }
   toggleInspector = () => this.setState(s=>({ inspectorOpen: !s.inspectorOpen }));
-  // ── host wire reflection (host_protocol.rs): the real Envelope frame for the live menu ──
+  // ── host lifecycle reflection (host_protocol.rs): the Envelope payload for the live menu ──
   pascalStyle(k){ return ({list:'List',brand:'Brand',trayaudio:'TrayAudio',traynetwork:'TrayNetwork',traybluetooth:'TrayBluetooth',traypower:'TrayPower',trayunified:'TrayUnified',bubble:'Bubble',bubbletree:'BubbleTree',radial:'Radial',radialpill:'RadialPill',nestedradialpill:'NestedRadialPill',radialdetached:'RadialDetached',concentric:'Concentric',megapanel:'MegaPanel',fractal:'Fractal',drill:'Drill',cascade:'Cascade',windowtilegrid:'WindowTileGrid',widgetcard:'WidgetCard',workspacecard:'WorkspaceCard',widgetpills:'WidgetPills',windowcompact:'WindowCompact'})[k]||'List'; }
-  menuWireFrame(){ const st=this.cmMotion.state, cm=this.surf.cmenu;
+  menuLifecycleFrame(){ const st=this.cmMotion.state, cm=this.surf.cmenu;
     if(st==='hidden' && cm.p<0.004) return { dir:'idle', frame:'\u2014 in-process · le host lie compose-core directement (ni pont legacy, ni socket) —' };
     if(st==='closing' || (!cm.open && cm.p>0.004)) return { dir:'close', frame:'{"version":1,"type":"close"}' };
     const style=this.pascalStyle(this.state.menuStyle), rows=this.menuRowDefs().length;
@@ -1606,7 +1947,10 @@ class Component extends DCLogic {
   setWorkspace = (n) => { if(n === this.state.workspace) return; this.setState({ workspace: n }, ()=>this.retile()); this.pushLog('\u25B8', 'Workspace{ '+n+' } v1', '#cbc5ca'); };
 
   // ── taskbar registry ops (open id resolution; unknown id surfaces a diagnostic, never silent-drops) ──
-  cloneTb(tb){ return { edge:tb.edge, visible:tb.visible, density:tb.density, diag:tb.diag, slots:{ left:tb.slots.left.slice(), center:tb.slots.center.slice(), right:tb.slots.right.slice() } }; }
+  cloneTb(tb){ return { edge:tb.edge, visible:tb.visible, density:tb.density, diag:tb.diag,
+    corner:tb.corner, group:tb.group, shadow:tb.shadow, autohide:tb.autohide, superReveal:tb.superReveal, clockFmt:tb.clockFmt, tooltips:tb.tooltips, revealUntil:tb.revealUntil,
+    widgets:Object.assign({}, tb.widgets||{}),
+    slots:{ left:tb.slots.left.slice(), center:tb.slots.center.slice(), right:tb.slots.right.slice() } }; }
   normTbId(id){ return (id||'').trim().toLowerCase().replace(/[\s_]+/g,'-'); }
   tbAdd(slot, rawId){
     const id = this.normTbId(rawId); if(!id) return;
@@ -1629,6 +1973,14 @@ class Component extends DCLogic {
   toggleTbVisible = () => { this.setState(s=>{ const tb=this.cloneTb(s.taskbar); tb.visible=!tb.visible; return { taskbar:tb }; }, ()=>this.emitTaskbar()); };
   clearTbDiag = () => this.setState(s=>{ const tb=this.cloneTb(s.taskbar); tb.diag=null; return { taskbar:tb }; });
   emitTaskbar(){ this.fires['Taskbar{']=(this.fires['Taskbar{']||0)+1; this.pushLog('\u25B8','Settings{ shell.taskbar.modules_json } per-output v1','#3D8DCC'); }
+  // ── bar appearance (ShellSettingsService.topbar* are legacy backend keys only -- same band-30 surface as the taskbar, not a separate topbar) ──
+  setTbCorner(k){ this.setState(s=>{ const tb=this.cloneTb(s.taskbar); tb.corner=k; return { taskbar:tb }; }, ()=>this.emitTaskbar()); this.pushLog('\u25B8','Bar{ corner='+k+' }','#3D8DCC'); }
+  setTbGroup(k){ this.setState(s=>{ const tb=this.cloneTb(s.taskbar); tb.group=k; return { taskbar:tb }; }, ()=>this.emitTaskbar()); this.pushLog('\u25B8','Bar{ group-style='+k+' }','#3D8DCC'); }
+  setTbClockFmt(k){ this.setState(s=>{ const tb=this.cloneTb(s.taskbar); tb.clockFmt=k; return { taskbar:tb }; }, ()=>this.emitTaskbar()); this.pushLog('\u25B8','Bar{ clock-format='+k+' }','#3D8DCC'); }
+  toggleTbField(key){ this.setState(s=>{ const tb=this.cloneTb(s.taskbar); tb[key]=!tb[key]; return { taskbar:tb }; }, ()=>this.emitTaskbar()); this.pushLog('\u25B8','Bar{ '+key+' } toggle','#3D8DCC'); }
+  toggleWidget(id){ this.setState(s=>{ const tb=this.cloneTb(s.taskbar); const w=Object.assign({}, tb.widgets); const cur = w[id]===undefined ? true : !!w[id]; w[id]=!cur; tb.widgets=w; return { taskbar:tb }; }, ()=>this.emitTaskbar()); this.pushLog('\u25B8','Widget{ '+id+' } toggle','#5F7F52'); }
+  revealBar = () => { const tb=this.state.taskbar; if(!tb.autohide){ this.pushLog('\u25CB','Bar{ reveal noop \u00b7 auto-hide off }','#7c828a'); return; } if(!tb.superReveal){ this.pushLog('\u2715','Bar{ super-reveal disabled }','#E5484D'); return; } this.setState(s=>{ const t=this.cloneTb(s.taskbar); t.revealUntil=performance.now()+2600; return { taskbar:t }; }); this.pushLog('\u25B8','Bar{ Super \u2192 reveal 2.6s }','#3D8DCC'); };
+  widgetGo(id){ return () => { if(id==='sidebar-left'){ this.openK('sidebar', !this.surf.sidebar.open); } else if(id==='gnosis-app'){ this.openK('launcher', true); } else { this.pushLog('\u25B8','Widget{ '+id+' } activate','#948f94'); } }; }
 
   toggleSide(key){
     if(key === 'night'){ this.setNight(!this.state.nightShift); return; }
@@ -1657,6 +2009,47 @@ class Component extends DCLogic {
   setWallSource(k){ this.setState({ wallSource: k }); this.wallDirtyUntil = performance.now()+280; this.pushLog('\u25CB', 'Wallpaper{ source='+k+' } Generation', '#8DA982'); }
   setNight(b){ this.setState({ nightShift: b }); this.pushLog('\u25B8', 'NightShift{ '+(b?'on':'off')+' }', b?this.accent():'#948f94'); }
   toggleNight = () => this.setNight(!this.state.nightShift);
+  setShellMode(k){ this.setState({ shellMode: k }); this.pushLog('▸','PanelFamily{ shellMode='+k+' } gnosis-engine','#3D8DCC'); }
+  setAppToggle(page, key){ this.setState(s=>{ const a=Object.assign({}, s.appPages); a[page]=Object.assign({}, a[page]); a[page][key]=!a[page][key]; return { appPages:a }; }); this.fires['Settings{']=(this.fires['Settings{']||0)+1; this.pushLog('▸','Settings{ '+page+'.'+key+' } toggle','#3D8DCC'); }
+  setAppVal(page, key, val){ this.setState(s=>{ const a=Object.assign({}, s.appPages); a[page]=Object.assign({}, a[page]); a[page][key]=val; return { appPages:a }; }); this.fires['Settings{']=(this.fires['Settings{']||0)+1; this.pushLog('▸','Settings{ '+page+'.'+key+'='+val+' }','#3D8DCC'); }
+  // ── compositor profile (hyprlandPlugin*): preset → resolve → override, with experimental-gate diagnostic (never silent) ──
+  setCompProfile(k){
+    if(k!=='stable' && !this.state.compositor.experimental){
+      this.setState(s=>({ compositor: Object.assign({}, s.compositor, { diag:{ key:k, msg:'profil « '+k+' » non-stable \u2014 active les plugins exp\u00e9rimentaux d\u2019abord' } }) }));
+      this.fires['CompositorReject{']=(this.fires['CompositorReject{']||0)+1;
+      this.pushLog('\u2715','Compositor{ profile="'+k+'" } rejected \u2014 experimental off','#E5484D'); return;
+    }
+    const p = this.COMP_PROFILES[k] || this.COMP_PROFILES.stable;
+    this.setState(s=>({ compositor: Object.assign({}, s.compositor, { profile:k, focus:p.focus, edge:p.edge, capture:p.capture, diag:null }) }));
+    this.fires['Compositor{']=(this.fires['Compositor{']||0)+1;
+    this.pushLog('\u25B8','Compositor{ profile='+k+' \u2192 resolve focus/edge/capture }','#3D8DCC');
+  }
+  _setCompCandidate(axis, k){
+    const stable = this.COMP_STABLE[axis].indexOf(k) >= 0;
+    if(!stable && !this.state.compositor.experimental){
+      this.setState(s=>({ compositor: Object.assign({}, s.compositor, { diag:{ key:k, msg:axis+' « '+k+' » \u2014 candidat exp\u00e9rimental, active les plugins exp\u00e9rimentaux' } }) }));
+      this.fires['CompositorReject{']=(this.fires['CompositorReject{']||0)+1;
+      this.pushLog('\u2715','Compositor{ '+axis+'="'+k+'" } rejected \u2014 experimental off','#E5484D'); return;
+    }
+    const patch = { diag:null }; patch[axis] = k;
+    this.setState(s=>({ compositor: Object.assign({}, s.compositor, patch) }));
+    this.fires['Compositor{']=(this.fires['Compositor{']||0)+1;
+    this.pushLog('\u25B8','Compositor{ '+axis+'='+k+' } override','#3D8DCC');
+  }
+  setCompFocus(k){ this._setCompCandidate('focus', k); }
+  setCompEdge(k){ this._setCompCandidate('edge', k); }
+  setCompCapture(k){ this._setCompCandidate('capture', k); }
+  toggleCompExperimental(){
+    this.setState(s=>{
+      const exp = !s.compositor.experimental;
+      let c = Object.assign({}, s.compositor, { experimental:exp, diag:null });
+      if(!exp && c.profile!=='stable'){ const p=this.COMP_PROFILES.stable; c.profile='stable'; c.focus=p.focus; c.edge=p.edge; c.capture=p.capture; c.diag={ key:'experimental', msg:'plugins exp\u00e9rimentaux d\u00e9sactiv\u00e9s \u2014 profil ramen\u00e9 \u00e0 stable' }; }
+      return { compositor:c };
+    });
+    this.pushLog('\u25B8','Compositor{ experimental } toggle','#3D8DCC');
+  }
+  toggleCompReload(){ this.setState(s=>({ compositor: Object.assign({}, s.compositor, { reload:!s.compositor.reload }) })); this.pushLog('\u25B8','Compositor{ reload-on-startup } toggle','#3D8DCC'); }
+  clearCompDiag = () => this.setState(s=>({ compositor: Object.assign({}, s.compositor, { diag:null }) }));
   toggleReduce = () => this.setState(s=>({ reduceMotion: !s.reduceMotion }));
   toggleDamage = () => this.setState(s=>({ showDamage: !s.showDamage }));
   toggleDamageOn(){ this.setState({ showDamage: true }); }
@@ -1739,6 +2132,10 @@ class Component extends DCLogic {
     m.state=it.state; m.elapsed=it.elapsed;
     m.lastInterrupt={ from: fromState, to:it.state, vBefore:before, vAfter:it.visible };
   };
+  setCmFamily = (f) => { this.cmFamily = f; this.armSuggest(); this.forceUpdate(); };
+  armSuggest = () => { if(!this.state.systerActive){ this.cmSuggest=null; this.cmConfirmId=null; return; } this.cmSuggest='thinking'; this.cmConfirmId=null; clearTimeout(this._suggestT); this._suggestT=setTimeout(()=>{ this.cmSuggest='ready'; this.fires['Suggest{']=(this.fires['Suggest{']||0)+1; this.pushLog('○','Gnosis{ suggère } ready ← agent','#8DA982'); this.forceUpdate(); }, 620); };
+  cmConfirmSet = (id) => { this.cmConfirmId=id; this.forceUpdate(); };
+  cmConfirmClear = () => { this.cmConfirmId=null; this.forceUpdate(); };
   cmHoverNew = () => { this.cmSub = 'new'; this.recordCompose('submenu.open'); };
   cmSubLeave = () => { this.cmSub = null; this.recordCompose('submenu.close'); };
 
@@ -1751,7 +2148,7 @@ class Component extends DCLogic {
   workArea(){ return [0,0,1280,800]; }
   intersectR(a,b){ if(!a) return null; if(!b) return a; const x=Math.max(a[0],b[0]), y=Math.max(a[1],b[1]); const r=Math.min(a[0]+a[2],b[0]+b[2]), bo=Math.min(a[1]+a[3],b[1]+b[3]); return [x, y, Math.max(0,r-x), Math.max(0,bo-y)]; }
   clampInside(rect,b,m){ let x=rect[0], y=rect[1]; if(x+rect[2] > b[0]+b[2]-m) x=b[0]+b[2]-m-rect[2]; if(y+rect[3] > b[1]+b[3]-m) y=b[1]+b[3]-m-rect[3]; x=Math.max(b[0]+m,x); y=Math.max(b[1]+m,y); return [x, y, rect[2], rect[3]]; }
-  menuPanelRect(){ return this.clampInside([this.cm.x, this.cm.y, 216, 286], this.workArea(), 8); }
+  menuPanelRect(){ return this.clampInside([this.cm.x, this.cm.y, 250, 340], this.workArea(), 8); }
   // submenu: flush to the panel edge, FLIP to the opposite side when it would cross the work-area, then clamp vertically
   subSide(){ const p=this.menuPanelRect(), wa=this.workArea(), sw=150; return (p[0]+p[2]-2+sw > wa[0]+wa[2]-8) ? 'left' : 'right'; }
   subPanelRect(){ const p=this.menuPanelRect(), wa=this.workArea(), sw=150, sh=132, ov=2;
@@ -1881,6 +2278,9 @@ class Component extends DCLogic {
   };
   toggleAuto = () => { this.auto = !this.auto; this.autoT = 0.5; this.pushLog('\u25B8', this.auto?'Autoplay{ start }':'Autoplay{ stop }', this.auto?this.accent():'#948f94'); this.forceUpdate(); };
 
+  hudAct = (kind) => { this.pushLog('▸','Gnosis{ '+kind+' } → agent','#3D8DCC'); if(kind==='voice') this.toggleMute(); };
+  hudToggleLog = () => { this.hudLog = !this.hudLog; this.forceUpdate(); };
+  toggleSyster = () => { const on = !this.state.systerActive; this.setState({ systerActive: on }); if(!on){ this.cmSuggest=null; this.cmConfirmId=null; } this.pushLog('▸', on?'Syster.App{ activé } — couche agentique on':'Syster.App{ dormant } — menu déterministe', on?this.accent():'#948f94'); this.forceUpdate(); };
   closeTop(){
     if(this.surf.settings.open) return this.openK('settings', false);
     if(this.surf.modal.open) return this.openK('modal', false);
@@ -1916,6 +2316,8 @@ class Component extends DCLogic {
       this.cm = { x, y };
     }
     this.cmSub = null;
+    this.cmFamily = 'window';
+    this.armSuggest();
     this.openK('cmenu', true);
   };
 
@@ -2061,13 +2463,13 @@ class Component extends DCLogic {
   _sectionVals(st, ac){
     const cl=(v)=>Math.max(0,Math.min(1,v));
     const sec = st.settingsSection;
-    const navDefs = [['general','Général','tune'],['taskbar','Taskbar','space_dashboard'],['dock','Dock','view_carousel'],['engine','Engine','deployed_code'],['tokens','Tokens','data_object'],['motion','Motion','animation'],['atoms','Atomes','category'],['molecules','Molécules','widgets'],['assets','Assets','folder_special'],['behaviors','Behaviours','checklist']];
+    const navDefs = [['general','Général','tune'],['taskbar','Taskbar','space_dashboard'],['dock','Dock','view_carousel'],['compositor','Compositor','display_settings'],['display','Displays','desktop_windows'],['input','Input','keyboard'],['services','Services','dns'],['developer','Developer','code'],['engine','Engine','deployed_code'],['tokens','Tokens','data_object'],['motion','Motion','animation'],['atoms','Atomes','category'],['molecules','Molécules','widgets'],['assets','Assets','folder_special'],['behaviors','Behaviours','checklist']];
     const navItems = navDefs.map(([key,label,icon])=>({ key,label,icon, sel:sec===key, fg: sec===key?'#f3eee9':'#948f94', bg: sec===key?'rgba(255,106,0,0.13)':'transparent', bd: sec===key?ac:'transparent', go:()=>this.setSection(key) }));
 
     // token scales (live)
-    const rDemo = Math.round(14*st.radiusScale);
-    const rDemoInner = Math.max(2, Math.round(8*st.radiusScale));
-    const sDemo = Math.max(2, Math.round(10*st.spacingScale));
+    const rPreview = Math.round(14*st.radiusScale);
+    const rPreviewInner = Math.max(2, Math.round(8*st.radiusScale));
+    const sPreview = Math.max(2, Math.round(10*st.spacingScale));
 
     // motion editors (live spring)
     const profUse = { settle:'launcher · sidebar · settings · modal · window', snap:'osd · context-menu', wobbly:'notification' };
@@ -2106,6 +2508,9 @@ class Component extends DCLogic {
       beh('sys','Motion edit','sliders','—',false,cf('Motion{'),true),
       beh('sys','Taskbar registry','CC · add-by-id','—',st.taskbar.diag!==null,cf('Taskbar{'),true),
       beh('sys','Dock affordance','CC · deck style','bloom',st.dock.style!=='row',cf('Dock{'),true),
+      beh('sys','Compositor profile','CC · hyprlandPlugin*','—',st.compositor.profile!=='stable'||st.compositor.diag!==null,cf('Compositor{'),true),
+      beh('sys','Panel family','General · shellMode','—',st.shellMode!=='glass',cf('PanelFamily{'),true),
+      beh('sys','Settings pages','Displays/Input/Services/Dev','—',false,cf('Settings{'),true),
       beh('eng','Damage diff','per frame','—',this.damage.length>0,this.damage.length,false),
       beh('eng','Compose-core','menu · style · perf','snap',this.surf.cmenu.open,cf('Compose{'),true),
       beh('eng','Menu lifecycle','advance · interrupt','easeOut',this.cmMotion.state!=='hidden',this._cmInterrupts,true),
@@ -2138,6 +2543,127 @@ class Component extends DCLogic {
       mkRow('About gnu.in-OS','info','','',()=>{ this.makeNotif(); close(); })
     ];
     const subItems = [['Window','web_asset',()=>{ this.spawnWindow('Code','code'); close(); }],['Terminal','terminal',()=>{ this.spawnWindow('Terminal','terminal'); close(); }],['Web','public',()=>{ this.spawnWindow('Web','public'); close(); }]].map(([name,icon,go])=>({ name, icon, go }));
+    // ── agentic GnuContextMenu spec (ctxmenu.jsx): header · sections(risk) · deferred suggest · footer ──
+    const _ow2 = this.windows.filter(w=>w.open && w.ws===st.workspace);
+    const _fw = _ow2.length ? _ow2[_ow2.length-1] : null;
+    const _ROLE = { Terminal:'terminal', Code:'editor', Web:'browser', Files:'files', Music:'media', Photos:'media', Mail:'mail', Calc:'tool' };
+    const _role = _fw ? (_ROLE[_fw.app]||'window') : 'compositor';
+    const _riskBadge = (r)=> r==='local' ? {txt:'local',fg:'#CE8E3F',bg:'rgba(206,142,63,0.14)'} : r==='system' ? {txt:'system',fg:'#E5675F',bg:'rgba(229,72,77,0.14)'} : null;
+    const _it = (id,icon,label,risk,run,confirm,confirmNote)=>{ const rb=_riskBadge(risk); return { id, icon, label, risk, hasBadge:!!rb, badgeTxt:rb?rb.txt:'', badgeFg:rb?rb.fg:'', badgeBg:rb?rb.bg:'', confirm:!!confirm, confirmNote:confirmNote||'appliquer cette action ?', isConfirm:this.cmConfirmId===id, notConfirm:this.cmConfirmId!==id, go: confirm ? (()=>this.cmConfirmSet(id)) : run, apply:()=>{ run(); }, cancel:this.cmConfirmClear }; };
+    const _tier = { code:'L2', name:'Balanced', cloud:false };
+    const _vram = (3.2 + (st.frame%30)*0.04);
+    const _vramWarn = _vram>5.6;
+    let cmHead = {
+      eyebrow: _fw ? (_role+' · window') : 'compositor · desktop',
+      title: _fw ? (_fw.app+' · '+(_role==='browser'?'page':_role==='editor'?'build.log':_role==='terminal'?'session · zsh':'surface')) : (_ow2.length+' fenêtres · ws '+st.workspace),
+      sub: _fw ? (Math.round(_fw.w)+'×'+Math.round(_fw.h)+' · workspace '+st.workspace) : ('bureau · workspace '+st.workspace),
+      modeText: _tier.code+' '+_tier.name, vramText: _vram.toFixed(1)+'/8 GB', vramFg: _vramWarn?'#E5675F':'#8DA982', vramBg: _vramWarn?'rgba(229,72,77,0.12)':'rgba(95,127,82,0.12)'
+    };
+    const _KIT = {
+      files: [ _it('f.open','folder_open','ouvrir','observe',()=>{ this.spawnWindow('Files','folder'); close(); }), _it('f.tag','sell','taguer la sélection','local',()=>{ this.makeNotif(); close(); }), _it('f.archive','archive','archiver → Gnomon','local',()=>{ this.makeNotif(); close(); },true,'déplace vers Gnomon') ],
+      mail: [ _it('m.reply','reply','rédiger une réponse','observe',()=>{ this.makeNotif(); close(); }), _it('m.summ','summarize','résumer le fil','observe',()=>{ this.makeNotif(); close(); }), _it('m.flag','flag','marquer · suivi','local',()=>{ this.makeNotif(); close(); }) ],
+      browser: [ _it('ctx.extract','frame_inspect','extraire claims · pricing','observe',()=>{ this.makeNotif(); close(); }), _it('ctx.compare','difference','comparer à la note active','observe',()=>{ this.makeNotif(); close(); }), _it('ctx.card','contact_page','créer une carte concurrent','local',()=>{ this.makeNotif(); close(); },true,'écrit une carte Gnomon') ],
+      editor: [ _it('ctx.explain','psychology','expliquer la sélection','observe',()=>{ this.makeNotif(); close(); }), _it('ctx.why','bug_report','pourquoi le build a échoué','observe',()=>{ this.makeNotif(); close(); }), _it('ctx.diff','save','capturer le diff → Gnomon','local',()=>{ this.makeNotif(); close(); },true,'sauve diff + transcript') ],
+      terminal: [ _it('ctx.explain','terminal','expliquer la dernière commande','observe',()=>{ this.makeNotif(); close(); }), _it('ctx.session','history','résumer la session','observe',()=>{ this.makeNotif(); close(); }), _it('ctx.output','content_copy','capturer la sortie','local',()=>{ this.makeNotif(); close(); }) ],
+      media: [ _it('ctx.focus','center_focus_weak','focus mode · couper les autres','observe',()=>{ this.makeNotif(); close(); }), _it('ctx.lyrics','lyrics','transcrire / paroles','observe',()=>{ this.makeNotif(); close(); }), _it('ctx.clip','content_cut','capturer un extrait','local',()=>{ this.makeNotif(); close(); },true,'sauve un clip → Gnomon') ],
+      compositor: [ _it('ctx.overview','grid_view','vue d\u2019ensemble du workspace','observe',()=>{ this.makeNotif(); close(); }), _it('ctx.tile','dashboard','re-tiler · dwindle','observe',()=>{ this.retile(); close(); }), _it('ctx.snapshot','photo_camera','capturer le workspace','local',()=>{ this.makeNotif(); close(); },true,'sauve une capture du workspace') ],
+      window: [ _it('ctx.inspect','frame_inspect','inspecter la surface','observe',()=>{ this.setState({ tab:'scene', showDamage:true }); close(); }) ]
+    };
+    let cmSections = [
+      { label:'actions rapides', items:[
+        _it('win.summarize','summarize','résumer cette surface','observe',()=>{ this.makeNotif(); close(); }),
+        _it('win.capture','screenshot_region','capturer → Gnomon','local',()=>{ this.makeNotif(); close(); },true,'sauve capture + transcript'),
+        _it('win.feedback','reviews','demander un retour','observe',()=>{ this.makeNotif(); close(); })
+      ]},
+      { label:'contextuel · '+_role, items: _KIT[_role] || _KIT.window },
+      { label:'système', items:[
+        _it('sys.settings','tune','réglages · control center','observe',()=>{ close(); this.openSettings(); }),
+        _it('sys.terminal','terminal','ouvrir un terminal','observe',()=>{ this.spawnWindow('Terminal','terminal'); close(); }),
+        _it('sys.burn','local_fire_department','Full Burn · 30 min','system',()=>{ this.makeNotif(); close(); },true,'réserve toute la VRAM 30 min')
+      ]}
+    ];
+    const _SUGGEST = {
+      files: [ {icon:'folder', label:'12 fichiers · 3 modifiés récemment'}, {icon:'sell', label:'taguer comme « projet · gnu.in » ?'} ],
+      mail: [ {icon:'mail', label:'3 fils non lus · 1 prioritaire'}, {icon:'schedule', label:'répondre plus tard · 16h ?'} ],
+      browser: [ {icon:'summarize', label:'résumer : pricing + 3 claims'}, {icon:'difference', label:'diff vs note · 2 deltas'} ],
+      editor: [ {icon:'bug_report', label:'build cassé au clang link step'}, {icon:'psychology', label:'sélection · boucle O(n²), proposer un fix'} ],
+      terminal: [ {icon:'terminal', label:'dernière cmd : exit 1 · clang'}, {icon:'history', label:'142 événements en 60 min'} ],
+      media: [ {icon:'graphic_eq', label:'lecture en cours · entrer en focus ?'}, {icon:'lyrics', label:'transcrire · 3 min 12 s'} ],
+      compositor: [ {icon:'grid_view', label:'3 apps actives · 1 inactive 12m'}, {icon:'dashboard', label:'re-tiler en dwindle · 2 fenêtres'} ],
+      window: [ {icon:'auto_awesome', label:'surface active · résumer ?'} ]
+    };
+    const cmSuggestState = this.cmSuggest;
+    const cmSuggestThinking = this.cmSuggest==='thinking';
+    const cmSuggestReady = this.cmSuggest==='ready';
+    let cmSuggestItems = (_SUGGEST[_role]||_SUGGEST.window).map(s=>({ icon:s.icon, label:s.label, go:()=>{ this.pushLog('▸','Gnosis{ suggest accept } → '+s.icon,'#5F7F52'); close(); } }));
+    const _micOff = st.muted;
+    const cmFoot = {
+      micState: _micOff?'safe':'live', micTxt: _micOff?'mic off':'mic live', micColor: _micOff?'#5F7F52':'#E5675F', micGo: this.toggleMute,
+      visTxt:'vision off', visColor:'#7c828a',
+      note: _vramWarn ? 'VRAM pressure' : 'local-only', noteFg: _vramWarn?'#E5675F':'#8DA982'
+    };
+    // ── CM-4: Orb (assistant) + Resource (VRAM governor) families on the same primitive ──
+    const cmFamilyKey = this.cmFamily || 'window';
+    if(cmFamilyKey==='orb'){
+      const _g = (st.compositor && st.compositor.experimental) ? 'thinking' : 'armed';
+      cmHead = { eyebrow:'gnosis · orb', title:'sys.ter · '+_g, sub:'Qwen2.5-7B · '+_tier.name, modeText:_tier.code+' '+_tier.name, vramText:_vram.toFixed(1)+'/8 GB', vramFg:_vramWarn?'#E5675F':'#8DA982', vramBg:_vramWarn?'rgba(229,72,77,0.12)':'rgba(95,127,82,0.12)' };
+      cmSections = [
+        { label:'état', items:[
+          _it('orb.ptt','mic', _micOff?'micro coupé (privacy)':'push-to-talk','observe',()=>{ this.toggleMute(); close(); }),
+          _it('orb.vision','center_focus_strong','vision scan · fenêtre active','observe',()=>{ this.makeNotif(); close(); })
+        ]},
+        { label:'profil', items:[
+          _it('orb.dev','code','Dev','observe',()=>{ this.makeNotif(); close(); }),
+          _it('orb.competitor','query_stats','Competitor Review','observe',()=>{ this.makeNotif(); close(); }),
+          _it('orb.gaming','sports_esports','Gaming Guard','observe',()=>{ this.makeNotif(); close(); }),
+          _it('orb.burn','local_fire_department','Full Burn','system',()=>{ this.makeNotif(); close(); },true,'puissance max soutenue')
+        ]},
+        { label:'mémoire', items:[
+          _it('orb.recall','history','rappeler le contexte récent','observe',()=>{ this.makeNotif(); close(); }),
+          _it('orb.pin','push_pin','épingler à la mémoire','local',()=>{ this.makeNotif(); close(); }),
+          _it('orb.forget','delete_history','oublier la session','system',()=>{ this.makeNotif(); close(); },true,'efface la mémoire de session')
+        ]},
+        { label:'modèles', items:[
+          _it('orb.unload','power_settings_new','décharger tous les modèles','system',()=>{ this.makeNotif(); close(); },true,'libère toute la VRAM → L0'),
+          _it('orb.cockpit','dashboard','ouvrir le cockpit','observe',()=>{ this.openSettings(); close(); })
+        ]}
+      ];
+      cmSuggestItems = [{ icon:'auto_awesome', label:_g==='thinking'?'brouillon prêt · réviser ?':'inactif 4m · passer en Eco ?', go:()=>{ this.pushLog('▸','Gnosis{ orb suggest } accept','#5F7F52'); close(); } }];
+    } else if(cmFamilyKey==='resource'){
+      cmHead = { eyebrow:'resource · governor', title:_tier.name+' · '+_vram.toFixed(1)+'/8 GB', sub:'latency 80ms · local', modeText:_tier.code+' '+_tier.name, vramText:_vram.toFixed(1)+'/8 GB', vramFg:_vramWarn?'#E5675F':'#8DA982', vramBg:_vramWarn?'rgba(229,72,77,0.12)':'rgba(95,127,82,0.12)' };
+      cmSections = [
+        { label:'modèles chargés', items:[
+          _it('res.m1','check_circle','Qwen2.5-7B · llm','local',()=>{ close(); }),
+          _it('res.m2','check_circle','Moondream2 · vision','local',()=>{ close(); }),
+          _it('res.m3','check_circle','Kokoro-82M · tts','local',()=>{ close(); })
+        ]},
+        { label:'actions', items:[
+          _it('res.eco','eco','passer en Eco · L1','observe',()=>{ this.makeNotif(); close(); }),
+          _it('res.burn','local_fire_department','Full Burn · 30 min','system',()=>{ this.makeNotif(); close(); },true,'réserve toute la VRAM'),
+          _it('res.unload','power_settings_new','tout décharger','system',()=>{ this.makeNotif(); close(); },true,'libère toute la VRAM → L0')
+        ]}
+      ];
+      cmSuggestItems = [ _vramWarn ? { icon:'trending_down', label:'descendre en L2 · gagner 3.0 GB', go:()=>{ close(); } } : { icon:'check_circle', label:'marge ok · aucune action', go:()=>{ close(); } } ];
+    }
+    const cmFamilyTabs = [['window','Window','web_asset'],['orb','Orb','smart_toy'],['resource','Resource','memory']].map(t=>({ key:t[0], label:t[1], icon:t[2], sel:cmFamilyKey===t[0], bg:cmFamilyKey===t[0]?ac:'transparent', fg:cmFamilyKey===t[0]?'#1a1207':'#948f94', go:()=>this.setCmFamily(t[0]) }));
+    const cmAgentic = !!st.systerActive;
+    if(!cmAgentic){
+      cmHead = { eyebrow:'gnu.in-OS · bureau', title:(_ow2.length+' fenêtres · ws '+st.workspace), sub:'menu déterministe · Syster.App dormant', modeText:'', vramText:'', vramFg:'#5f656d', vramBg:'transparent' };
+      cmSections = [
+        { label:'surface', items:[
+          _it('p.new','add','nouvelle fenêtre','observe',()=>{ this.spawnWindow('Code','code'); close(); }),
+          _it('p.term','terminal','ouvrir un terminal','observe',()=>{ this.spawnWindow('Terminal','terminal'); close(); }),
+          _it('p.wall','wallpaper','changer le fond','observe',()=>{ this.regenWall(); close(); })
+        ]},
+        { label:'système', items:[
+          _it('p.set','tune','réglages · control center','observe',()=>{ close(); this.openSettings(); }),
+          _it('p.inspect','frame_inspect','inspecter la surface','observe',()=>{ this.setState({tab:'scene',showDamage:true}); close(); }),
+          _it('p.about','info','à propos de gnu.in-OS','observe',()=>{ this.makeNotif(); close(); })
+        ]}
+      ];
+      cmSuggestItems = [];
+    }
+    const cmShowSuggest = cmAgentic && !!this.cmSuggest;
     const cmSubOpen = this.cmSub==='new' && (this.surf.cmenu.open || this.surf.cmenu.p>0.5);
     const _sub=this.subPanelRect();
     const subLeftPct = (_sub[0]/1280*100).toFixed(2);
@@ -2160,9 +2686,9 @@ class Component extends DCLogic {
     const engHitShow = eng.menuLive ? 'flex' : 'none';
     const cmMotionState = this.cmMotion.state, cmInterrupts = this._cmInterrupts;
     const cmMotionColor = {hidden:'#5f656d',opening:'#CE8E3F',open:'#8DA982',closing:'#8E7CC3'}[cmMotionState]||'#948f94';
-    const _wire=this.menuWireFrame();
-    const wireFrame=_wire.frame, wireColor={open:'#8DA982',close:'#CE8E3F',idle:'#5f656d'}[_wire.dir]||'#948f94';
-    const wireDirLabel=_wire.dir==='idle'?'in-process':'legacy · pré-cutover';
+    const _lifecycle=this.menuLifecycleFrame();
+    const lifecycleFrame=_lifecycle.frame, lifecycleColor={open:'#8DA982',close:'#CE8E3F',idle:'#5f656d'}[_lifecycle.dir]||'#948f94';
+    const lifecycleDirLabel=_lifecycle.dir==='idle'?'in-process':'legacy · pré-cutover';
     // ── input · cursor focus + click-intent matrix ──
     const cur=this.cursor, lc=this.lastClick||{kind:null};
     const curShow = cur.x>=0 ? 'flex' : 'none';
@@ -2215,22 +2741,66 @@ class Component extends DCLogic {
     const mlIntColor = mlIntOk ? '#8DA982' : '#CE8E3F';
     const mlIntProof = mlInt ? (mlIntOk ? 'pas de saut' : 'saut') : '';
 
+    // ── settings-app pages (real GnuSettingsApp: Displays · Input · Services · Developer) — scaffolds, generic renderer ──
+    const ap = st.appPages;
+    const _atog=(on,go)=>({ isToggle:true, isSelect:false, isSlider:false, isStatus:false, on, track:on?ac:'#39363a', knobX:on?'17px':'2px', go });
+    const _asel=(cur,opts,page,key)=>({ isToggle:false, isSelect:true, isSlider:false, isStatus:false, pills: opts.map(o=>({ label:o, sel:o===cur, bg:o===cur?ac:'#161516', fg:o===cur?'#1a1207':'#cbc5ca', bd:o===cur?ac:'#232122', go:()=>this.setAppVal(page,key,o) })) });
+    const _asld=(val,min,max,step,page,key,unit)=>({ isToggle:false, isSelect:false, isSlider:true, isStatus:false, value:val, min, max, step, valLabel: val+(unit||''), onInput:(e)=>this.setAppVal(page,key, step<1? +(+e.target.value).toFixed(2) : +e.target.value) });
+    const _astat=(state,ok)=>({ isToggle:false, isSelect:false, isSlider:false, isStatus:true, state, fg: ok?'#5F7F52':'#E5675F', bg: ok?'rgba(95,127,82,0.12)':'rgba(229,72,77,0.12)' });
+    const _arow=(label,desc,ctl)=>Object.assign({ label, desc }, ctl);
+    const _portalOk = !(st.compositor.capture==='hyprcapture' && !st.compositor.experimental);
+    const APP_PAGES = {
+      display: { title:'Displays', desc:'sortie eDP-1 · résolution · échelle · rafraîchissement', icon:'desktop_windows', ctrls:[
+        _arow('Résolution','mode de la sortie', _asel(ap.display.res,['3840×2160','2560×1440','1920×1080'],'display','res')),
+        _arow('Échelle','facteur HiDPI', _asld(ap.display.scale,1,2,0.05,'display','scale','×')),
+        _arow('Rafraîchissement','Hz', _asel(ap.display.refresh,['60','120','144','165'],'display','refresh')),
+        _arow('VRR · adaptive sync','tearing-free', _atog(ap.display.vrr, ()=>this.setAppToggle('display','vrr')))
+      ]},
+      input: { title:'Input', desc:'clavier · souris · touchpad', icon:'keyboard', ctrls:[
+        _arow('Répétition clavier','touches/s', _asld(ap.input.repeat,10,80,1,'input','repeat','')),
+        _arow('Délai de répétition','ms', _asld(ap.input.delay,150,600,10,'input','delay',' ms')),
+        _arow('Accélération souris','libinput', _atog(ap.input.accel, ()=>this.setAppToggle('input','accel'))),
+        _arow('Défilement naturel','', _atog(ap.input.natural, ()=>this.setAppToggle('input','natural'))),
+        _arow('Tap-to-click','touchpad', _atog(ap.input.tap, ()=>this.setAppToggle('input','tap')))
+      ]},
+      services: { title:'Services', desc:'services de session · état', icon:'dns', ctrls:[
+        _arow('xdg-desktop-portal','capture · permissions', _astat(_portalOk?'healthy':'dependency-failed', _portalOk)),
+        _arow('Notifications daemon','', _astat('running', true)),
+        _arow('Polkit agent','', _astat('running', true)),
+        _arow('Clipboard manager','', _atog(ap.services.clipboard, ()=>this.setAppToggle('services','clipboard'))),
+        _arow('Idle inhibitor','', _atog(ap.services.idle, ()=>this.setAppToggle('services','idle')))
+      ]},
+      developer: { title:'Developer', desc:'debug · drapeaux · build', icon:'code', ctrls:[
+        _arow('Logging verbeux','journal compositeur', _atog(ap.dev.logging, ()=>this.setAppToggle('dev','logging'))),
+        _arow('Overlay de damage','inspecteur de scène (réel)', _atog(st.showDamage, ()=>this.toggleDamage())),
+        _arow('Flags expérimentaux','plugins compositeur (réel)', _atog(st.compositor.experimental, ()=>this.toggleCompExperimental())),
+        _arow('Reload on save','hot-reload', _atog(ap.dev.reloadOnSave, ()=>this.setAppToggle('dev','reloadOnSave'))),
+        _arow('Build','version active', _astat(st.renderer==='gpui'?'v0.14.2 · gpui':'v0.14.2 · tiny-skia', true))
+      ]}
+    };
+    const _appPage = APP_PAGES[sec];
+    const isSecAppPage = !!_appPage;
+    const appPageTitle = _appPage ? _appPage.title : '';
+    const appPageDesc = _appPage ? _appPage.desc : '';
+    const appPageIcon = _appPage ? _appPage.icon : 'settings';
+    const appPageControls = _appPage ? _appPage.ctrls : [];
     return {
       navItems,
-      isSecGeneral: sec==='general', isSecTaskbar: sec==='taskbar', isSecDock: sec==='dock', isSecTokens: sec==='tokens', isSecMotion: sec==='motion', isSecAtoms: sec==='atoms', isSecMolecules: sec==='molecules', isSecAssets: sec==='assets', isSecBehaviors: sec==='behaviors',
+      isSecAppPage, appPageTitle, appPageDesc, appPageIcon, appPageControls,
+      isSecGeneral: sec==='general', isSecTaskbar: sec==='taskbar', isSecDock: sec==='dock', isSecCompositor: sec==='compositor', isSecTokens: sec==='tokens', isSecMotion: sec==='motion', isSecAtoms: sec==='atoms', isSecMolecules: sec==='molecules', isSecAssets: sec==='assets', isSecBehaviors: sec==='behaviors',
       radiusScale: st.radiusScale, spacingScale: st.spacingScale, onRadius: this.setRadiusScaleE, onSpacing: this.setSpacingScaleE,
-      radiusLabel: st.radiusScale.toFixed(2)+'×', spacingLabel: st.spacingScale.toFixed(2)+'×', rDemo, rDemoInner, sDemo,
+      radiusLabel: st.radiusScale.toFixed(2)+'×', spacingLabel: st.spacingScale.toFixed(2)+'×', rPreview, rPreviewInner, sPreview,
       motionEditors, motionCatalogA, motionCatalogM, motionDurations, motionEases, mascotStates,
       mlScale, mlOpacity, mlTransY, mlRawPct, mlCurvePct, mlVisPct, mlCurveBar, mlOvershoot, mlState: mls.state, mlStateColor,
       mlEases, mlAnimating, mlInt, mlIntShow, mlIntTxt, mlIntColor, mlIntProof,
       mlabOpen: this.mlabOpen, mlabClose: this.mlabClose, mlabInterrupt: this.mlabInterrupt,
       previewToggleTrack: st.previewToggle?ac:'#39363a', previewToggleKnob: st.previewToggle?19:2, togglePreview: this.togglePreview, previewSlider: st.previewSlider, onPreviewSlider: this.onPreviewSlider,
       behaviors, behWired, behActive,
-      menuRadius, cmItems, subItems, cmSubOpen, subLeftPct, subTopPct, cmHoverNew: this.cmHoverNew, cmSubLeave: this.cmSubLeave,
+      menuRadius, cmFamilyTabs, cmHead, cmSections, cmSuggestState, cmSuggestThinking, cmSuggestReady, cmAgentic, cmShowSuggest, cmSuggestItems, cmFoot, subItems, cmSubOpen, subLeftPct, subTopPct, cmHoverNew: this.cmHoverNew, cmSubLeave: this.cmSubLeave,
       isSecEngine: sec==='engine', engNodes, engStyleChrome, engStyleBespoke, engNodeCount: eng.nodes.length, engRowCount: eng.rowCount,
       engHitId, engHitKind, engHitZ, engHitShow,
       cmMotionState, cmMotionColor, cmInterrupts,
-      wireFrame, wireColor, wireDirLabel,
+      lifecycleFrame, lifecycleColor, lifecycleDirLabel,
       setPerfSdf, setPerfStatic, perfSdfBg, perfSdfFg, perfStaticBg, perfStaticFg,
       diffAdded: dff.added, diffRemoved: dff.removed, diffMoved: dff.moved, diffUpdated: dff.updated, diffEmpty, diffReason: dff.reason,
       diffHasAdded: dff.added.length>0, diffHasRemoved: dff.removed.length>0, diffHasMoved: dff.moved.length>0, diffHasUpdated: dff.updated.length>0,
@@ -2255,11 +2825,19 @@ class Component extends DCLogic {
       op: cl(n.p).toFixed(3), pe: n.p>0.5?'auto':'none', tx: ((1 - n.p) * 30).toFixed(1), title: n.title, body: n.body, icon: n.icon, color: n.color,
       close: () => { n.open = false; }
     }));
-    const windows = this.windows.map(w => ({
+    const _ow = this.windows.filter(w=>w.open && w.ws===st.workspace);
+    const _focusedId = _ow.length ? _ow[_ow.length-1].id : -1;
+    const _cf = st.systerActive ? st.compositor.focus : 'off';
+    const windows = this.windows.map(w => {
+      const focused = w.id===_focusedId; let borderCol='#2b2a2a', borderW='1', dim=1;
+      if(_cf==='official-focus'){ if(focused) borderCol=ac; }
+      else if(_cf==='hyprfocus'){ if(focused){ borderCol=ac; } else { borderCol='#201f20'; dim=0.48; } }
+      else if(_cf==='borders-plus-plus'){ if(focused){ borderCol=ac; borderW='2.5'; } }
+      return {
       left:(w.x/1280*100).toFixed(2), top:(w.y/800*100).toFixed(2), w:(w.w/1280*100).toFixed(2), h:(w.h/800*100).toFixed(2),
-      op: cl(w.p).toFixed(3), scale:(0.96 + 0.04*w.p).toFixed(3), icon:w.icon, title:w.title, app:w.app, ws:w.ws,
+      op: (cl(w.p)*dim).toFixed(3), scale:(0.96 + 0.04*w.p).toFixed(3), icon:w.icon, title:w.title, app:w.app, ws:w.ws, focused, borderCol, borderW,
       close: () => { w.open = false; this.retile(); this.pushLog('\u25C2','Close{ Window "'+w.title+'" }','#948f94'); }
-    }));
+    }; });
 
     const items = [];
     for(const K of this.KINDS){ if(this.present(K.k)) items.push({ kindLabel:K.k, pascal:K.pascal, band:K.band, inter:K.inter, short: K.k==='bar' ? ('Bar{modules:'+(st.taskbar.slots.left.length+st.taskbar.slots.center.length+st.taskbar.slots.right.length)+'}') : K.k==='dock' ? ('Dock{'+({row:'Row',stack:'Stack',fan:'Fan'}[st.dock.style])+':6}') : K.short, rect:this.rectArr(K.k), dmgKey:K.k }); }
@@ -2417,6 +2995,14 @@ class Component extends DCLogic {
       const on = key === 'night' ? st.nightShift : st.toggles[key];
       return { name, icon, key, bg: on?'rgba(255,106,0,0.13)':'#201f20', bd: on?'rgba(255,142,64,0.3)':'#2b2a2a', fg: on?ac:'#948f94', go: ()=>this.toggleSide(key) };
     });
+    // ── Gnosis assistant sidebar (sidebar-left · gnosis-app) — real recent activity from the log ──
+    const sbRecent = this.log.slice(-3).reverse().map(e=>({ dir:e.dir, text: e.text.length>34 ? e.text.slice(0,33)+'\u2026' : e.text, color:e.color }));
+    const gnosisAsk = () => this.openK('launcher', true);
+    const gnosisChips = [
+      { icon:'rocket_launch', label:'Lancer',   go:()=>this.openK('launcher', true) },
+      { icon:'photo_camera',  label:'Capturer', go:()=>this.pushLog('\u25CB','Gnosis{ capture } request','#8DA982') },
+      { icon:'tune',          label:'R\u00e9glages', go:this.openSettingsBtn }
+    ];
 
     const btn = (open)=> open ? { bg:'rgba(255,106,0,0.14)', bd:ac, fg:'#FF8E40' } : { bg:'#1c1b1c', bd:'#2b2a2a', fg:'#cbc5ca' };
     const lb=btn(lu.open), sbb=btn(sb.open), ob=btn(os.open), mb=btn(md.open), stb=btn(se.open);
@@ -2425,6 +3011,17 @@ class Component extends DCLogic {
 
     const seg = (sel)=> sel ? { bg:ac, fg:'#1a1207' } : { bg:'transparent', fg:'#948f94' };
     const dm=seg(st.density==='mouse'), dt2=seg(st.density==='touch'), rtg=seg(st.renderer==='tiny-skia'), rg=seg(st.renderer==='gpui'), wm=seg(st.wallSource==='matugen'), ws2=seg(st.wallSource==='static');
+    // ── Panel Family (shellMode · gnosis-engine visual family) — one coherent surface treatment shell-wide ──
+    const FAMS = {
+      glass:   { label:'Glass',   bg:'rgba(28,27,28,0.94)', blur:'blur(14px)', bd:'1px solid #2b2a2a',     rad:14, sh:'0 18px 40px rgba(0,0,0,0.5)',  desc:'translucide · flou' },
+      solid:   { label:'Solid',   bg:'#1c1b1c',             blur:'none',       bd:'1px solid #2b2a2a',     rad:12, sh:'0 10px 26px rgba(0,0,0,0.4)',  desc:'opaque · net' },
+      outline: { label:'Outline', bg:'rgba(20,19,20,0.5)',  blur:'blur(6px)',  bd:'1.5px solid #454145',   rad:12, sh:'0 8px 20px rgba(0,0,0,0.3)',   desc:'fin · bordé' },
+      soft:    { label:'Soft',    bg:'rgba(30,28,30,0.96)', blur:'blur(16px)', bd:'1px solid #2b2a2a',     rad:18, sh:'0 22px 50px rgba(0,0,0,0.45)', desc:'rond · doux' }
+    };
+    const _famKey = st.shellMode || 'glass';
+    const fam = FAMS[_famKey] || FAMS.glass;
+    const famOpts = ['glass','solid','outline','soft'].map(k=>{ const f=FAMS[k], sel=_famKey===k;
+      return { key:k, label:f.label, desc:f.desc, sel, bg: sel?ac:'#201f20', fg: sel?'#1a1207':'#cbc5ca', bd: sel?ac:'#2b2a2a', go:()=>this.setShellMode(k), swBg:f.bg, swBd:f.bd, swRad:f.rad+'px' }; });
     const accentOpts = ['orange','beret','info','rust'].map(key=>{
       const sel = st.accent===key;
       return { key, hex:this.ACCENTS[key], sel, glow: sel?('0 0 0 3px rgba(255,255,255,0.12)'):'none', cardBg: sel?'#2b2a2a':'#201f20', cardBd: sel?ac:'#2b2a2a', fg: sel?'#e6e1e1':'#948f94', go: ()=>this.setAccent(key) };
@@ -2437,7 +3034,11 @@ class Component extends DCLogic {
 
     // ── taskbar: resolve module plan → live bar items (data-driven, open registry) ──
     const tb = st.taskbar;
-    const clockStr = new Date().toTimeString().slice(0,5);
+    const clockFmtV = tb.clockFmt || '24h';
+    const _cnow = new Date();
+    const clockStr = clockFmtV==='12h' ? _cnow.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true})
+                   : clockFmtV==='iso' ? _cnow.toTimeString().slice(0,8)
+                   : _cnow.toTimeString().slice(0,5);
     const volIcoX = vmuted ? 'volume_off' : (st.volume < 45 ? 'volume_down' : 'volume_up');
     const volColX = vmuted ? '#7c828a' : '#948f94';
     const tbText = (id)=>{
@@ -2469,15 +3070,35 @@ class Component extends DCLogic {
       else if(d.type==='icon'){ const ic=tbIcon(id); it.isIcon=true; it.icon=ic.icon; it.fg=ic.fg; it.go=ic.go; }
       return it;
     };
-    const barLeft   = tb.slots.left.map(mkBarItem).filter(Boolean);
-    const barCenter = tb.slots.center.map(mkBarItem).filter(Boolean);
-    const barRight  = tb.slots.right.map(mkBarItem).filter(Boolean);
+    const placedMods = new Set([].concat(tb.slots.left, tb.slots.center, tb.slots.right));
+    const wEnabled = (id)=>{ const v=(tb.widgets||{})[id]; return v===undefined ? true : !!v; };
+    const MOD2W = { network:'wifi', bluetooth:'bluetooth', audio:'audio', clock:'clock', workspaces:'workspaces', 'active-window':'active-window', cpu:'resources', weather:'weather' };
+    const keepItem = (it)=>{ if(!it) return false; const w=MOD2W[it.id]; return w ? wEnabled(w) : true; };
+    const barLeft   = tb.slots.left.map(mkBarItem).filter(keepItem);
+    const barCenter = tb.slots.center.map(mkBarItem).filter(keepItem);
+    let   barRight  = tb.slots.right.map(mkBarItem).filter(keepItem);
+    const stripWidgets = this.WIDGETS.filter(w=> wEnabled(w.id) && !(w.mod && placedMods.has(w.mod)));
+    const barExtras = stripWidgets.map(w=>({ id:'w-'+w.id, isPills:false, isText:false, isIcon:true, isMascot:false, icon:w.icon, fg:'#948f94', go:this.widgetGo(w.id) }));
+    barRight = barRight.concat(barExtras);
     const tbCompact = tb.density==='compact';
     const barEdgeTop = tb.edge==='top';
+    const _corner = tb.corner||'rounded', _group = tb.group||'capsules';
+    const _rounded = _corner==='rounded';
+    const _inset = _rounded ? 8 : 0;
+    const _grp = _group==='capsules' ? { bg:'rgba(255,255,255,0.045)', bd:'1px solid #2a2829', rad:'9px', pad:'2px 7px' }
+               : _group==='solid'   ? { bg:'#1c1b1c', bd:'1px solid #232122', rad:'9px', pad:'2px 7px' }
+               :                      { bg:'transparent', bd:'none', rad:'0px', pad:'0' };
+    const _revealed = (tb.revealUntil||0) > performance.now();
     const tbGeo = {
-      barTop: barEdgeTop ? '0' : 'auto', barBottom: barEdgeTop ? 'auto' : '0',
+      barTop: barEdgeTop ? (_inset+'px') : 'auto', barBottom: barEdgeTop ? 'auto' : (_inset+'px'),
+      barL: _inset+'px', barR: _inset+'px',
+      barRadius: _rounded ? '14px' : '0px',
+      barShadow: tb.shadow ? '0 14px 36px rgba(0,0,0,0.5)' : 'none',
+      barBorder: '1px solid #2a2829',
       dockTop: barEdgeTop ? 'auto' : '14px', dockBottom: barEdgeTop ? '14px' : 'auto',
-      sbTop: barEdgeTop ? (bH + 8) : 14, barGap: tbCompact ? 5 : 8, barVisible: tb.visible
+      sbTop: barEdgeTop ? (bH + 8) : 14, barGap: tbCompact ? 5 : 8,
+      barVisible: tb.visible && (!tb.autohide || _revealed),
+      grpBg:_grp.bg, grpBd:_grp.bd, grpRad:_grp.rad, grpPad:_grp.pad
     };
     const tbSlotView = this.TB_ORDER.map(slot=>({
       slot, label: slot==='left'?'GAUCHE':slot==='center'?'CENTRE':'DROITE', empty: tb.slots[slot].length===0,
@@ -2492,6 +3113,24 @@ class Component extends DCLogic {
         badge: d.ext?'ext':'core', badgeFg: d.ext?'#CE8E3F':'#7c828a', badgeBg: d.ext?'rgba(206,142,63,0.14)':'#201f20',
         addFg: used?'#39363a':(d.ext?'#CE8E3F':ac), add: ()=>{ if(!used) this.tbAdd('right', id); } }; });
     const tbJson = JSON.stringify({ key:'shell.taskbar.modules_json', output:'eDP-1', edge:tb.edge, visible:tb.visible, density:tb.density, left:tb.slots.left, center:tb.slots.center, right:tb.slots.right }, null, 2);
+    // ── bar view-data: segmented appearance controls + 12-widget inventory ──
+    const _seg=(sel)=> sel?{bg:ac,fg:'#1a1207'}:{bg:'transparent',fg:'#948f94'};
+    const _mkSeg=(cur,opts,setter)=> opts.map(o=>{ const k=o[0], s=cur===k, c=_seg(s); return {key:k,label:o[1],sel:s,bg:c.bg,fg:c.fg,go:()=>setter(k)}; });
+    const tbCornerSeg = _mkSeg(_corner, [['rounded','Arrondi'],['screen','\u00c9cran'],['square','Carr\u00e9']], (k)=>this.setTbCorner(k));
+    const tbGroupSeg  = _mkSeg(_group, [['capsules','Capsules'],['borderless','Sans bord'],['solid','Plein']], (k)=>this.setTbGroup(k));
+    const tbClockSeg  = _mkSeg(tb.clockFmt||'24h', [['24h','24 h'],['12h','12 h'],['iso','ISO']], (k)=>this.setTbClockFmt(k));
+    const _mkTog=(on,label,key)=>({ on, label, bg:on?this.hexA(ac,0.16):'#1c1b1c', fg:on?ac:'#948f94', bd:on?ac:'#2b2a2a', track:on?ac:'#39363a', knobX:on?'17px':'2px', go:()=>this.toggleTbField(key) });
+    const tbTogs = [
+      _mkTog(!!tb.shadow,'Ombre flottante','shadow'),
+      _mkTog(!!tb.autohide,'Auto-masquer','autohide'),
+      _mkTog(!!tb.superReveal,'R\u00e9v\u00e9ler avec Super','superReveal'),
+      _mkTog(!!tb.tooltips,'Infobulles','tooltips')
+    ];
+    const widgetView = this.WIDGETS.map(w=>{ const on=wEnabled(w.id); const placed=!!(w.mod && placedMods.has(w.mod));
+      return { id:w.id, label:w.label, icon:w.icon, on, zoneLabel: placed?'slot':'strip',
+        rowBg:on?'#141313':'#1a1819', iconFg:on?ac:'#5f656d', labelFg:on?'#cbc5ca':'#7c828a',
+        zoneFg: placed?'#5F7F52':'#3D8DCC', track:on?ac:'#39363a', knobX:on?'16px':'2px', go:()=>this.toggleWidget(w.id) }; });
+    const widgetOnCount = this.WIDGETS.filter(w=>wEnabled(w.id)).length;
     const segE = (sel)=> sel ? { bg:ac, fg:'#1a1207' } : { bg:'transparent', fg:'#948f94' };
     const tEdgeTop=segE(tb.edge==='top'), tEdgeBot=segE(tb.edge==='bottom'), tDenReg=segE(tb.density==='regular'), tDenCom=segE(tb.density==='compact');
 
@@ -2509,22 +3148,67 @@ class Component extends DCLogic {
     // input · compositor focus rings (pointer-events none — engine hot-track overlay)
     const _cr=this.cursor;
     let focusRingShow='none', frL='0',frT='0',frW='0',frH='0';
-    const _frR = _cr.rect ? this.intersectR(_cr.rect, _cr.clip) : null;
+    const _frR = (_cr.rect && _cr.surface!=='cmenu') ? this.intersectR(_cr.rect, _cr.clip) : null;
     if(_frR && _frR[2]>1 && _frR[3]>1){ focusRingShow='block'; frL=(_frR[0]/1280*100).toFixed(2); frT=(_frR[1]/800*100).toFixed(2); frW=(_frR[2]/1280*100).toFixed(2); frH=(_frR[3]/800*100).toFixed(2); }
     const frColor = _cr.sel ? ac : '#8d9298';
     let selRingShow='none', srL='0',srT='0',srW='0',srH='0';
-    if(this.focusNode){ const _sn=this.liveHitNodes().find(n=>n.id===this.focusNode); if(_sn){ const _sr=this.intersectR(_sn.rect, _sn.clip); if(_sr && _sr[2]>1 && _sr[3]>1){ selRingShow='block'; srL=(_sr[0]/1280*100).toFixed(2); srT=(_sr[1]/800*100).toFixed(2); srW=(_sr[2]/1280*100).toFixed(2); srH=(_sr[3]/800*100).toFixed(2); } } }
+    if(this.focusNode){ const _sn=this.liveHitNodes().find(n=>n.id===this.focusNode); if(_sn && _sn.surface!=='cmenu'){ const _sr=this.intersectR(_sn.rect, _sn.clip); if(_sr && _sr[2]>1 && _sr[3]>1){ selRingShow='block'; srL=(_sr[0]/1280*100).toFixed(2); srT=(_sr[1]/800*100).toFixed(2); srW=(_sr[2]/1280*100).toFixed(2); srH=(_sr[3]/800*100).toFixed(2); } } }
     const curDotShow = _cr.x>=0 ? 'block':'none';
     const curDotL=(Math.max(0,_cr.x)/1280*100).toFixed(2), curDotT=(Math.max(0,_cr.y)/800*100).toFixed(2);
     const _ra = [['terminal',()=>{ this.spawnWindow('Terminal','terminal'); this.openK('cmenu',false); }],['wallpaper',()=>{ this.regenWall(); this.openK('cmenu',false); }],['tune',()=>{ this.openK('cmenu',false); this.openSettings(); }],['frame_inspect',()=>{ this.setState({tab:'scene',showDamage:true}); this.openK('cmenu',false); }],['add',()=>{ this.spawnWindow('Code','code'); this.openK('cmenu',false); }]];
     const _RN=_ra.length, _RAD=62;
     const radialItems = _ra.map(([icon,go],i)=>{ const ang=(-90 + i*(360/_RN))*Math.PI/180; return { icon, go, x:(Math.cos(ang)*_RAD).toFixed(1), y:(Math.sin(ang)*_RAD).toFixed(1) }; });
 
+    // ── compositor profile view-data (preset→resolve→override + derived portal health + edge indicator) ──
+    const comp = st.compositor;
+    const _compProfDef = this.COMP_PROFILES[comp.profile] || this.COMP_PROFILES.stable;
+    const _csel = (cur, opts, setter, axis) => opts.map(k=>{ const sel=k===cur; const stable=this.COMP_STABLE[axis].indexOf(k)>=0;
+      return { key:k, label:k, sel, exp:!stable, bg: sel?ac:'#161516', fg: sel?'#1a1207':(stable?'#cbc5ca':'#9a8f78'), bd: sel?ac:'#232122', go:()=>setter(k) }; });
+    const compProfileOpts = _csel(comp.profile, ['stable','visual-focus','gesture-lab','capture-lab','workspace-lab'], (k)=>this.setCompProfile(k), 'profile');
+    const compFocusOpts   = _csel(comp.focus, ['off','official-focus','hyprfocus','borders-plus-plus'], (k)=>this.setCompFocus(k), 'focus');
+    const compEdgeOpts    = _csel(comp.edge, ['off','hyprgrass','hypr-hot-edge','combined'], (k)=>this.setCompEdge(k), 'edge');
+    const compCaptureOpts = _csel(comp.capture, ['builtin','hyprcapture'], (k)=>this.setCompCapture(k), 'capture');
+    const compResolved = [['focus',comp.focus,_compProfDef.focus],['edge',comp.edge,_compProfDef.edge],['capture',comp.capture,_compProfDef.capture]]
+      .map(r=>{ const ov=r[1]!==r[2]; return { axis:r[0], val:r[1], override:ov, tag:ov?'override':'profil', tagFg:ov?'#CE8E3F':'#5F7F52', tagBg:ov?'rgba(206,142,63,0.14)':'rgba(95,127,82,0.14)' }; });
+    const compTogs = [
+      { on:comp.experimental, label:'Plugins exp\u00e9rimentaux', desc:'Autorise les candidats non-stables', track:comp.experimental?ac:'#39363a', knobX:comp.experimental?'17px':'2px', go:()=>this.toggleCompExperimental() },
+      { on:comp.reload, label:'Recharger au d\u00e9marrage', desc:'Reload backend pendant le startup compositeur', track:comp.reload?ac:'#39363a', knobX:comp.reload?'17px':'2px', go:()=>this.toggleCompReload() }
+    ];
+    const _portalHealthy = !(comp.capture==='hyprcapture' && !comp.experimental);
+    const portalHealth = comp.capture==='hyprcapture' ? (comp.experimental?'healthy':'dependency-failed') : 'healthy';
+    const portalDesc = !_portalHealthy ? 'hyprcapture requiert les plugins exp\u00e9rimentaux' : (comp.capture==='hyprcapture'?'hyprcapture \u00b7 session portail requise \u2014 OK':'builtin \u00b7 portail non requis');
+    const portalFg = _portalHealthy ? '#5F7F52' : '#E5484D';
+    const portalBg = _portalHealthy ? 'rgba(95,127,82,0.12)' : 'rgba(229,72,77,0.12)';
+    const edgeLeftShow = (comp.edge==='hyprgrass'||comp.edge==='combined') ? 'block':'none';
+    const edgeBottomShow = (comp.edge==='hypr-hot-edge'||comp.edge==='combined') ? 'block':'none';
+    const compProfileLabel = comp.profile;
+    // ── Gnosis HUD (Syster.App active) — contextual bar attached to the focused window ──
+    const _hwAll = this.windows.filter(w=>w.open && w.ws===st.workspace);
+    const _hw = _hwAll.length ? _hwAll[_hwAll.length-1] : null;
+    const _hROLE = { Terminal:'TERMINAL', Code:'EDITOR', Web:'BROWSER', Files:'FILES', Music:'MEDIA', Photos:'MEDIA', Mail:'MAIL', Calc:'TOOL' };
+    const hudShow = !!st.systerActive;
+    const hudApp = _hw ? _hw.app : 'Hyprland';
+    const hudRole = _hw ? (_hROLE[_hw.app]||'WINDOW') : 'COMPOSITOR';
+    const hudState = (this.surf.cmenu.open||this.surf.launcher.open) ? 'TRANSMIT' : (_hwAll.length ? 'IDLE' : 'VEILLE');
+    const hudCursor = 'cur '+Math.round(Math.max(0,this.cursor.x))+','+Math.round(Math.max(0,this.cursor.y));
+    const hudBox = _hw ? (Math.round(_hw.w)+'×'+Math.round(_hw.h)) : ('ws '+st.workspace);
+    const hudTier = st.compositor.experimental ? 'L2 SENTINEL' : 'L1 SENTINEL';
+    const hudTierSub = st.compositor.experimental ? 'ANALYST' : 'REFLEX';
+    const hudLogActive = !!this.hudLog;
+    const hudFeed = this.hudLog ? this.log.slice(-5).reverse().map(e=>({ dir:e.dir, text:e.text.length>52?e.text.slice(0,51)+'…':e.text, color:e.color })) : [];
+    const hudChips = [
+      { id:'scan', icon:'sensors', label:'SCAN', active:false, badge:0 },
+      { id:'voice', icon:'mic', label:'VOICE', active:!st.muted, badge:0 },
+      { id:'audit', icon:'description', label:'AUDIT', active:false, badge:0 },
+      { id:'log', icon:'terminal', label:'LOG', active:hudLogActive, badge:Math.min(9,this.log.length) }
+    ].map(c=>({ id:c.id, icon:c.icon, label:c.label, badge:c.badge, badgeShow:(c.badge>0&&c.id==='log')?'flex':'none', bg:c.active?this.hexA(ac,0.16):'#201f20', fg:c.active?'#FF8E40':'#cbc5ca', bd:c.active?ac:'#2b2a2a', go: c.id==='log'?this.hudToggleLog:(()=>this.hudAct(c.id)) }));
     return Object.assign(this._sectionVals(st, ac), {
       accent: ac,
       rendererLabel: st.renderer==='gpui' ? 'gpui render-first' : 'tiny-skia · software',
       densityLabel: st.density==='touch' ? 'touch' : 'mouse',
       barH: bH, dockH: this.dockHpx(), dockI: this.dockIpx(), sbTop: tbGeo.sbTop, barTop: tbGeo.barTop, barBottom: tbGeo.barBottom, dockTop: tbGeo.dockTop, dockBottom: tbGeo.dockBottom, barGap: tbGeo.barGap, barVisible: tbGeo.barVisible,
+      barL: tbGeo.barL, barR: tbGeo.barR, barRadius: tbGeo.barRadius, barShadow: tbGeo.barShadow, barBorder: tbGeo.barBorder, grpBg: tbGeo.grpBg, grpBd: tbGeo.grpBd, grpRad: tbGeo.grpRad, grpPad: tbGeo.grpPad,
+      tbCornerSeg, tbGroupSeg, tbClockSeg, tbTogs, widgetView, widgetOnCount, tbAutohideOn: !!tb.autohide, revealBar: this.revealBar,
       wallA: wallPair[0], wallB: wallPair[1], wallHue: ((this.wallGen - 1) * 26) % 360,
       nightOp: st.nightShift ? '1' : '0',
       clock: new Date().toTimeString().slice(0,5), mascotState: activeSprings.length ? 'work' : 'hello',
@@ -2548,8 +3232,12 @@ class Component extends DCLogic {
       dockWrapTf, dockWrapOp, dockStripShow, revealDock: ()=>this.revealDock(), unrevealDock: ()=>this.unrevealDock(),
       dockSize: dk.size, dockArc: dk.arc, dockSpread: dk.spread, onDockSize: this.setDockSize, onDockArc: this.setDockArc, onDockSpread: this.setDockSpread,
       dockSizeLabel: dk.size+'px', dockArcLabel: dk.arc+'\u00b0', dockSpreadLabel: dk.spread.toFixed(2)+'\u00d7', dockStyleLabel, dockJson, dockIsFan: dk.style==='fan',
-      sbToggles, workspace: st.workspace,
+      sbToggles, sbRecent, gnosisAsk, gnosisChips, workspace: st.workspace,
       barLeft, barCenter, barRight,
+      compProfileOpts, compFocusOpts, compEdgeOpts, compCaptureOpts, compResolved, compTogs,
+      portalHealth, portalDesc, portalFg, portalBg, compProfileLabel,
+      compDiag: comp.diag, compHasDiag: !!comp.diag, clearCompDiag: this.clearCompDiag,
+      edgeLeftShow, edgeBottomShow,
       tbSlotView, tbRegistry, tbJson, tbDiag: tb.diag, tbHasDiag: !!tb.diag,
       tbInput: st.tbInput, onTbInput: this.onTbInput, onTbInputKey: this.onTbInputKey, tbAddInput: this.tbAddInput, clearTbDiag: this.clearTbDiag,
       tbVisible: tb.visible, toggleTbVisible: this.toggleTbVisible,
@@ -2565,6 +3253,8 @@ class Component extends DCLogic {
       toggleMute: this.toggleMute, onVolTrack: this.onVolTrack, volTrackRef: this.volTrackRef,
       showDamage: st.showDamage, damageBoxes,
       accentOpts,
+      famOpts, shellModeLabel: fam.label,
+      famBg: fam.bg, famBlur: fam.blur, famBorder: fam.bd, famRadius: fam.rad+'px', famShadow: fam.sh,
       densMouseBg: dm.bg, densMouseFg: dm.fg, densTouchBg: dt2.bg, densTouchFg: dt2.fg,
       rTinyBg: rtg.bg, rTinyFg: rtg.fg, rGpuiBg: rg.bg, rGpuiFg: rg.fg,
       wMatuBg: wm.bg, wMatuFg: wm.fg, wStatBg: ws2.bg, wStatFg: ws2.fg,
@@ -2600,6 +3290,8 @@ class Component extends DCLogic {
       focusRingShow, frL, frT, frW, frH, frColor, selRingShow, srL, srT, srW, srH, curDotShow, curDotL, curDotT,
       tLauncher: this.tLauncher, tSidebar: this.tSidebar, tOsd: this.tOsd, tModal: this.tModal,
       fNotif: this.fNotif, spawnDefault: this.spawnDefault, closeAll: this.closeAll, toggleAuto: this.toggleAuto,
+      toggleSyster: this.toggleSyster, systerActive: st.systerActive,
+      hudShow, hudApp, hudRole, hudState, hudDotColor: hudState==='TRANSMIT'?'#FF6A00':hudState==='IDLE'?'#5F7F52':'#7c828a', hudDotAnim: hudState==='TRANSMIT'?'cxBlink 900ms ease-in-out infinite':'none', hudCursor, hudBox, hudTier, hudTierSub, hudChips, hudLogActive, hudFeed, hudHasFeed: hudFeed.length>0, hudClose: this.toggleSyster, systerBg: st.systerActive?this.hexA(ac,0.16):'#1c1b1c', systerFg: st.systerActive?'#FF8E40':'#948f94', systerBd: st.systerActive?ac:'#2b2a2a', systerDot: st.systerActive?'#5F7F52':'#5f656d', systerLabel: st.systerActive?'Syster actif':'Syster dormant',
       tabScene: this.tabScene, tabTokens: this.tabTokens, tabLayers: this.tabLayers, tabProto: this.tabProto, tabRust: this.tabRust, copyRust: this.copyRust
     });
   }

@@ -71,7 +71,7 @@ inspector**, never in the port data:
   The *scene model* (backed flag, kind, MenuRow nodes, z) is faithful for all
   23; only the on-screen affordance is a stand-in. The visible chrome-vs-bespoke
   difference is precisely the blob membrane — the thesis, shown literally.
-- **Demo row set** — Central composes 6 illustrative rows (New, Open terminal,
+- **Sample row set** — Central composes 6 illustrative rows (New, Open terminal,
   Change wallpaper, Display settings, Inspect surface, About); the golden
   fixture uses 3. Both are valid `reduce` inputs — row count is data, not model.
 - **Coordinate space** — Central composes at 1280×800 (preview stage); fixtures
@@ -243,3 +243,63 @@ panel height scales with row count, wallpaper re-decode is visible to `diff`,
 layer bands strictly increasing, MenuStyle/RowKind string round-trips,
 single-mascot + exclusive-radio normalization, and serde round-trips.
 `compose_core.rs` adds matching `parity_tests` so the mirror can't silently drift.
+
+
+## Frontier #2 — Compositor Profile (`compositor_profile.rs`)
+
+Mirrors `ShellSettingsService.hyprlandPlugin*` (Appearance settings page). A **profile is a
+preset** that `resolve()`s a `(FocusFeedback, EdgeGestures, CaptureProvider)` triple;
+individual candidates may then **override** it (`is_override()` flags divergence).
+Non-stable profiles/candidates require `experimental` — otherwise the setter returns
+`Err(Diagnostic)` and the value is **unchanged** (never silently applied), exactly like
+Central's Compositor section + the taskbar unknown-id pattern. Turning `experimental`
+off **clamps** a non-stable profile back to stable. **Portal health is derived**
+(`portal_health()`): `hyprcapture` needs `experimental` (else `dependency-failed`),
+`builtin` needs no portal. 9 tests. Central ties: `setCompProfile`/`_setCompCandidate`
++ the experimental-gate diagnostic + derived `portalHealth`; **focus feedback is wired
+to visible window rendering** (`hyprfocus` dims unfocused, `borders-plus-plus` thickens
+the focused border, `official-focus` accents it) and **edge gestures** light the
+compositor's left/bottom zones (`EdgeGestures::edges()`). Golden states in
+`scenes/compositor-profile.json`. Note: this is net-new design harvested from the
+legacy backend's *ideas* (no in-crate module yet) — the port file is the proposed
+target, not a mirror of existing crate source.
+
+
+## Frontier #4 — Panel Family (`panel_family.rs`)
+
+Mirrors `ShellSettingsService.shellMode` (group `panel_family`, `options_ref:
+shellModeFamilies` — backend ships the list dynamically). `ShellMode` (glass/solid/
+outline/soft) `resolve()`s one `PanelTreatment { fill, blur_px, border_px,
+border_rgb, radius_px, elevation }` that every panel node reads — no panel
+hard-codes its look. Central ties: `setShellMode` + the `fam*` tokens threaded live
+into the sidebar + launcher (and a 4-swatch preview in General); also a host tweak
+(`shellMode` prop). `is_translucent()`/`wants_blur()` tell the host whether a
+backdrop pass is needed. 6 tests; golden treatments in `scenes/panel-family.json`.
+Net-new design harvested from the legacy family concept (no in-crate module yet).
+
+
+## Reconciliation — motion ladder (engine vs ui_kit)
+
+`motion.spec.json` now pins the **two-layer** motion model explicitly. The **engine
+layer** is `blob.in/tokens.json` v0.14.0 (authoritative single source of truth:
+6 durations `90/160/240/380/560/4200`, 4 eases `enter/exit/inout/bloom`, 3 springs),
+mirrored verbatim into `engine_tokens_authoritative`. The **ui_kit layer** (this file,
+motion-spec v0.4.0, legacy) is the finer menu/chrome atom-molecule vocabulary
+(9 durations, 8 eases) built on top, marked `tokens._layer`. The **3 springs are
+IDENTICAL** across both (`settle 170/22 · snap 260/24 · wobbly 200/12`) — the
+reconciliation anchor; durations/eases differ **by design** (engine coarse vs ui_kit
+fine), and a `reconciliation` block records the authority (blob.in wins conflicts).
+No regeneration needed — the layers are complementary, not in conflict.
+
+
+## Frontier #5 — Settings pages (`settings_pages.rs`)
+
+Scaffolds the 4 GnuSettingsApp pages Central hadn't covered — **Displays · Input ·
+Services · Developer** — completing the real 8-page app (Appearance/Shell/Surfaces/
+Gnosis already map to General/Taskbar/Compositor+Dock/Sidebar). Typed structs:
+`DisplaySettings` (scale clamps 1–2), `InputSettings`, `ServiceStatus`
+(`derive_portal` reuses the compositor capture+experimental rule — identical to
+`compositor_profile.rs`), `DeveloperSettings`. Central renders all 4 from one generic
+template (`appPageControls`: toggle/select/slider/status), and the Developer page's
+scene-inspector + experimental-flags toggles are wired to live engine state
+(`showDamage`, `compositor.experimental`). 5 tests; `scenes/settings-pages.json`.

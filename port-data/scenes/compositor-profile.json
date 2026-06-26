@@ -1,0 +1,53 @@
+{
+  "spec": "compositor-profile",
+  "role": "Golden states for compositor_profile.rs — a profile is a preset that resolves focus/edge/capture; non-stable candidates require experimental (else rejected with a diagnostic); portal health is derived.",
+  "source": "ShellSettingsService.hyprlandPlugin* (port-data/shell_settings.json group compositor_profile)",
+  "states": [
+    {
+      "name": "default-stable",
+      "in": { "profile": "stable", "experimental": false, "reload_on_startup": true },
+      "resolved": { "focus": "official-focus", "edge": "off", "capture": "builtin" },
+      "override": { "focus": false, "edge": false, "capture": false },
+      "portal_health": "healthy",
+      "edges": { "left": false, "bottom": false }
+    },
+    {
+      "name": "reject-non-stable-without-experimental",
+      "in": { "profile": "stable", "experimental": false },
+      "action": "set_profile(gesture-lab)",
+      "result": "Err",
+      "diagnostic": "profil « gesture-lab » non-stable — active les plugins expérimentaux d'abord",
+      "after": { "profile": "stable", "note": "unchanged — never silently applied" }
+    },
+    {
+      "name": "capture-lab-experimental",
+      "in": { "profile": "capture-lab", "experimental": true, "reload_on_startup": true },
+      "resolved": { "focus": "off", "edge": "hypr-hot-edge", "capture": "hyprcapture" },
+      "override": { "focus": false, "edge": false, "capture": false },
+      "portal_health": "healthy",
+      "edges": { "left": false, "bottom": true }
+    },
+    {
+      "name": "workspace-lab-with-focus-override",
+      "in": { "profile": "workspace-lab", "experimental": true },
+      "then": "set_focus(hyprfocus)",
+      "resolved": { "focus": "hyprfocus", "edge": "hyprgrass", "capture": "builtin" },
+      "override": { "focus": true, "edge": false, "capture": false },
+      "portal_health": "healthy",
+      "edges": { "left": true, "bottom": false }
+    },
+    {
+      "name": "experimental-off-clamps-to-stable",
+      "in": { "profile": "workspace-lab", "experimental": true },
+      "action": "set_experimental(false)",
+      "after": { "profile": "stable", "focus": "official-focus", "edge": "off", "capture": "builtin" },
+      "diagnostic": "plugins expérimentaux désactivés — profil ramené à stable"
+    },
+    {
+      "name": "hyprcapture-without-experimental-portal-fails",
+      "in": { "capture": "hyprcapture", "experimental": false },
+      "portal_health": "dependency-failed",
+      "note": "derived: hyprcapture requires the portal session, which requires experimental"
+    }
+  ]
+}

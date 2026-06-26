@@ -64,6 +64,24 @@
   <section class="doc-wrap doc-section">
     <div class="doc-section-head">
       <span class="doc-num">02</span>
+      <h2>Ledger de livraison</h2>
+      <p>Chaque élément visible dans Central doit avoir une source de données, un statut et une preuve minimale. Ce ledger évite de confondre une interaction présentée avec une capacité déjà promue.</p>
+    </div>
+    <table class="doc-table">
+      <thead><tr><th>Objet</th><th>Source</th><th>Statut public</th><th>Preuve attendue</th></tr></thead>
+      <tbody>
+        <tr><td>Compositor profile</td><td>port-data/compositor_profile.rs + scenes/compositor-profile.json</td><td>Actif dans Central</td><td>Smoke Central: ouverture Control, section Compositor, portal session et absence d'overflow mobile.</td></tr>
+        <tr><td>Panel family</td><td>port-data/panel_family.rs + scenes/panel-family.json</td><td>Actif dans Control</td><td>Mutation visible de sidebar, launcher et panneaux sans casser focus ni lisibilité.</td></tr>
+        <tr><td>Settings pages</td><td>port-data/settings_pages.rs + scenes/settings-pages.json</td><td>Scaffold inspectable</td><td>Présence Displays, Input, Services et Developer dans la simulation.</td></tr>
+        <tr><td>Taskbar registry</td><td>port-data/bar_settings.rs + MANIFEST.json</td><td>Stabilisé</td><td>Slots gauche, centre et droite visibles, widgets togglables, référence conservée dans Assets.</td></tr>
+        <tr><td>Agentic menu</td><td>port-data/molecule_specs.json + menu/molecule-renderer.jsx</td><td>Candidate documentée</td><td>30 molécules, actions suggérées, plan/apply footer et lampes de confidentialité rendus par le renderer.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="doc-wrap doc-section">
+    <div class="doc-section-head">
+      <span class="doc-num">03</span>
       <h2>Contrat de simulation</h2>
       <p>Central n'est utile que si chaque état visible peut être relié à une source, une intention et une preuve. Le contrat ci-dessous sert de lecture minimale.</p>
     </div>
@@ -78,7 +96,7 @@
 
   <section class="doc-wrap doc-section">
     <div class="doc-section-head">
-      <span class="doc-num">03</span>
+      <span class="doc-num">04</span>
       <h2>Sous-systèmes</h2>
       <p>Chaque sous-système reçoit une responsabilité documentaire claire: ce qu'il prouve, ce qu'il expose et ce qui manque encore.</p>
     </div>
@@ -112,7 +130,7 @@
 
   <section class="doc-wrap doc-section">
     <div class="doc-section-head">
-      <span class="doc-num">04</span>
+      <span class="doc-num">05</span>
       <h2>Chantiers ouverts</h2>
       <p>Cette section sépare ce qui est intégré de ce qui doit encore être promu, documenté ou propagé.</p>
     </div>
@@ -120,7 +138,7 @@
       <article class="doc-card dark">
         <span class="doc-tag">stabilisé</span>
         <h3>Chantier #1 — Topbar + Widgets</h3>
-        <p>Douze clés topbar et douze toggles widgets sont branchés live à la bar, avec `topbar_settings.rs` côté port.</p>
+        <p>Douze clés topbar et douze toggles widgets sont branchés live à la bar, avec `bar_settings.rs` côté port.</p>
       </article>
       <article class="doc-card dark">
         <span class="doc-tag">actif</span>
@@ -142,7 +160,7 @@
 
   <section class="doc-wrap doc-section">
     <div class="doc-section-head">
-      <span class="doc-num">05</span>
+      <span class="doc-num">06</span>
       <h2>Propagation documentaire</h2>
       <p>Les derniers items de la liste indiquent explicitement ce qui doit maintenant descendre dans les docs depuis Central.</p>
     </div>
