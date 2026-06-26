@@ -136,6 +136,10 @@ async function getIndexState(page, forbiddenPatterns) {
     const rail = document.getElementById("gid-rail");
     const railBox = rail ? rail.getBoundingClientRect() : null;
     const railToggle = rail ? rail.querySelector(".gid-rail-toggle") : null;
+    const live = document.querySelector("[data-idx-live]");
+    const liveCanvas = live ? live.querySelector(".idx-live-canvas") : null;
+    const liveBox = live ? live.getBoundingClientRect() : null;
+    const liveCanvasBox = liveCanvas ? liveCanvas.getBoundingClientRect() : null;
     const heroBox = document.querySelector(".idx-hero h1")?.getBoundingClientRect();
     const titleStyle = getComputedStyle(document.querySelector(".idx-section-title"));
 
@@ -204,6 +208,17 @@ async function getIndexState(page, forbiddenPatterns) {
         toggleExpanded: railToggle ? railToggle.getAttribute("aria-expanded") : null,
         visibleControls: [...rail.children].filter((child) => getComputedStyle(child).display !== "none").map((child) => child.textContent.trim())
       },
+      liveState: live && {
+        mounted: live.dataset.idxMounted,
+        mode: live.dataset.mode,
+        controls: [...live.querySelectorAll("[data-idx-mode]")].map((node) => ({
+          mode: node.getAttribute("data-idx-mode"),
+          pressed: node.getAttribute("aria-pressed")
+        })),
+        activeNodes: [...live.querySelectorAll(".idx-live-node.is-active")].map((node) => node.getAttribute("data-idx-node")),
+        rect: liveBox && { width: Math.round(liveBox.width), height: Math.round(liveBox.height) },
+        canvasRect: liveCanvasBox && { width: Math.round(liveCanvasBox.width), height: Math.round(liveCanvasBox.height) }
+      },
       heroBox: heroBox && { left: Math.round(heroBox.left), right: Math.round(heroBox.right), top: Math.round(heroBox.top) },
       focusOutline: firstFocus ? {
         outlineWidth: focusStyle.outlineWidth,
@@ -266,6 +281,7 @@ async function getInteractionState(page, options = {}) {
   }
 
   const railInteraction = await getRailInteractionState(page);
+  const liveInteraction = await getLiveInteractionState(page);
 
   let hover = null;
   if (checkHover) {
@@ -283,7 +299,7 @@ async function getInteractionState(page, options = {}) {
     hover = { beforeHover, afterHover };
   }
 
-  return { hover, menuState, railInteraction };
+  return { hover, menuState, railInteraction, liveInteraction };
 }
 
 async function readRailState(page) {
@@ -349,6 +365,46 @@ async function getRailInteractionState(page) {
   return { initial, drag, beforeDrag, afterDrag, afterFirstToggle, afterSecondToggle, final };
 }
 
+async function readLiveState(page) {
+  return page.evaluate(() => {
+    const live = document.querySelector("[data-idx-live]");
+    const canvas = live ? live.querySelector(".idx-live-canvas") : null;
+    const rect = canvas ? canvas.getBoundingClientRect() : null;
+    return {
+      exists: Boolean(live),
+      mounted: live ? live.dataset.idxMounted : null,
+      mode: live ? live.dataset.mode : null,
+      title: live ? live.querySelector("[data-idx-live-title]")?.textContent.trim() : "",
+      copy: live ? live.querySelector("[data-idx-live-copy]")?.textContent.trim() : "",
+      count: live ? live.querySelector("[data-idx-live-count]")?.textContent.trim() : "",
+      pressed: live ? [...live.querySelectorAll("[data-idx-mode]")].filter((node) => node.getAttribute("aria-pressed") === "true").map((node) => node.getAttribute("data-idx-mode")) : [],
+      activeNodes: live ? [...live.querySelectorAll(".idx-live-node.is-active")].map((node) => node.getAttribute("data-idx-node")) : [],
+      canvas: rect && {
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+        backingWidth: canvas.width,
+        backingHeight: canvas.height
+      }
+    };
+  });
+}
+
+async function getLiveInteractionState(page) {
+  await page.waitForSelector("[data-idx-live]", { timeout: 5000 });
+  await page.waitForTimeout(220);
+  const initial = await readLiveState(page);
+  await page.locator("[data-idx-mode='composer']").click({ timeout: 5000 });
+  await page.waitForTimeout(180);
+  const afterComposer = await readLiveState(page);
+  await page.locator("[data-idx-node='Handoff']").click({ timeout: 5000 });
+  await page.waitForTimeout(180);
+  const afterNode = await readLiveState(page);
+  await page.locator("[data-idx-mode='orienter']").click({ timeout: 5000 });
+  await page.waitForTimeout(180);
+  const final = await readLiveState(page);
+  return { initial, afterComposer, afterNode, final };
+}
+
 function validateResult(result) {
   const issues = [];
   if (result.status !== 200) issues.push(`status=${result.status}`);
@@ -357,6 +413,17 @@ function validateResult(result) {
   if (result.brokenImages.length) issues.push(`brokenImages=${result.brokenImages.join(",")}`);
   if (result.icon !== "assets/symbols/cube.svg" || result.iconStatus !== 200) issues.push(`icon=${result.icon} status=${result.iconStatus}`);
   if (!result.navExists || !result.railExists) issues.push(`nav=${result.navExists} rail=${result.railExists}`);
+  if (!result.h2.includes("Carte vivante")) issues.push("live-section=missing-title");
+  if (!result.liveState) {
+    issues.push("live-section=missing");
+  } else {
+    if (result.liveState.mounted !== "true") issues.push(`live-mounted=${result.liveState.mounted}`);
+    if (result.liveState.mode !== "orienter") issues.push(`live-mode=${result.liveState.mode}`);
+    if (!result.liveState.canvasRect || result.liveState.canvasRect.width < 240 || result.liveState.canvasRect.height < 240) {
+      issues.push(`live-canvas-rect=${JSON.stringify(result.liveState.canvasRect)}`);
+    }
+    if (result.liveState.controls.length !== 3) issues.push(`live-controls=${result.liveState.controls.length}`);
+  }
   if (result.case.startsWith("mobile") && result.railState && !result.railState.collapsed) issues.push("rail-mobile-default=expanded");
   if (result.case.startsWith("mobile") && result.railState && result.railState.visibleControls.length !== 1) {
     issues.push(`rail-mobile-visible-controls=${result.railState.visibleControls.join("/")}`);
@@ -407,6 +474,23 @@ function validateResult(result) {
       if (rail.afterSecondToggle.collapsed !== rail.afterDrag.collapsed) issues.push("rail-toggle=not-restored");
       if (rail.final.collapsed !== rail.initial.collapsed) issues.push("rail-final-state=changed");
       if (rail.final.toggleExpanded !== (rail.final.collapsed ? "false" : "true")) issues.push(`rail-toggle-expanded=${rail.final.toggleExpanded}`);
+    }
+    if (!result.interaction.liveInteraction) {
+      issues.push("live-interaction=missing");
+    } else {
+      const live = result.interaction.liveInteraction;
+      if (!live.initial.exists) issues.push("live=missing");
+      if (live.initial.mounted !== "true") issues.push(`live-initial-mounted=${live.initial.mounted}`);
+      if (live.initial.mode !== "orienter") issues.push(`live-initial-mode=${live.initial.mode}`);
+      if (!live.initial.canvas || live.initial.canvas.width < 240 || live.initial.canvas.height < 240) {
+        issues.push(`live-initial-canvas=${JSON.stringify(live.initial.canvas)}`);
+      }
+      if (live.afterComposer.mode !== "composer") issues.push(`live-composer-mode=${live.afterComposer.mode}`);
+      if (!live.afterComposer.pressed.includes("composer")) issues.push(`live-composer-pressed=${live.afterComposer.pressed.join("/")}`);
+      if (live.afterComposer.title === live.initial.title) issues.push("live-title=unchanged-after-mode");
+      if (!live.afterNode.activeNodes.includes("Handoff")) issues.push(`live-node-active=${live.afterNode.activeNodes.join("/")}`);
+      if (live.final.mode !== "orienter") issues.push(`live-final-mode=${live.final.mode}`);
+      if (!live.final.pressed.includes("orienter")) issues.push(`live-final-pressed=${live.final.pressed.join("/")}`);
     }
   }
   return issues;
