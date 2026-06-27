@@ -3667,8 +3667,8 @@ class Component extends DCLogic {
       label:s.label, icon:s.icon, sel, go:()=>this.loadScenario(i),
       bg: sel?this.hexA(ac,0.16):'#161516', bd: sel?ac:'#2c2a2e', fg: sel?ac:'#b8b3ba' }; });
     const _theme = st.theme || 'dark', _light = _theme==='light';
-    // ── chrome ink ── in light theme with the default material the bar + dock become light surfaces, so their ink flips to dark
-    const _chromeLight = _light && (st.shellMaterial||'auto')==='auto';
+    // ── chrome ink ── the bar + dock commit to a light surface in light theme (any material/family), so their ink flips to dark
+    const _chromeLight = _light;
     const chromeBg = 'rgba(250,248,252,0.92)';
     const barInkHi = _chromeLight ? '#26222b' : '#cbc5ca';
     const barInk   = _chromeLight ? '#46424c' : '#948f94';
@@ -3965,7 +3965,7 @@ class Component extends DCLogic {
     const membraneBg = 'radial-gradient(74% 58% at 50% 100%, '+this.hexA(ac,0.34)+', rgba(0,0,0,0) 70%), radial-gradient(64% 44% at 50% 0%, '+this.hexA(ac,0.24)+', rgba(0,0,0,0) 64%), radial-gradient(52% 66% at 100% 8%, '+this.hexA(ac,0.30)+', rgba(0,0,0,0) 62%), radial-gradient(48% 66% at 0% 52%, '+this.hexA(ac,0.20)+', rgba(0,0,0,0) 60%)';
     // calestia coherence: the launcher AND the bar adopt the organic material + accent membrane when hug is active,
     // so the surfaces read as ONE surface-aware shell (not just a restyled sidebar).
-    const barBgEff   = famHug ? ('linear-gradient(180deg, '+this.hexA(ac,0.18)+', rgba(20,19,20,0.84))') : (_chromeLight ? chromeBg : (_mat ? famBgR : 'rgba(20,19,19,0.86)'));
+    const barBgEff   = famHug ? (_light ? ('linear-gradient(180deg, '+this.hexA(ac,0.14)+', rgba(250,248,252,0.90))') : ('linear-gradient(180deg, '+this.hexA(ac,0.18)+', rgba(20,19,20,0.84))')) : (_chromeLight ? chromeBg : (_mat ? famBgR : 'rgba(20,19,19,0.86)'));
     const barBlurEff = famHug ? 'blur(14px) saturate(1.2)' : (_mat ? famBlurR : 'blur(8px)');
     const luBgEff = (_mat || famHug) ? famBgR : luShellBg;
     const luBdEff = famHug ? famBorderR : luShellBd;
