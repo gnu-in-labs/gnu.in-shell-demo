@@ -1,6 +1,6 @@
 {
-  "source": "gnu-in-labs/gnu.in-shell · components/settings/pages/Shell settings page + services/ShellSettingsService + DockService (ShellIpc)",
-  "note": "Authoritative shell settings schema as exposed by the legacy Rust backend (ShellSettingsService getters/setters + ShellIpc dock.* methods). This is the single source of truth Central's Control Center and the docs mirror. Each control names its real backend key, type, and option set verbatim.",
+  "source": "gnu-in-labs/gnu.in-shell · components/settings/pages/ShellPage.qml + services/ShellSettingsService + DockService (ShellIpc)",
+  "note": "Authoritative shell settings schema as exposed by the Rust/QML backend (ShellSettingsService getters/setters + ShellIpc dock.* methods). This is the single source of truth Central's Control Center and the docs mirror. Each control names its real backend key, type, and option set verbatim.",
   "groups": [
     {
       "id": "panel_family",
@@ -33,9 +33,19 @@
         { "key": "dockMode", "label": "Dock Mode", "desc": "Bottom surface behavior", "type": "select", "options": ["docked", "floating", "autohide", "dodge"], "setter": "setDockMode", "semantics": { "docked": "always visible, reserves bottom space", "floating": "visible, no reserved zone", "autohide": "hidden, reveals on bottom hover strip", "dodge": "hidden only when a window overlaps (DockGeometryService.dockOverlaps)" } },
         { "key": "dockRevealDelay", "label": "Reveal Delay", "desc": "Edge hover delay before reveal", "type": "slider", "from": 0, "to": 1000, "step": 50, "unit": "ms", "setter": "setDockRevealDelay" },
         { "key": "dockHideDelay", "label": "Hide Delay", "desc": "Delay before the dock hides", "type": "slider", "from": 0, "to": 1000, "step": 50, "unit": "ms", "setter": "setDockHideDelay" },
-        { "key": "dockPinned", "label": "Pinned", "desc": "Jillarious pin keeps the dock visible and reserves space", "type": "toggle", "ipc": "dock.togglePinned" }
+        { "key": "dockPinned", "label": "Pinned", "desc": "Jillarious pin keeps the dock visible and reserves space", "type": "toggle", "ipc": "dock.togglePinned" },
+        { "key": "dockIndicator", "label": "Running indicator", "desc": "Grouped running mark under each card", "type": "select", "options": ["dot", "line", "none"], "setter": "setDockIndicator", "central_introduced": true },
+        { "key": "dockLabels", "label": "Labels", "desc": "App-name caption visibility", "type": "select", "options": ["hover", "always", "never"], "setter": "setDockLabels", "central_introduced": true },
+        { "key": "dockSeparators", "label": "Separators", "desc": "Divider between pinned and transient apps", "type": "toggle", "setter": "setDockSeparators", "central_introduced": true },
+        { "key": "dockMargin", "label": "Edge margin", "desc": "Floating gap from the screen edge (elevation margin)", "type": "slider", "from": 0, "to": 40, "step": 1, "unit": "px", "setter": "setDockMargin", "central_introduced": true },
+        { "key": "dockOpacity", "label": "Background opacity", "desc": "Tray/panel background alpha", "type": "slider", "from": 0.3, "to": 1, "step": 0.02, "setter": "setDockOpacity", "central_introduced": true },
+        { "key": "dockRadius", "label": "Corner radius", "desc": "Tray radius; card radius derives from it", "type": "slider", "from": 0, "to": 24, "step": 1, "unit": "px", "setter": "setDockRadius", "central_introduced": true },
+        { "key": "dockElevation", "label": "Elevation", "desc": "Shadow depth: flat / lifted / floating", "type": "select", "options": ["flat", "lifted", "floating"], "setter": "setDockElevation", "central_introduced": true },
+        { "key": "dockMagnify", "label": "Magnification", "desc": "macOS-style cursor swell over neighbours (Row)", "type": "toggle", "setter": "setDockMagnify", "central_introduced": true },
+        { "key": "dockPreviews", "label": "Window previews", "desc": "Hovering a running app raises clickable window-preview popups (click to raise/focus)", "type": "toggle", "setter": "setDockPreviews", "central_introduced": true }
       ],
-      "pending_parity": ["window preview popups", "grouped app indicators", "persistent app pin/unpin", "separators / shadows / elevation margins"]
+      "resolved_parity": { "by": "Central dock_items.rs + DockAppearance (dock_settings.rs)", "items": ["grouped app indicators → indicator (dot/line/none)", "persistent app pin/unpin → toggleAppPin", "separators / shadows / elevation margins → separators · elevation · margin · radius · opacity", "window preview popups → hover popup of clickable window thumbnails (focusWin raises)"] },
+      "pending_parity": []
     },
     {
       "id": "topbar",

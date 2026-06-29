@@ -283,7 +283,7 @@ function ImageSprite({
 }
 
 // RectSprite: simple rectangle that animates position/size/color via props.
-// Useful preview primitive — takes a `render` fn for per-frame customization.
+// Useful demo primitive — takes a `render` fn for per-frame customization.
 function RectSprite({
   x = 0, y = 0,
   width = 100, height = 100,

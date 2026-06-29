@@ -71,7 +71,7 @@ inspector**, never in the port data:
   The *scene model* (backed flag, kind, MenuRow nodes, z) is faithful for all
   23; only the on-screen affordance is a stand-in. The visible chrome-vs-bespoke
   difference is precisely the blob membrane — the thesis, shown literally.
-- **Sample row set** — Central composes 6 illustrative rows (New, Open terminal,
+- **Demo row set** — Central composes 6 illustrative rows (New, Open terminal,
   Change wallpaper, Display settings, Inspect surface, About); the golden
   fixture uses 3. Both are valid `reduce` inputs — row count is data, not model.
 - **Coordinate space** — Central composes at 1280×800 (preview stage); fixtures
@@ -215,14 +215,14 @@ Wayland-free host modules are mirrored (both unit-tested in sandbox):
   `MenuPanel|Blob→KeepOpen` / `None→Dismiss` (the same mapping as Central's
   input-model click intents), and `surface_action` decides Reuse (same output)
   vs Recreate. 8 tests covering the three bug classes (double / stuck / stale).
-- **`host_protocol.rs`** (← `src/protocol.rs`) — the legacy UI/Rust IPC wire:
+- **`host_protocol.rs`** (← `src/protocol.rs`) — the QML↔Rust IPC wire:
   newline-delimited JSON over a Unix socket. `HostMessage{ Open{request,screen} |
-  Close }` (client→host), `HostEvent{ Action{id} }` (host→client), and a versioned
+  Close }` (QML→host), `HostEvent{ Action{id} }` (host→QML), and a versioned
   `Envelope{ version, #[flatten] message }` whose unknown versions are *detected*
   (`is_supported`) rather than mis-parsed. Canonical wire frames (the
-  cross-language contract legacy UI must match) are pinned in
+  cross-language contract QML must match) are pinned in
   `scenes/wire-protocol.json`. **Transitional only** — this bridge exists for the
-  per-surface bridge cutover; the destination is **bridge-free and in-process** (the
+  per-surface QML cutover; the destination is **QML-free and in-process** (the
   host links `gnuin_compose_core` directly and bypasses the socket entirely, per
   the module's own doc). Central reflects this: the inspector's "host wire"
   readout is labelled *legacy · pre-cutover*, and reads *in-process* when idle.
@@ -247,7 +247,7 @@ single-mascot + exclusive-radio normalization, and serde round-trips.
 
 ## Frontier #2 — Compositor Profile (`compositor_profile.rs`)
 
-Mirrors `ShellSettingsService.hyprlandPlugin*` (Appearance settings page). A **profile is a
+Mirrors `ShellSettingsService.hyprlandPlugin*` (AppearancePage.qml). A **profile is a
 preset** that `resolve()`s a `(FocusFeedback, EdgeGestures, CaptureProvider)` triple;
 individual candidates may then **override** it (`is_override()` flags divergence).
 Non-stable profiles/candidates require `experimental` — otherwise the setter returns
@@ -303,3 +303,31 @@ Gnosis already map to General/Taskbar/Compositor+Dock/Sidebar). Typed structs:
 template (`appPageControls`: toggle/select/slider/status), and the Developer page's
 scene-inspector + experimental-flags toggles are wired to live engine state
 (`showDamage`, `compositor.experimental`). 5 tests; `scenes/settings-pages.json`.
+
+
+## Frontier — CM-5 keyboard nav (`keyboard_nav.rs`)
+
+Net-new design harvested from the CM-5 frontier (`CONTEXT_MENU_FRONTIERS.md`), specced in
+the **Atelier** (`gnosis ▸ ux`) and committed here as the proposed port target — no in-crate
+module yet, so this is the destination, not a mirror (it becomes a conformance mirror once the
+crate adopts it). A **flat keyboard cursor** over the enabled, hittable rows of an open menu
+(+ ready agent suggestions when joined), modelled as `KeyboardNav { cursor: Option<usize>, len }`
+with a pure, total `step(d)` honouring `Ends`. The cursor is **observe-only** — it never mutates
+a peer or the scene; Enter dispatches the row through the same `MenuRow→Action` path the pointer
+uses (`host_menu_state::on_hit`), so the engine still owns focus and dismissal. It is the keyboard
+analogue of the input model's `CursorState` (`compose_core.rs`).
+
+Decided spec (Atelier, agent-recommended → accepted): `nav = flat-enabled+suggest` ·
+`suggest = joined-when-ready` · `dismiss = esc+outside` (precedence **Esc > outside-press >
+select**) · `focus = neutral-on-open` (first ↓ selects row 0) · `ends = clamp` · `risk = observe`.
+
+- **Port** — `keyboard_nav.rs`: `NavModel` / `Ends` / `Dismiss` / `DismissCause` enums, decided
+  consts, `KeyboardNav::{new, step, moved, activated}`, `dismisses(cause)`; **7 tests**
+  (neutral→first, up→last, advance, clamp-at-last, empty-neutral, dismiss-precedence, neutral-on-open).
+- **Molecule** — `AgenticKeyboardNav` (family `agentic`, layout `agentic-panel`, **31 molecules
+  total**); the `keyboard` model block carries the decided spec.
+- **Fixture** — `scenes/keyboard-nav.json` (the decided model + 5 cursor cases mirroring the unit tests).
+- **Agent bus (CM-7 seam)** — the inference that produced this spec ran over a transport-abstracted
+  `GnosisBus` framed in the `host_protocol::Envelope` (`{version, message}`, newline-delimited),
+  capability-gated (`infer.shell.uiux`); `SimTransport` loopback now, gnu6 `SocketTransport` is the
+  remaining cutover.

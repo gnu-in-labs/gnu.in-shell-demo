@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { background: #0E1115; color: #F5EEDD; margin: 0; font-family: 'IBM Plex Sans', sans-serif; }
+  * { box-sizing: border-box; }
+  code { font-family: 'IBM Plex Mono', monospace; font-size: 0.88em; background: #111418; color: #C8CACE; padding: 1px 5px; border-radius: 3px; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .evidence {
+    background: #0A0C0F;
+    border: 1px solid #1E2329;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    line-height: 1.8;
+    color: #667085;
+    margin-top: 10px;
+    position: relative;
+  }
+  .evidence::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -1px; right: 12px;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #2B3037;
+    background: #0A0C0F;
+    padding: 0 6px;
+  }
+  .ev-bad { color: #E6C84A; }
+  .ev-good { color: #5F9F72; }
+  .ev-ref { color: #A1A6AD; }
+  .ev-path { color: #667085; }
+  .fix-block {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #111C14;
+    border: 1px solid #1E3322;
+    border-radius: 5px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #5F9F72;
+    line-height: 1.7;
+  }
+  .fix-block::before { content: ">_ fix · "; color: #3D6B4A; }
+  .tag-critical { color: #FF6A00; background: #1E1008; border: 1px solid #5C2108; }
+  .tag-warning  { color: #E6C84A; background: #1A1608; border: 1px solid #4A3D08; }
+  .tag-note     { color: #667085; background: #141618; border: 1px solid #232830; }
+  .tag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; border-radius: 4px; padding: 2px 8px; white-space: nowrap; letter-spacing: 0.04em; }
+  .card { background: #141618; border-radius: 9px; padding: 20px 24px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
+  .card-critical { border: 1px solid #5C2108; border-left: 3px solid #FF6A00; }
+  .card-warning  { border: 1px solid #4A3D08; border-left: 3px solid #D4A800; }
+  .card-note     { border: 1px solid #232830; border-left: 3px solid #3A4250; }
+  .card-body { flex: 1; min-width: 0; }
+  .card-title { font-weight: 600; color: #F5EEDD; margin-bottom: 7px; font-size: 14px; line-height: 1.4; }
+  .card-desc { font-size: 13px; color: #8A939E; line-height: 1.65; }
+  .impact { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 11px; }
+  .impact-critical { color: #FF6A00; }
+  .impact-warning  { color: #D4A800; }
+  .impact-note     { color: #4A5568; }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #3A4250;
+    margin: 36px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: #1E2329; }
+  .pill-grid { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+  .pill { border-radius: 8px; padding: 14px 20px; min-width: 100px; }
+  .summary-table { background: #141618; border: 1px solid #1E2329; border-radius: 8px; overflow: hidden; width: 100%; }
+  .summary-table th { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #3A4250; padding: 10px 14px; background: #0E1115; text-align: left; border-bottom: 1px solid #1E2329; }
+  .summary-table td { font-size: 12px; padding: 9px 14px; border-bottom: 1px solid #141618; color: #8A939E; vertical-align: top; }
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table tr:hover td { background: #181B20; }
+  .compound-risk { background: #1A0E08; border: 1px solid #5C2108; border-radius: 8px; padding: 16px 20px; margin: 12px 0; }
+  .compound-risk-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #FF6A00; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px; }
+  .dot-orange { color: #FF6A00; }
+  .dot-yellow { color: #D4A800; }
+  .dot-gray   { color: #3A4250; }
+  .callout { background: #101820; border: 1px solid #1A3040; border-radius: 7px; padding: 14px 18px; margin-top: 10px; font-size: 13px; color: #6090A8; line-height: 1.6; }
+  .callout strong { color: #90C0D8; }
+</style>
+</helmet>
+
+<div style="min-height:100vh; background:#0E1115; padding:0 0 100px;">
+
+  <!-- Top bar -->
+  <div style="background:#111418; border-bottom:1px solid #1E2329; padding:14px 0; position:sticky; top:0; z-index:10;">
+    <div style="max-width:980px; margin:0 auto; padding:0 40px; display:flex; align-items:center; gap:16px;">
+      <span class="mono" style="font-size:11px; color:#FF6A00; letter-spacing:0.16em;">GNU.IN</span>
+      <span style="color:#2B3037;">·</span>
+      <span class="mono" style="font-size:11px; color:#3A4250;">Workspace Design &amp; Spec Audit</span>
+      <span style="color:#2B3037;">·</span>
+      <span class="mono" style="font-size:11px; color:#2B3037;">2026-06-27</span>
+      <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+        <span style="font-size:11px; color:#5C2108; background:#1A0E08; border:1px solid #5C2108; border-radius:4px; padding:2px 10px;" class="mono">5 critical</span>
+        <span style="font-size:11px; color:#4A3D08; background:#1A1608; border:1px solid #4A3D08; border-radius:4px; padding:2px 10px;" class="mono">8 warning</span>
+        <span style="font-size:11px; color:#232830; background:#141618; border:1px solid #232830; border-radius:4px; padding:2px 10px;" class="mono">6 note</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:980px; margin:0 auto; padding:0 40px;">
+
+    <!-- Hero -->
+    <div style="padding:44px 0 8px;">
+      <div class="mono" style="font-size:11px; color:#3A4250; margin-bottom:10px; letter-spacing:0.12em;">READING SCOPE</div>
+      <p style="font-size:13px; color:#4A5568; line-height:1.7; margin:0 0 6px;">
+        11 files read across 8 repos: <code>WORKSPACE_INVENTORY</code> · <code>components.lock.toml</code> · <code>release/VERSION</code> · <code>release/LATEST-BUILD</code> · <code>GLOBAL-VERSION.json</code> · <code>DESIGN_SOURCE_INVENTORY</code> · <code>IMPORT_2026-06-09_REPORT</code> · <code>SKILL.md</code> · <code>TASTE.md</code> · <code>UPGRADE_PATH.md</code> · <code>TECH_DEBT_REGISTER</code> · <code>AUDIT_SURFACES_2026-06-11</code> · <code>MIGRATION_INVENTORY</code> · <code>ROADMAP</code> · <code>DESIGN_ASSET_MANIFEST</code> · all <code>AGENTS.md</code> contracts · <code>gnu.in-shell/README</code> · <code>gnu.in-os/README</code>
+      </p>
+    </div>
+
+    <!-- Summary pills -->
+    <div class="pill-grid">
+      <div class="pill" style="background:#1A0E08; border:1px solid #5C2108;">
+        <div class="mono" style="font-size:28px; font-weight:500; color:#FF6A00;">5</div>
+        <div style="font-size:11px; color:#5C2108; letter-spacing:0.08em; text-transform:uppercase; margin-top:2px;">Critical</div>
+      </div>
+      <div class="pill" style="background:#1A1608; border:1px solid #4A3D08;">
+        <div class="mono" style="font-size:28px; font-weight:500; color:#D4A800;">8</div>
+        <div style="font-size:11px; color:#4A3D08; letter-spacing:0.08em; text-transform:uppercase; margin-top:2px;">Warning</div>
+      </div>
+      <div class="pill" style="background:#141618; border:1px solid #232830;">
+        <div class="mono" style="font-size:28px; font-weight:500; color:#3A4250;">6</div>
+        <div style="font-size:11px; color:#232830; letter-spacing:0.08em; text-transform:uppercase; margin-top:2px;">Note</div>
+      </div>
+      <div class="pill" style="background:#141618; border:1px solid #1E2329; margin-left:auto;">
+        <div class="mono" style="font-size:13px; color:#5F9F72;">v0.14.2 beta</div>
+        <div style="font-size:11px; color:#2B3037; margin-top:3px;">Actual release train</div>
+      </div>
+      <div class="pill" style="background:#141618; border:1px solid #1E2329;">
+        <div class="mono" style="font-size:13px; color:#3A4250;">20260624-170024</div>
+        <div style="font-size:11px; color:#2B3037; margin-top:3px;">Latest build</div>
+      </div>
+    </div>
+
+    <!-- Compound risk callout -->
+    <div class="compound-risk" style="margin-top:28px;">
+      <div class="compound-risk-label">⚠ Compound risk</div>
+      <div style="font-size:13px; color:#9A5030; line-height:1.65;">
+        Three of the five criticals share one blast radius: <strong style="color:#E0784A;">any agent or designer who reads only SKILL.md</strong> — the designed entry point for the design system — will be sent to a deprecated UI kit, apply the wrong motion tokens, and reference the wrong mascot file. SKILL.md is simultaneously the most-read and most-stale document in the design system.
+      </div>
+    </div>
+
+    <!-- ─── SECTION 01 ─── -->
+    <div class="section-label">01 — Stale documents</div>
+
+    <!-- F1 -->
+    <div class="card card-critical">
+      <span class="tag tag-critical" style="margin-top:2px;">CRITICAL</span>
+      <div class="card-body">
+        <div class="card-title">WORKSPACE_INVENTORY is 2 minor versions behind — misleads on entire project state</div>
+        <div class="card-desc">
+          The inventory was generated 2026-06-16 and is the primary orientation doc for the workspace. It currently states <code>v0.12.0</code> and build <code>20260616-110125-824d3e1</code>. The real state is <code>v0.14.2</code> / build <code>20260624-170024-97a86b5</code>. That's two full minor versions — v0.13.x and v0.14.x — plus the entire Jillarious overhaul surface wave, the gnuin-bar Branch-H landing, gnuin-settings-core, five architecture remediations (A–E), and a new release rail. Anyone reading this doc as orientation has a fundamentally wrong picture.
+        </div>
+        <div class="evidence" data-label="WORKSPACE_INVENTORY.md · line 12–13">
+          <span class="ev-bad">Current release train: v0.12.0 / channel=beta</span><br>
+          <span class="ev-bad">Latest promoted build: 20260616-110125-824d3e1</span>
+        </div>
+        <div class="evidence" data-label="release/VERSION + release/LATEST-BUILD (actual)">
+          <span class="ev-good">0.14.2</span><br>
+          <span class="ev-good">20260624-170024-97a86b5</span>
+        </div>
+        <div class="fix-block">Regenerate WORKSPACE_INVENTORY from live git state, or add a prominent stale-doc header and redirect to GLOBAL-VERSION.json + ROADMAP as authoritative live sources</div>
+      </div>
+    </div>
+
+    <!-- F2 -->
+    <div class="card card-critical">
+      <span class="tag tag-critical" style="margin-top:2px;">CRITICAL</span>
+      <div class="card-body">
+        <div class="card-title">All 4 component revisions in WORKSPACE_INVENTORY don't match components.lock.toml — gnu.in-shell branch is also wrong</div>
+        <div class="card-desc">
+          Every pinned component rev in the inventory is stale. The <code>gnu.in-shell</code> discrepancy is the sharpest: the inventory says it's on the JJ overhaul branch, but the lock pins a completely different branch (<code>feat/osd-rust-slice</code> — the OSD Rust slice work). These are separate workstreams.
+        </div>
+        <div class="evidence" data-label="components.lock.toml vs WORKSPACE_INVENTORY §2.1–2.4">
+          <div style="display:grid; grid-template-columns:180px 220px 220px; gap:0 12px; margin-bottom:4px; color:#2B3037; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">
+            <span>Component</span><span>Inventory says</span><span>Lock says</span>
+          </div>
+          <div style="height:1px; background:#1E2329; margin:4px 0 8px;"></div>
+          <div style="display:grid; grid-template-columns:180px 220px 220px; gap:5px 12px; line-height:1.6;">
+            <span class="ev-ref">gnu.in-shell</span>
+            <span class="ev-bad">7273849 / live/jj-overhaul</span>
+            <span class="ev-good">0c476fce / feat/osd-rust-slice</span>
+
+            <span class="ev-ref">gnu.in-design-reference</span>
+            <span class="ev-bad">18b8355</span>
+            <span class="ev-good">82d03288</span>
+
+            <span class="ev-ref">gnu.in-gnosis-app</span>
+            <span class="ev-bad">9ac677d</span>
+            <span class="ev-good">a46e7d0d</span>
+
+            <span class="ev-ref">gnuin-hyprconf</span>
+            <span class="ev-bad">2abce25</span>
+            <span class="ev-good">3d82e71f</span>
+          </div>
+        </div>
+        <div class="fix-block">components.lock.toml + GLOBAL-VERSION.json are the live source of truth — treat the inventory's component table as stale; regenerate or remove it</div>
+      </div>
+    </div>
+
+    <!-- F3 -->
+    <div class="card card-warning">
+      <span class="tag tag-warning" style="margin-top:2px;">WARNING</span>
+      <div class="card-body">
+        <div class="card-title">WORKSPACE_INVENTORY §2.8 names repo "sigma-flutter" — folder on disk is "findin-file-manager"</div>
+        <div class="card-desc">
+          The inventory describes a "GPUI Rust File Manager Rebuild" under the name <code>sigma-flutter</code> with compile errors and active agent work. The actual folder is <code>findin-file-manager/</code>, which contains both a Flutter tree and a <code>gpui-frontend/</code> Rust subtree. Either the repo was renamed after the inventory was written, or this is a different repo altogether. The inventory's urgency flags (compile errors, uncommitted files) also can't be validated against the actual folder name.
+        </div>
+        <div class="evidence" data-label="Workspace root folder listing">
+          <span class="ev-bad">Listed in inventory: sigma-flutter</span><br>
+          <span class="ev-good">Actual folder: findin-file-manager/ (contains gpui-frontend/)</span>
+        </div>
+        <div class="fix-block">Confirm canonical repo name; update inventory §2.8 accordingly; if renamed, add a note in the README</div>
+      </div>
+    </div>
+
+    <!-- F4 -->
+    <div class="card card-warning">
+      <span class="tag tag-warning" style="margin-top:2px;">WARNING</span>
+      <div class="card-body">
+        <div class="card-title">DESIGN_ASSET_MANIFEST.md lists 2 source archives — 3 more were imported 2026-06-09, adding 120 files</div>
+        <div class="card-desc">
+          The manifest in <code>gnu.in-shell/assets/DESIGN_ASSET_MANIFEST.md</code> documents only the original two ZIPs. The June 9 import brought in three additional Claude Design bundles — context-spec v0.4.0 (82 files incl. the entire blob.in Rust workspace), gnu-in-design-system (1 file), and gnosis-app HUD (37 files) — which together define the current token authority (<code>tokens.json</code> v0.4.0), the motion JSX components, and the Gnosis HUD reference. None of these are in the manifest.
+        </div>
+        <div class="evidence" data-label="DESIGN_ASSET_MANIFEST.md · Canonical source inspected">
+          <span class="ev-bad">- /home/tension_atoi/Downloads/GNU.IN Design System (3).zip</span><br>
+          <span class="ev-bad">- /home/tension_atoi/Downloads/Contextmenuv4.zip</span><br>
+          <span style="color:#2B3037; font-style:italic;">(3 additional bundles from 2026-06-09 not listed)</span>
+        </div>
+        <div class="evidence" data-label="IMPORT_2026-06-09_REPORT.md · Missing bundles">
+          <span class="ev-good">context-spec v0.4.0 · JRg03EBXcnwgrFcOx2Hy6w · 82 files</span><br>
+          <span class="ev-good">gnu-in-design-system · HA-SsOC39xUkJJVyLyoFMw · 1 file</span><br>
+          <span class="ev-good">gnosis-app HUD · ztID4C533zzimECTHu2ATg · 37 files</span>
+        </div>
+        <div class="fix-block">Append June 9 bundle provenance + SHA256s to DESIGN_ASSET_MANIFEST; add runtime-eligible mappings for the blob.in Rust workspace and motion JSX files</div>
+      </div>
+    </div>
+
+    <!-- F5 — file count -->
+    <div class="card card-warning">
+      <span class="tag tag-warning" style="margin-top:2px;">WARNING</span>
+      <div class="card-body">
+        <div class="card-title">DESIGN_SOURCE_INVENTORY claims 571 files — IMPORT report accounts for 547 — 24 files untracked by narrative</div>
+        <div class="card-desc">
+          The inventory header says 571 covered files (up from 431 baseline). The import report from the same period shows: 431 baseline + 120 added − 4 deleted = <strong style="color:#F5EEDD;">547</strong>. The 24-file gap is unexplained in either document. Either files were added after the import with no accompanying delta report, or the verifier script count and the import narrative are out of sync.
+        </div>
+        <div class="evidence" data-label="DESIGN_SOURCE_INVENTORY.md vs IMPORT_2026-06-09_REPORT.md">
+          <span class="ev-bad">DESIGN_SOURCE_INVENTORY: 571 files covered</span><br>
+          <span class="ev-ref">IMPORT_2026-06-09_REPORT: 431 + 120 added − 4 deleted = 547</span><br>
+          <span class="ev-bad">Delta: 24 files unaccounted for in narrative</span>
+        </div>
+        <div class="fix-block">Run tools/verify-design-reference.sh; if clean, document the 24-file post-import additions with a dated delta note in DESIGN_SOURCE_INVENTORY</div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 02 ─── -->
+    <div class="section-label">02 — Design system misalignment</div>
+
+    <!-- F6 SKILL.md kit -->
+    <div class="card card-critical">
+      <span class="tag tag-critical" style="margin-top:2px;">CRITICAL</span>
+      <div class="card-body">
+        <div class="card-title">SKILL.md sends agents to the deprecated terminal-panel kit as "canonical chrome"</div>
+        <div class="card-desc">
+          SKILL.md is the primary entry point for any agent or designer using this design system. It explicitly directs them to <code>ui_kits/gnu-in-shell/index.html</code> as the OS shell prototype. But UPGRADE_PATH.md and TASTE.md §1 both classify this file as "identity-mood reference only — not how the chrome actually looks." The canonical chrome prototype is <code>ii-bar-upgrade.html</code> — it matches the real BarContent.qml structure, the connected-pill workspaces, M3 colour roles, and the float/hug corner styles.
+        </div>
+        <div class="evidence" data-label="SKILL.md · Quick orientation">
+          <span class="ev-bad">UI kit: ui_kits/gnu-in-shell/index.html — click-through prototype of the OS+ shell (panel, dock, context menu, notifications, terminal, mascot).</span>
+        </div>
+        <div class="evidence" data-label="TASTE.md §1 (overrides SKILL.md)">
+          <span class="ev-good">The original ui_kits/gnu-in-shell/index.html (anthracite "terminal panel"…) was built before the real shell was located. It is <strong>identity-mood reference only</strong> — not how the chrome actually looks. The canonical chrome is ii-bar-upgrade.html. Don't propagate the terminal-panel styling into new product surfaces.</span>
+        </div>
+        <div class="callout"><strong>Impact:</strong> Every agent reading SKILL.md and building a product surface will produce an anthracite + IBM Plex Mono terminal aesthetic — the exact chrome look TASTE.md says is wrong. This has likely already produced multiple off-brand artifacts.</div>
+        <div class="fix-block">In SKILL.md: change UI kit pointer to ii-bar-upgrade.html; add one line marking index.html as "identity-mood reference (deprecated chrome)"</div>
+      </div>
+    </div>
+
+    <!-- F7 SKILL.md motion -->
+    <div class="card card-critical">
+      <span class="tag tag-critical" style="margin-top:2px;">CRITICAL</span>
+      <div class="card-body">
+        <div class="card-title">SKILL.md hard-rules flat bézier motion as universal — TASTE.md requires M3-Expressive springs for chrome</div>
+        <div class="card-desc">
+          SKILL.md hard-rules give no distinction between chrome and identity layer motion. TASTE.md §2 establishes that chrome surfaces must use M3-Expressive springs with intentional overshoot (<code>--ease-expressive</code>), while the old calm bézier belongs only on the identity/terminal layer. A move with no overshoot "reads as a different, lesser OS."
+        </div>
+        <div class="evidence" data-label="SKILL.md · Hard rules">
+          <span class="ev-bad">Motion default ease cubic-bezier(0.2, 0.7, 0.2, 1); durations 120 / 200 / 360ms; listening pulse 1400ms.</span><br>
+          <span style="color:#2B3037; font-style:italic;">(no chrome / identity distinction given)</span>
+        </div>
+        <div class="evidence" data-label="TASTE.md §2 (overrides SKILL.md)">
+          <span class="ev-good">The shell runs M3-Expressive springs, not flat easings. Spatial moves use --ease-expressive / --ease-expressive-fast — the overshoot is intentional and is half the personality.</span><br>
+          <span class="ev-good">Reserve the calm --ease-standard for the identity/terminal layer.</span>
+        </div>
+        <div class="fix-block">Add two-layer motion table to SKILL.md hard rules: chrome → --ease-expressive (overshoot); identity/terminal → cubic-bezier(0.2,0.7,0.2,1) calm bézier</div>
+      </div>
+    </div>
+
+    <!-- F8 mascot conflict -->
+    <div class="card card-warning">
+      <span class="tag tag-warning" style="margin-top:2px;">WARNING</span>
+      <div class="card-body">
+        <div class="card-title">SKILL.md and README.md disagree on the canonical mascot asset</div>
+        <div class="card-desc">
+          SKILL.md says "Use <code>assets/mascot/syster-master-adaptive.svg</code>." README.md §Iconography states the canonical mascot is <code>assets/mascot/pack/hero.png</code> (1254×1254 transparent), alongside six named component layers for animation. The SVG masters are described as "legacy adaptive/safe-area masters" — archival, not the primary. An agent following SKILL.md reaches for the legacy SVG and bypasses the compositing-ready PNG pack.
+        </div>
+        <div class="evidence" data-label="SKILL.md">
+          <span class="ev-bad">Mascot: the Sys.ter — …Use assets/mascot/syster-master-adaptive.svg</span>
+        </div>
+        <div class="evidence" data-label="README.md §Iconography — Mascot art">
+          <span class="ev-good">pack/hero.png is the canonical assembled mascot (orange terminal cube, live >_ screen, grey antenna, green beret…). Alongside it are six transparent component layers — 20-shell, 30-screen, 40-prompt, 50-beret, 60-antenna, 10-shadow…</span><br>
+          <span class="ev-ref">Plus the legacy adaptive/safe-area masters.</span>
+        </div>
+        <div class="fix-block">Update SKILL.md to point to assets/mascot/pack/hero.png as primary; note syster-master-adaptive.svg as "SVG master, legacy adaptive — for vector-only contexts"</div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 03 ─── -->
+    <div class="section-label">03 — Live surface bugs (from AUDIT_SURFACES_2026-06-11)</div>
+
+    <!-- F9 clock clipped -->
+    <div class="card card-critical">
+      <span class="tag tag-critical" style="margin-top:2px;">CRITICAL · P1</span>
+      <div class="card-body">
+        <div class="card-title">Taskbar clock renders as "16:2" — Lift.qml / Origami.qml missing implicitWidth propagation</div>
+        <div class="card-desc">
+          Confirmed in the headless surface audit. The clock chip is too narrow so the text overflows. Root cause: <code>Lift.qml</code> and <code>Origami.qml</code> are bare <code>Item</code> wrappers with no <code>implicitWidth/Height</code>, so the implicit-size chain collapses to 0 and <code>WidgetBase</code> becomes only <code>widgetPadX</code> wide. This is a structural bug — it affects <strong style="color:#F5EEDD;">every</strong> WidgetBase wrapped in either component, not just the clock.
+        </div>
+        <div class="evidence" data-label="AUDIT_SURFACES_2026-06-11.md · Taskbar">
+          <span class="ev-bad">Horloge clippée au bord droit ("16:2"). Cause racine: WidgetBase.implicitWidth = contentLoader.implicitWidth + padX, or ClockWidget.content = Lift{Origami{Text}} et A.03 Lift / A.07 Origami sont des Item sans implicitWidth → la chaîne implicite s'effondre à 0.</span>
+        </div>
+        <div class="evidence" data-label="Proposed fix (from audit)">
+          <span class="ev-good">Patch: propager implicitWidth/Height du contenu dans Lift.qml / Origami.qml (fichiers RTTC — réconcilier le contrat).</span>
+        </div>
+        <div class="fix-block">In Lift.qml and Origami.qml: add `implicitWidth: contentItem.implicitWidth` and `implicitHeight: contentItem.implicitHeight` (or equivalent child binding); reconcile RTTC spec for both</div>
+      </div>
+    </div>
+
+    <!-- F10 launcher badge -->
+    <div class="card card-warning">
+      <span class="tag tag-warning" style="margin-top:2px;">WARNING · P4</span>
+      <div class="card-body">
+        <div class="card-title">AppLauncher shows badge "v3.2" — orphaned version string inconsistent with all current versioning</div>
+        <div class="card-desc">
+          The launcher surface renders an orange badge reading <strong style="color:#D4A800;">"v3.2"</strong>. This matches no current authoritative version: the OS release train is v0.14.2, the blob.in token spec is v0.4.0, and the shell is on the v2 overhaul branch. "v3.2" appears to be a leftover from a pre-v0.12 versioning scheme. The surface audit explicitly flags this as a version-consistency issue (P4).
+        </div>
+        <div class="evidence" data-label="AUDIT_SURFACES_2026-06-11.md · AppLauncher">
+          <span class="ev-bad">Incohérence: badge "v3.2" orange vs engine 0.4.0 / shell-v2 → harmoniser le versionnage affiché.</span>
+        </div>
+        <div class="fix-block">Remove the launcher badge or bind it to release/VERSION at runtime; "v3.2" has no live meaning and will confuse users and testers</div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 04 ─── -->
+    <div class="section-label">04 — Stale placeholders &amp; static content</div>
+
+    <!-- F11 UiKit placeholders -->
+    <div class="card card-warning">
+      <span class="tag tag-warning" style="margin-top:2px;">WARNING · P2</span>
+      <div class="card-body">
+        <div class="card-title">preview-uikit: 3 hardcoded/static values visible in shipped preview components</div>
+        <div class="card-desc">Three separate placeholder issues visible in <code>UiKitSurface.qml</code>:</div>
+        <div class="evidence" data-label="AUDIT_SURFACES_2026-06-11.md · preview-uikit">
+          <span class="ev-bad">LockWake card: date statique "21:47 · TUESDAY, MAY 13" (placeholder)</span><br>
+          <span class="ev-bad">Panneau ALERTS quasi vide → merits composition</span><br>
+          <span class="ev-bad">Carte onboarding chevauche le panneau mascotte (bas-gauche)</span><br>
+          <span class="ev-bad">Chip "veille" clippé/wrap sous sa ligne</span>
+        </div>
+        <div class="fix-block">LockWake: wire to Qt.formatDateTime(new Date(), "hh:mm · dddd, MMMM d"); compose ALERTS panel with real or representative data; fix onboarding z-order / position to avoid mascot collision</div>
+      </div>
+    </div>
+
+    <!-- F12 controls gallery -->
+    <div class="card card-warning">
+      <span class="tag tag-warning" style="margin-top:2px;">WARNING · P3</span>
+      <div class="card-body">
+        <div class="card-title">preview-controls gallery: C.11–C.17 absent, C.18 Divider invisible, C.02 Button overflows</div>
+        <div class="card-desc">
+          Three distinct issues in <code>ControlsSurface.qml</code>. The numbering jumps from C.10 to C.18 — seven entries are missing from the gallery. C.18 Divider renders no visible line between its "above/below" areas. C.02 Button element overflows the bottom of its container card.
+        </div>
+        <div class="evidence" data-label="AUDIT_SURFACES_2026-06-11.md · preview-controls">
+          <span class="ev-bad">C.02 Button: élément orange déborde du bas de sa carte</span><br>
+          <span class="ev-bad">numérotation saute C.10→C.18 (C.11–C.17 absents de la galerie)</span><br>
+          <span class="ev-bad">C.18 Divider ne rend aucune ligne visible entre "above/below"</span>
+        </div>
+        <div class="fix-block">Add or explicitly document C.11–C.17 as intentionally deferred; fix C.18 with an explicit height and contrasting line colour; fix C.02 card clipping (add clip:true or increase card height)</div>
+      </div>
+    </div>
+
+    <!-- F13 dock glyphs -->
+    <div class="card card-note">
+      <span class="tag tag-note" style="margin-top:2px;">NOTE · P2</span>
+      <div class="card-body">
+        <div class="card-title">Dock &amp; ServiceManager show initials fallback for all GNU.IN-internal surfaces</div>
+        <div class="card-desc">
+          Dock tiles for Settings, Preview, Hub, and other GNU.IN-internal apps render as letter-initial fallbacks (same mechanic as AppLauncherView.initials). ServiceManagerPanel shows <strong style="color:#A1A6AD;">"ADV"</strong>, <strong style="color:#A1A6AD;">"DOC"</strong>, <strong style="color:#A1A6AD;">"PN"</strong> as chip prefixes. The design system has the cube/symbol family and icon SVGs specifically for internal GNU.IN surfaces — these should not be falling back to monograms.
+        </div>
+        <div class="evidence" data-label="AUDIT_SURFACES_2026-06-11.md · Dock + ServiceManagerPanel">
+          <span class="ev-ref">Terminal + Gnosis ont de vraies icônes; APP/H/PH/SET/DP/UI = fallback initiales</span><br>
+          <span class="ev-ref">Les surfaces internes GNU.IN méritent des glyphes composés</span><br>
+          <span class="ev-bad">Chips "ADV advanced settings" / "DOC dock docked" + préfixe "PN Pin" = monogrammes placeholder</span>
+        </div>
+        <div class="fix-block">Wire Settings/Preview/Hub dock entries to their svg assets under assets/symbols/ or assets/icons/; update ServiceManager label strings to full readable names</div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 05 ─── -->
+    <div class="section-label">05 — Component tracking gaps</div>
+
+    <!-- F14 unpinned repos -->
+    <div class="card card-note">
+      <span class="tag tag-note" style="margin-top:2px;">NOTE</span>
+      <div class="card-body">
+        <div class="card-title">3 active repos not pinned in components.toml — can't be locked, verified, or materialized by the OS build rail</div>
+        <div class="card-desc">The following repos are complete or in active development but absent from the component manifest:</div>
+        <div class="evidence" data-label="components.toml — not listed">
+          <span class="ev-bad">gnuin-alaelestia-component</span> <span class="ev-ref">— bootstrap complete, inspection hooks shipped to main</span><br>
+          <span class="ev-bad">gnu.in-syster-app</span> <span class="ev-ref">— Phases 0–4 complete, self-test passing</span><br>
+          <span class="ev-bad">findin-file-manager</span> <span class="ev-ref">— in-progress GPUI rebuild, active agent work</span>
+        </div>
+        <div class="fix-block">Add entries to components.toml (kind="library" or kind="optional"); or explicitly document in COMPONENT_REPOS.md why they are outside the lock scope</div>
+      </div>
+    </div>
+
+    <!-- F15 error.log -->
+    <div class="card card-warning">
+      <span class="tag tag-warning" style="margin-top:2px;">WARNING · SECURITY</span>
+      <div class="card-body">
+        <div class="card-title">error.log at workspace root — untracked, contains a live account ID</div>
+        <div class="card-desc">
+          An <code>error.log</code> sits at the workspace root, outside any repo, untracked by git. It contains logs from a ChatGPT/superpowers bridge process (2026-06-12). The log exposes a live account ID in plaintext.
+        </div>
+        <div class="evidence" data-label="error.log · lines 2–3 (sensitive fields redacted here)">
+          <span class="ev-bad">auth: mode=ChatGPT account_id=24665ee9-4530-40e4-9ff6-6fb5a99f5f17</span><br>
+          <span class="ev-bad">auth: set ChatGPT-Account-Id header: 24665ee9-…</span>
+        </div>
+        <div class="fix-block">Delete error.log immediately; add *.log to the workspace-root .gitignore; confirm the superpowers process is writing logs to a temp/runtime path instead</div>
+      </div>
+    </div>
+
+    <!-- F16 orphan files -->
+    <div class="card card-note">
+      <span class="tag tag-note" style="margin-top:2px;">NOTE</span>
+      <div class="card-body">
+        <div class="card-title">DP-1/, DP-2/, audits/ at workspace root — untracked artifacts not assigned to any repo</div>
+        <div class="card-desc">
+          Display output screenshots (<code>DP-1/</code>, <code>DP-2/</code>) and a settings/launcher audit folder (<code>audits/settings-launcher-2026-06-07/</code>) sit at the workspace root, untracked. These were flagged in WORKSPACE_INVENTORY §6 as open items (recommendation #5) and remain unresolved. They're not dangerous but contribute to workspace noise and confuse clean-state verification.
+        </div>
+        <div class="fix-block">Move to gnu.in-os/audit/visual/ and track, or delete; add a workspace-root .gitignore if these are intentionally transient</div>
+      </div>
+    </div>
+
+    <!-- F17 v0.14.3 draft -->
+    <div class="card card-note">
+      <span class="tag tag-note" style="margin-top:2px;">NOTE</span>
+      <div class="card-body">
+        <div class="card-title">v0.14.3 draft release note exists — not referenced in ROADMAP or WORKSPACE_INVENTORY</div>
+        <div class="card-desc">
+          <code>docs/releases/v0.14.3.md</code> is a substantial draft documenting gnuin-settings-core (291 controls, 0 unrenderable), gnuin-settings-schema split (architecture weakness E), five release rail automation scripts, and bar JSON fix. It's marked "not yet promoted" but represents meaningful completed work. ROADMAP Phase S4 status and WORKSPACE_INVENTORY don't reference it — agents reading either as primary docs miss that v0.14.3 is already drafted.
+        </div>
+        <div class="fix-block">Add "v0.14.3 (draft)" to ROADMAP Phase S4 in-progress list with a pointer to docs/releases/v0.14.3.md</div>
+      </div>
+    </div>
+
+    <!-- F18 unpinned lab -->
+    <div class="card card-note">
+      <span class="tag tag-note" style="margin-top:2px;">NOTE</span>
+      <div class="card-body">
+        <div class="card-title">gnu.in.lab initialized only — no defined scope, content, or gitignore</div>
+        <div class="card-desc">
+          <code>gnu.in.lab/</code> contains only a README and a <code>spikes/</code> directory with one entry. WORKSPACE_INVENTORY §2.12 flags it as "initialized only." It has no defined boundary separating it from <code>gnu.in-os</code> experiments or from personal throwaway work. Its relationship to the OS build rail is unspecified.
+        </div>
+        <div class="fix-block">Add a one-paragraph scope statement to gnu.in.lab/README defining what goes there vs gnu.in-os/docs/prospect/ vs personal throwaway; add a .gitignore</div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 06 ─── -->
+    <div class="section-label">06 — Carried-forward open items (WORKSPACE_INVENTORY §7, still unresolved)</div>
+
+    <div style="background:#141618; border:1px solid #1E2329; border-radius:8px; padding:20px 24px; margin-bottom:10px;">
+      <div style="font-size:13px; color:#4A5568; margin-bottom:14px;">These were "immediate recommendations" in WORKSPACE_INVENTORY §7 (generated 2026-06-16). None resolved as of this audit.</div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; gap:10px; align-items:baseline; padding-bottom:10px; border-bottom:1px solid #1E2329;">
+          <span class="mono" style="font-size:10px; color:#D4A800; min-width:24px;">▸</span>
+          <div>
+            <span style="font-size:13px; color:#8A939E;"><strong style="color:#C8CACE;">Branch protection not confirmed</strong> — Phase 0 item; no rulesets requiring review/checks documented on main branches.</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:baseline; padding-bottom:10px; border-bottom:1px solid #1E2329;">
+          <span class="mono" style="font-size:10px; color:#D4A800; min-width:24px;">▸</span>
+          <div>
+            <span style="font-size:13px; color:#8A939E;"><strong style="color:#C8CACE;">CI green on clean runner unconfirmed</strong> — last open Phase 0 gate. The CI workflow exists but passing on a runner with no graphical session is explicitly unverified in ROADMAP.</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:baseline; padding-bottom:10px; border-bottom:1px solid #1E2329;">
+          <span class="mono" style="font-size:10px; color:#D4A800; min-width:24px;">▸</span>
+          <div>
+            <span style="font-size:13px; color:#8A939E;"><strong style="color:#C8CACE;">status.sh source-only mode</strong> — Phase 1 prerequisite for CI without a graphical session; still required per ROADMAP Phase 1 task list.</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:baseline; padding-bottom:10px; border-bottom:1px solid #1E2329;">
+          <span class="mono" style="font-size:10px; color:#D4A800; min-width:24px;">▸</span>
+          <div>
+            <span style="font-size:13px; color:#8A939E;"><strong style="color:#C8CACE;">gnu6.live website</strong> — mentioned in the public org profile; Phase 5 not started; no dedicated repo or deployment plan exists.</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:baseline;">
+          <span class="mono" style="font-size:10px; color:#D4A800; min-width:24px;">▸</span>
+          <div>
+            <span style="font-size:13px; color:#8A939E;"><strong style="color:#C8CACE;">sigma-flutter uncommitted files</strong> — <code>.agents/</code>, <code>CMakeLists.txt</code>, <code>src/</code> flagged as dirty. Also blocked by the name discrepancy (see finding above).</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── REMEDIATION TABLE ─── -->
+    <div class="section-label">Remediation priority</div>
+
+    <table class="summary-table" style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th style="width:70px;">Priority</th>
+          <th>Action</th>
+          <th style="width:180px;">File / Repo</th>
+          <th style="width:80px;">Severity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono" style="color:#FF6A00;">P0 · now</td>
+          <td style="color:#C8CACE;">Fix Lift.qml + Origami.qml implicitWidth — clock clipped in every session</td>
+          <td class="mono" style="color:#4A5568;">gnu.in-shell</td>
+          <td><span class="tag tag-critical" style="font-size:10px; padding:1px 6px;">critical</span></td>
+        </tr>
+        <tr>
+          <td class="mono" style="color:#FF6A00;">P0 · now</td>
+          <td style="color:#C8CACE;">Update SKILL.md: canonical chrome → ii-bar-upgrade.html; two-layer motion distinction</td>
+          <td class="mono" style="color:#4A5568;">gnu.in-design-reference</td>
+          <td><span class="tag tag-critical" style="font-size:10px; padding:1px 6px;">critical</span></td>
+        </tr>
+        <tr>
+          <td class="mono" style="color:#FF6A00;">P0 · now</td>
+          <td style="color:#C8CACE;">Delete error.log at workspace root (exposes live account ID)</td>
+          <td class="mono" style="color:#4A5568;">workspace root</td>
+          <td><span class="tag tag-warning" style="font-size:10px; padding:1px 6px;">⚠ security</span></td>
+        </tr>
+        <tr>
+          <td class="mono" style="color:#D4A800;">P1</td>
+          <td style="color:#C8CACE;">Regenerate WORKSPACE_INVENTORY or add stale-doc header (v0.12.0 vs v0.14.2)</td>
+          <td class="mono" style="color:#4A5568;">gnu.in-os/docs</td>
+          <td><span class="tag tag-critical" style="font-size:10px; padding:1px 6px;">critical</span></td>
+        </tr>
+        <tr>
+          <td class="mono" style="color:#D4A800;">P1</td>
+          <td style="color:#C8CACE;">Align SKILL.md mascot ref → pack/hero.png; demote syster-master-adaptive.svg as legacy</td>
+          <td class="mono" style="color:#4A5568;">gnu.in-design-reference</td>
+          <td><span class="tag tag-warning" style="font-size:10px; padding:1px 6px;">warning</span></td>
+        </tr>
+        <tr>
+          <td class="mono" style="color:#D4A800;">P1</td>
+          <td style="color:#C8CACE;">Update DESIGN_ASSET_MANIFEST with June 9 bundle provenance (120 files untracked)</td>
+          <td class="mono" style="color:#4A5568;">gnu.in-shell/assets</td>
+          <td><span class="tag tag-warning" style="font-size:10px; padding:1px 6px;">warning</span></td>
+        </tr>
+        <tr>
+          <td class="mono" style="color:#D4A800;">P2</td>
+          <td style="color:#C8CACE;">Wire LockWake date dynamically; compose ALERTS panel; fix onboarding overlap</td>
+          <td class="mono" style="color:#4A5568;">UiKitSurface.qml</td>
+          <td><span class="tag tag-warning" style="font-size:10px; padding:1px 6px;">warning</span></td>
+        </tr>
+        <tr>
+          <td class="mono" style="color:#D4A800;">P2</td>
+          <td style="color:#C8CACE;">Remove "v3.2" launcher badge; wire dock / ServiceManager to real icon assets</td>
+          <td class="mono" style="color:#4A5568;">gnu.in-shell components</td>
+          <td><span class="tag tag-warning" style="font-size:10px; padding:1px 6px;">warning</span></td>
+        </tr>
+        <tr>
+          <td class="mono" style="color:#D4A800;">P3</td>
+          <td style="color:#C8CACE;">Fix controls gallery C.11–C.17 gap; C.18 Divider visibility; C.02 overflow</td>
+          <td class="mono" style="color:#4A5568;">ControlsSurface.qml</td>
+          <td><span class="tag tag-warning" style="font-size:10px; padding:1px 6px;">warning</span></td>
+        </tr>
+        <tr>
+          <td class="mono" style="color:#3A4250;">P4</td>
+          <td style="color:#8A939E;">Add alaelestia + syster-app to components.toml; confirm findin-file-manager name; add v0.14.3 draft ref to ROADMAP</td>
+          <td class="mono" style="color:#4A5568;">gnu.in-os</td>
+          <td><span class="tag tag-note" style="font-size:10px; padding:1px 6px;">note</span></td>
+        </tr>
+        <tr>
+          <td class="mono" style="color:#3A4250;">P4</td>
+          <td style="color:#8A939E;">Run verify-design-reference.sh; document 24-file delta; triage DP-1/DP-2/audits/ orphans</td>
+          <td class="mono" style="color:#4A5568;">gnu.in-design-reference</td>
+          <td><span class="tag tag-note" style="font-size:10px; padding:1px 6px;">note</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Footer -->
+    <div style="margin-top:52px; padding-top:20px; border-top:1px solid #1E2329; display:flex; justify-content:space-between; align-items:center;">
+      <span class="mono" style="font-size:11px; color:#2B3037;">GNU.IN OS Workspace Audit · 2026-06-27 · 19 findings across 16 files</span>
+      <span class="mono" style="font-size:11px; color:#2B3037;">Actual: v0.14.2 beta · build 20260624-170024-97a86b5</span>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

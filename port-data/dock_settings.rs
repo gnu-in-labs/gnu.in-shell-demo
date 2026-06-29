@@ -4,7 +4,7 @@
 //
 //   1. dock_settings.rs   (this file) — VISIBILITY/behavior, owned by
 //        ShellSettingsService: dockMode, reveal/hide delays, enable, pin.
-//        Source: components/settings/pages/Shell settings page + ShellSettingsService
+//        Source: components/settings/pages/ShellPage.qml + ShellSettingsService
 //        + DockService (ShellIpc dock.*). Mirrored in port-data/shell_settings.json.
 //
 //   2. dock_affordance.rs — card-deck LAYOUT (Row/Stack/Fan), planned by
@@ -176,5 +176,95 @@ mod tests {
         let arch = DockSettings { archived: true, ..Default::default() };
         assert!(!off.resolve(&DockContext::default()).painted);
         assert!(!arch.resolve(&DockContext::default()).painted);
+    }
+}
+
+// ============================================================================
+// APPEARANCE personalization — Central's third settings facet for the dock.
+// Resolves the ShellPage.qml dock `pending_parity`: separators · shadows ·
+// elevation margins · grouped indicators · persistent pin/unpin. Orthogonal to
+// the visibility (DockSettings) and layout (DockAffordanceConfig) layers: it
+// only decides how the surface/cards are PAINTED, never whether they show.
+// ============================================================================
+
+/// Grouped running indicator drawn under each card.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Indicator { Dot, Line, None }
+
+/// App-name caption visibility.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Labels { Hover, Always, Never }
+
+/// Shadow depth for the tray + cards.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Elevation { Flat, Lifted, Floating }
+
+impl Elevation {
+    /// (tray_shadow, card_rest_shadow) box-shadow tokens the renderer paints.
+    pub fn shadows(self) -> (&'static str, &'static str) {
+        match self {
+            Elevation::Flat => ("0 2px 9px rgba(0,0,0,0.32)", "0 1px 4px rgba(0,0,0,0.30)"),
+            Elevation::Lifted => ("0 14px 30px rgba(0,0,0,0.45)", "0 6px 14px rgba(0,0,0,0.40)"),
+            Elevation::Floating => ("0 26px 52px rgba(0,0,0,0.60)", "0 12px 26px rgba(0,0,0,0.50)"),
+        }
+    }
+}
+
+/// The dock's appearance settings (persisted alongside DockSettings).
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct DockAppearance {
+    pub indicator: Indicator, // running mark style
+    pub labels: Labels,       // app-name caption visibility
+    pub separators: bool,     // pinned/transient divider
+    pub margin_px: u32,       // floating gap from the screen edge (elevation margin)
+    pub opacity: f32,         // tray/panel background opacity (0.3..=1.0)
+    pub radius_px: u32,       // tray corner radius; card radius derives from it
+    pub elevation: Elevation, // shadow depth
+}
+
+impl Default for DockAppearance {
+    fn default() -> Self {
+        Self { indicator: Indicator::Dot, labels: Labels::Hover, separators: true, margin_px: 8, opacity: 0.88, radius_px: 15, elevation: Elevation::Lifted }
+    }
+}
+
+impl DockAppearance {
+    /// Card radius derives from the tray radius (kept visually proportional, floored).
+    pub fn card_radius_px(&self) -> u32 { (((self.radius_px as f32) * 0.72).round() as u32).max(6) }
+    /// Running-indicator dot count for a window count (cap 3; 0 unless Indicator::Dot).
+    pub fn dot_count(&self, windows: u32) -> u32 {
+        match self.indicator { Indicator::Dot => windows.min(3), _ => 0 }
+    }
+    /// Whether a single grouped line is drawn instead of dots.
+    pub fn shows_line(&self, windows: u32) -> bool { self.indicator == Indicator::Line && windows > 0 }
+    /// rgba() string for the tray background at the configured opacity.
+    pub fn tray_rgba(&self) -> String { format!("rgba(28,27,28,{})", self.opacity) }
+}
+
+#[cfg(test)]
+mod appearance_tests {
+    use super::*;
+
+    #[test] fn card_radius_tracks_tray_and_floors() {
+        assert_eq!(DockAppearance { radius_px: 20, ..Default::default() }.card_radius_px(), 14); // 20*0.72=14.4
+        assert_eq!(DockAppearance { radius_px: 0, ..Default::default() }.card_radius_px(), 6);    // floored
+    }
+
+    #[test] fn indicator_dot_line_none() {
+        let dot = DockAppearance { indicator: Indicator::Dot, ..Default::default() };
+        assert_eq!(dot.dot_count(5), 3); assert!(!dot.shows_line(5)); // capped, no line
+        let line = DockAppearance { indicator: Indicator::Line, ..Default::default() };
+        assert_eq!(line.dot_count(5), 0); assert!(line.shows_line(1));
+        let none = DockAppearance { indicator: Indicator::None, ..Default::default() };
+        assert_eq!(none.dot_count(5), 0); assert!(!none.shows_line(5));
+    }
+
+    #[test] fn elevation_tokens_grow_and_differ() {
+        assert_ne!(Elevation::Flat.shadows(), Elevation::Floating.shadows());
+        assert_eq!(Elevation::Lifted.shadows().0, "0 14px 30px rgba(0,0,0,0.45)");
+    }
+
+    #[test] fn tray_rgba_uses_opacity() {
+        assert_eq!(DockAppearance { opacity: 0.5, ..Default::default() }.tray_rgba(), "rgba(28,27,28,0.5)");
     }
 }

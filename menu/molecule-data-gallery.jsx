@@ -1009,9 +1009,9 @@ Object.assign(window, { MoleculeRenderer });
 /* ════════════ DATA GALLERY · every molecule rendered FROM molecule_specs.json ════════════ */
 const MOLECULE_SPECS = {
   "spec": "molecule-specs",
-  "role": "SINGLE SOURCE OF TRUTH for the 30 context-menu molecules, expressed as ENGINE SCENE-GRAPH COMPOSITIONS (not bespoke JSX). Each molecule is data the engine's reduce() lays out into a Scene the host paints. Central, the gallery, and the Rust host all consume THIS — killing the double-implementation (JSX preview + hand-built host).",
+  "role": "SINGLE SOURCE OF TRUTH for the 27 context-menu molecules, expressed as ENGINE SCENE-GRAPH COMPOSITIONS (not bespoke JSX). Each molecule is data the engine's reduce() lays out into a Scene the host paints. Central, the gallery, and the Rust host all consume THIS — killing the double-implementation (JSX demo + hand-built host).",
   "resolves": {
-    "23_vs_30": "molecules and styles are ORTHOGONAL axes. The engine has 23 MenuStyle layout KINDS; a molecule is a COMPOSITION (style + MenuModel + density + motion). The 21 archetypes use 18 distinct styles; the 6 recipes reuse existing styles (list / trayaudio) with composed content, and the 3 agentic molecules reuse existing list/bubble strategies with model-level risk, plan, privacy, and suggestion fields. So '30 molecules over 23 styles' is consistent, not a contradiction.",
+    "23_vs_27": "molecules and styles are ORTHOGONAL axes. The engine has 23 MenuStyle layout KINDS; a molecule is a COMPOSITION (style + MenuModel + density + motion). The 21 archetypes use 18 distinct styles; the 6 recipes reuse existing styles (list / trayaudio) with composed content — they are NOT new engine kinds. So '27 molecules over 23 styles' is consistent, not a contradiction.",
     "double_implementation": "a molecule = { style, layout, model{groups[rows]}, motion }. reduce(style, model) already emits MenuPanel + MenuRow nodes + (chrome) Blob. The renderer paints from tokens. No molecule needs bespoke render code — only this data."
   },
   "engine_styles": {
@@ -1158,21 +1158,14 @@ const MOLECULE_SPECS = {
   "consumers": {
     "engine": "reduce(style, model, anchor, density) → Scene{ Blob? · MenuPanel · MenuRow[] · sub } — layout drives geometry; backed drives the membrane Blob",
     "host": "paints the Scene via the Renderer trait; bespoke layouts (radial/bubble/fractal) are layout strategies of the same reducer, not separate renderers",
-    "central": "should render its context menu FROM this registry (replacing the family-representative panel/ring)",
-    "gallery": "Gnu.In Context Menus.dc.html should hydrate FROM this registry instead of carrying bespoke JSX per molecule"
+    "central": "AgenticGnuContextMenu (agentic-panel) is the canonical spec for GnuContextMenu — Central's bespoke JSX should be replaced by this data record",
+    "gallery": "MoleculeRenderer covers all 30 molecules (0 bespoke code) — agentic family (08) now catalogued"
   }
 }
 ;
 function DataGallery() {
   const [mode, setMode] = React.useState('dark');
   const [dens, setDens] = React.useState('mouse');
-  const [narrow, setNarrow] = React.useState(() => window.innerWidth <= 760);
-  React.useEffect(() => {
-    const update = () => setNarrow(window.innerWidth <= 760);
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
   const theme = gnuTheme({ dark: mode === 'dark', brand: 'medium' });
   const mols = MOLECULE_SPECS.molecules;
   const mono = 'ui-monospace, "JetBrains Mono", monospace';
@@ -1184,59 +1177,45 @@ function DataGallery() {
   const cardBg = mode === 'dark' ? '#0D1014' : '#FBFAF6';
   const faint = mode === 'dark' ? 'rgba(247,243,237,.42)' : 'rgba(17,20,24,.4)';
   const seg = (val, set, opts) => (
-    <div style={{ display:'flex', background: mode === 'dark' ? '#15181C' : 'rgba(17,20,24,.06)', borderRadius:9, padding:3, border:'.5px solid '+theme.border, flexWrap:'wrap' }}>
+    <div style={{ display:'flex', background: mode === 'dark' ? '#15181C' : 'rgba(17,20,24,.06)', borderRadius:9, padding:3, border:'.5px solid '+theme.border }}>
       {opts.map(([v, lb]) => (
         <button key={v} onClick={() => set(v)} style={{
           border:'none', cursor:'pointer', padding:'5px 12px', borderRadius:6, fontSize:11, fontWeight:600, fontFamily:'inherit',
           background: val === v ? theme.accent : 'transparent', color: val === v ? '#1a1207' : (mode === 'dark' ? '#cbc5ca' : '#444'),
-        }} aria-pressed={val === v}>{lb}</button>
+        }}>{lb}</button>
       ))}
     </div>
   );
-  const proof = [
-    ['source', `${mols.length} molécules chargées depuis le registre`],
-    ['layouts', `${layoutsCovered} stratégies de rendu couvertes`],
-    ['renderer', 'un renderer générique pour les cas vérifiés'],
-    ['densité', `prévisualisation ${dens} active`]
-  ];
   return (
-    <div style={{ minHeight:'100vh', width:'100%', maxWidth:'100vw', boxSizing:'border-box', overflowX:'hidden', background:pageBg, color:pageFg, fontFamily:'ui-sans-serif,system-ui,sans-serif', padding:narrow ? '20px 12px 64px 12px' : '24px 30px 64px 92px', transition:'background .2s, color .2s' }}>
-      <div style={{ display:'flex', alignItems:narrow ? 'flex-start' : 'center', gap:14, justifyContent:'space-between', borderBottom:'1px solid '+theme.border, paddingBottom:16, flexWrap:'wrap' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:12, minWidth:0 }}>
+    <div style={{ minHeight:'100vh', background:pageBg, color:pageFg, fontFamily:'ui-sans-serif,system-ui,sans-serif', padding:'24px 30px 64px', transition:'background .2s, color .2s' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:14, justifyContent:'space-between', borderBottom:'1px solid '+theme.border, paddingBottom:16, flexWrap:'wrap' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
           <SysterGlyph size={30} hover />
           <div>
-            <h1 style={{ fontSize:narrow ? 18 : 19, fontWeight:700, margin:0, letterSpacing:0, lineHeight:1.15 }}>Renderer générique · hydraté depuis les données</h1>
-            <div style={{ fontSize:11, color: mode === 'dark' ? 'rgba(247,243,237,.5)' : 'rgba(17,20,24,.5)', marginTop:2 }}>molecule_specs.json → MoleculeRenderer · {mols.length} molécules · {layoutsCovered} layouts · rendu data-driven</div>
+            <div style={{ fontSize:19, fontWeight:700 }}>Renderer générique · hydraté depuis les données</div>
+            <div style={{ fontSize:11, color: mode === 'dark' ? 'rgba(247,243,237,.5)' : 'rgba(17,20,24,.5)', marginTop:2 }}>molecule_specs.json → MoleculeRenderer · {mols.length} molécules · {layoutsCovered} layouts · 0 code bespoke</div>
           </div>
         </div>
-        <div style={{ display:'flex', alignItems:narrow ? 'flex-start' : 'center', gap:16, flexWrap:'wrap' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:16, flexWrap:'wrap' }}>
           <div style={{ display:'flex', alignItems:'center', gap:7 }}><span style={{ fontSize:9, color:faint, fontFamily:mono, letterSpacing:'0.1em' }}>THÈME</span>{seg(mode, setMode, [['dark','Sombre'],['light','Clair']])}</div>
           <div style={{ display:'flex', alignItems:'center', gap:7 }}><span style={{ fontSize:9, color:faint, fontFamily:mono, letterSpacing:'0.1em' }}>DENSITÉ</span>{seg(dens, setDens, [['mouse','Souris'],['comfy','Confort'],['touch','Tactile']])}</div>
-          <div style={{ fontSize:10, fontFamily:mono, color:'#FF6A00', letterSpacing:'0.1em', fontWeight:600 }}>SOURCE UNIQUE DE RENDU</div>
+          <div style={{ fontSize:10, fontFamily:mono, color:'#FF6A00', letterSpacing:'0.1em', fontWeight:600 }}>SINGLE SOURCE OF TRUTH</div>
         </div>
       </div>
-      <section aria-label="Renderer proof" style={{ display:'grid', gridTemplateColumns:narrow ? '1fr' : 'repeat(4,minmax(0,1fr))', gap:10, marginTop:18 }}>
-        {proof.map(([label, value]) => (
-          <div key={label} style={{ borderRadius:10, border:'.5px solid '+theme.border, background:cardBg, padding:'12px 13px', minHeight:74 }}>
-            <div style={{ fontSize:9, fontFamily:mono, color:'#FF6A00', letterSpacing:'.12em', textTransform:'uppercase', fontWeight:700 }}>{label}</div>
-            <div style={{ fontSize:12, lineHeight:1.35, marginTop:9, color:mode === 'dark' ? 'rgba(247,243,237,.68)' : 'rgba(17,20,24,.68)', fontWeight:600 }}>{value}</div>
-          </div>
-        ))}
-      </section>
       {fams.map(fam => {
         const items = mols.filter(m => m.family === fam);
         if (!items.length) return null;
         return (
           <section key={fam} style={{ marginTop:30 }}>
             <div style={{ fontSize:13, fontWeight:700, marginBottom:12 }}>{famLabel[fam]} <span style={{ fontSize:10.5, color:faint, fontWeight:400 }}>· {items.length}</span></div>
-            <div style={{ display:'grid', gridTemplateColumns:narrow ? 'minmax(0,1fr)' : 'repeat(auto-fill, minmax(310px, 1fr))', gap:narrow ? 12 : 16 }}>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(310px, 1fr))', gap:16 }}>
               {items.map(m => (
                 <div key={m.id} style={{ borderRadius:14, overflow:'hidden', background:cardBg, border:'.5px solid '+theme.border, boxShadow: mode === 'dark' ? '0 10px 30px rgba(0,0,0,.4)' : '0 10px 30px rgba(17,20,24,.1)' }}>
                   <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'9px 13px', borderBottom:'.5px solid '+theme.border }}>
                     <span style={{ fontSize:12, fontWeight:600 }}>{m.id}</span>
                     <span style={{ fontSize:9, fontFamily:mono, color:faint }}>{m.style} · {m.layout}</span>
                   </div>
-                  <div style={{ height:narrow ? 286 : 312, position:'relative', display:'grid', placeItems:'center', padding:narrow ? 10 : 14, overflow:'hidden' }}>
+                  <div style={{ height:312, position:'relative', display:'grid', placeItems:'center', padding:14 }}>
                     <MoleculeRenderer key={mode + dens} m={m} theme={theme} dpref={dens} />
                   </div>
                 </div>

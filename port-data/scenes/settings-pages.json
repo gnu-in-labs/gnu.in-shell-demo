@@ -1,7 +1,7 @@
 {
   "spec": "settings-pages",
   "role": "Scaffolds for the 4 GnuSettingsApp pages Central did not cover (Displays/Input/Services/Developer). The other 4 of the 8-page app map to existing sections.",
-  "source": "ShellSettingsService + DisplaysPage/InputPage/ServicesPage/DeveloperPage settings views",
+  "source": "ShellSettingsService + DisplaysPage/InputPage/ServicesPage/DeveloperPage QML",
   "page_map_8": {
     "Appearance": "Central · General + Panel Family",
     "Shell": "Central · Taskbar (modules + apparence + widgets)",

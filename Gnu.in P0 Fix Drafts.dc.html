@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { background:#0E1115; color:#F5EEDD; margin:0; font-family:'IBM Plex Sans',sans-serif; }
+  * { box-sizing:border-box; }
+  .mono { font-family:'IBM Plex Mono',monospace; }
+  pre { margin:0; font-family:'IBM Plex Mono',monospace; font-size:12px; line-height:1.65; white-space:pre-wrap; word-break:break-word; }
+  .before { background:#16100F; border:1px solid #3A1A12; border-radius:0 0 0 7px; padding:13px 15px; color:#C98A78; }
+  .after  { background:#0F1611; border:1px solid #18331F; border-radius:0 0 7px 0; padding:13px 15px; color:#9AD0AC; }
+  .editrow { display:grid; grid-template-columns:1fr 1fr; gap:0; margin-top:10px; border-radius:7px; overflow:hidden; }
+  .editlabel { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:6px 15px; }
+  .lbl-before { background:#1E1210; color:#A85A45; border:1px solid #3A1A12; border-bottom:none; border-radius:7px 0 0 0; }
+  .lbl-after  { background:#101D14; color:#5F9F72; border:1px solid #18331F; border-bottom:none; border-radius:0 7px 0 0; display:flex; justify-content:space-between; align-items:center; }
+  code { font-family:'IBM Plex Mono',monospace; font-size:0.86em; background:#0A0C0F; color:#9AA3AD; padding:1px 5px; border-radius:3px; }
+</style>
+</helmet>
+
+<div style="min-height:100vh; background:#0E1115; padding:0 0 100px;">
+
+  <div style="background:#111418; border-bottom:1px solid #1E2329; padding:16px 0;">
+    <div style="max-width:940px; margin:0 auto; padding:0 40px; display:flex; align-items:center; gap:14px;">
+      <span class="mono" style="font-size:11px; color:#FF6A00; letter-spacing:0.16em;">GNU.IN</span>
+      <span style="color:#2B3037;">·</span>
+      <span class="mono" style="font-size:11px; color:#3A4250;">P0 + P1 Fix Drafts · paste-ready</span>
+      <span style="color:#2B3037;">·</span>
+      <span class="mono" style="font-size:11px; color:#2B3037;">2026-06-27 · target v0.14.2 tree</span>
+    </div>
+  </div>
+
+  <div style="max-width:940px; margin:0 auto; padding:0 40px;">
+
+    <!-- Retirement banner -->
+    <div style="background:#1A0E08; border:1px solid #5C2108; border-radius:8px; padding:16px 20px; margin-top:28px;">
+      <div class="mono" style="font-size:10px; color:#FF6A00; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:6px;">▸ QML is retired-as-tech — read before applying</div>
+      <div style="font-size:13px; color:#C08858; line-height:1.65;">
+        The forward chrome is native Rust (<code>engine/gnuin-bar</code>, <code>gnuin-dock</code>, <code>gnuin-osd</code>, <code>gnuin-settings-gpui</code>, …); token codegen is GPUI/Rust-first with QML <strong style="color:#E0A070;">opt-in</strong>. So these P0 fixes deliberately touch <strong style="color:#E0A070;">design-system docs</strong> (the agent-facing authority) and <strong style="color:#E0A070;">close a stale audit item</strong> — not dying QML. FIX 3 confirms the one QML code patch you queued is <strong style="color:#E0A070;">already in the tree</strong>.
+      </div>
+    </div>
+
+    <!-- ───────────── FIX 1 ───────────── -->
+    <div style="margin-top:36px; display:flex; align-items:baseline; gap:12px;">
+      <span class="mono" style="font-size:13px; color:#FF6A00;">FIX 1</span>
+      <span style="font-weight:600; font-size:16px; color:#F5EEDD;">gnu.in-design-reference / SKILL.md</span>
+      <span class="mono" style="font-size:11px; color:#3A4250; margin-left:auto;">5 edits · the agent entry point</span>
+    </div>
+    <div style="font-size:13px; color:#8A939E; line-height:1.6; margin-top:8px;">
+      SKILL.md is what an agent reads first. Every edit below resolves a contradiction with the live token authority (<code>blob.in/tokens.json</code> v0.14.0), <code>TASTE.md</code>, or <code>colors_and_type.css</code>.
+    </div>
+
+    <!-- 1a surface color -->
+    <div data-fix-block style="margin-top:18px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">1a · Hard rules — canonical light surface (<span style="color:#C08858;">#F5EEDD wrong; token authority says #F7F3ED</span>)</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">Light surfaces are #F5EEDD Shell White (cream), not pure white. Pure white only for elevated cards over Shell White.</pre>
+        <pre data-after class="after">Light surfaces are #F7F3ED Shell White (--gnu-shell = tokens.json color.surface), not pure white. #F5EEDD (--gnu-shell-cream) is a warmer cream for filled backgrounds only. Pure white only for elevated cards over Shell White.</pre>
+      </div>
+    </div>
+
+    <!-- 1b kit pointer -->
+    <div data-fix-block style="margin-top:18px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">1b · UI kit pointer (<span style="color:#C08858;">index.html is deprecated chrome</span>)</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">- **UI kit**: `ui_kits/gnu-in-shell/index.html` — click-through prototype of the OS+ shell (panel, dock, context menu, notifications, terminal, mascot).</pre>
+        <pre data-after class="after">- **UI kit (chrome)**: `ui_kits/gnu-in-shell/ii-bar-upgrade.html` — the canonical chrome recreation (matches the real bar: connected-pill workspaces, M3 roles, float/hug). `index.html` (anthracite terminal panel) is **identity-mood reference only — deprecated chrome**; never copy it into product surfaces. Note: product chrome now ships as native Rust (engine/gnuin-bar), not QML.</pre>
+      </div>
+    </div>
+
+    <!-- 1c motion -->
+    <div data-fix-block style="margin-top:18px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">1c · Hard rules — motion (<span style="color:#C08858;">flat bézier presented as the default; it is identity-only</span>)</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">- Motion default ease `cubic-bezier(0.2, 0.7, 0.2, 1)`; durations `120 / 200 / 360ms`; listening pulse `1400ms`.</pre>
+        <pre data-after class="after">- **Identity/terminal-layer** motion ease `cubic-bezier(0.2, 0.7, 0.2, 1)`; durations `120 / 200 / 360ms`; listening pulse `1400ms`. **Chrome motion is NOT this** — chrome uses M3-expressive springs with overshoot (`--ease-expressive`) per TASTE.md §2. Never apply the flat bézier to bars/panels/menus.</pre>
+      </div>
+    </div>
+
+    <!-- 1d mascot -->
+    <div data-fix-block style="margin-top:18px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">1d · Mascot asset (<span style="color:#C08858;">README canonical is pack/hero.png, not the legacy SVG</span>)</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">- **Mascot**: the **Sys.ter** — … Use `assets/mascot/syster-master-adaptive.svg`. Never recolor by hand — theme via CSS vars on the root `<svg>`.</pre>
+        <pre data-after class="after">- **Mascot**: the **Sys.ter** — … Canonical asset `assets/mascot/pack/hero.png` (1254×1254, six co-named component layers alongside for animation). `syster-master-adaptive.svg` is the **legacy SVG master** (vector-only contexts). Never recolor by hand — theme via CSS vars on the root `<svg>`.</pre>
+      </div>
+    </div>
+
+    <!-- 1e tokens version -->
+    <div data-fix-block style="margin-top:18px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">1e · Tokens line — version + codegen reality (<span style="color:#C08858;">"v0.4.0" is 10 minors stale; QML is opt-in now</span>)</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">- **Tokens**: `colors_and_type.css` — single source of truth for colors, type, spacing, radii, shadows, motion. Import this in any artifact.</pre>
+        <pre data-after class="after">- **Tokens**: `colors_and_type.css` (brand/CSS surface) + `blob.in/tokens.json` **v0.14.0** (engine authority). Codegen is **Rust/C++/GPUI-first**; QML is **opt-in** (`gen/GnuTheme.qml`); Dart is **retired**. Any "v0.4.0 / v3.x / 4.0.0" token version in older docs is stale.</pre>
+      </div>
+    </div>
+
+    <!-- ───────────── FIX 2 ───────────── -->
+    <div style="margin-top:44px; display:flex; align-items:baseline; gap:12px;">
+      <span class="mono" style="font-size:13px; color:#FF6A00;">FIX 2</span>
+      <span style="font-weight:600; font-size:16px; color:#F5EEDD;">gnu.in-os / docs/WORKSPACE_INVENTORY.md</span>
+      <span class="mono" style="font-size:11px; color:#3A4250; margin-left:auto;">header + component table</span>
+    </div>
+    <div style="font-size:13px; color:#8A939E; line-height:1.6; margin-top:8px;">
+      Values below are lifted from <code>release/VERSION</code>, <code>release/LATEST-BUILD</code>, and <code>components.lock.toml</code> / <code>GLOBAL-VERSION.json</code> — the live authority.
+    </div>
+
+    <!-- 2a header -->
+    <div data-fix-block style="margin-top:18px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">2a · Header (<span style="color:#C08858;">2 minor versions + 8 days stale</span>)</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">**Current release train:** v0.12.0 / channel=beta
+**Latest promoted build:** `20260616-110125-824d3e1`</pre>
+        <pre data-after class="after">**Current release train:** v0.14.2 / channel=beta
+**Latest promoted build:** `20260624-170024-97a86b5`
+
+> Live state authority is `release/VERSION` + `release/LATEST-BUILD` +
+> `components.lock.toml` / `release/GLOBAL-VERSION.json`. This inventory is a
+> point-in-time snapshot; if it disagrees with those files, they win.</pre>
+      </div>
+    </div>
+
+    <!-- 2b table -->
+    <div data-fix-block style="margin-top:18px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">2b · Pinned components table (<span style="color:#C08858;">all 4 revs stale; shell branch wrong</span>)</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">| gnu.in-shell            | product | 7273849... |
+| gnu.in-gnosis-app       | product | 9ac677d... |
+| gnuin-hyprconf          | service | 2abce25... |
+| gnu.in-design-reference | reference | 18b8355... |
+| hyprdynamicmonitors     | optional-service | ce4292c0... |</pre>
+        <pre data-after class="after">| Component | Rev | Branch |
+|-----------|-----|--------|
+| gnu.in-shell            | 0c476fce | feat/osd-rust-slice |
+| gnu.in-gnosis-app       | a46e7d0d | live/ii-overhaul-template |
+| gnuin-hyprconf          | 3d82e71f | live/ii-overhaul-template |
+| gnu.in-design-reference | 82d03288 | main |
+| hyprdynamicmonitors     | ce4292c0 | main |</pre>
+      </div>
+    </div>
+
+    <!-- 2c retirement note -->
+    <div data-fix-block style="margin-top:18px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">2c · Add a QML-retirement note to §2.2 (gnu.in-shell)</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after — insert</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">(no statement that QML chrome is being retired)</pre>
+        <pre data-after class="after">**Tech direction:** QML shell surfaces are **retired-as-tech**. The forward
+chrome is native Rust/sctk under `gnu.in-os/engine/gnuin-*` (bar, dock, osd,
+notification, background, launcher, lock, settings-gpui, compose-core/host,
+…). Live QML surfaces remain only as fallback until each native host is
+promoted (per the `shell.*Host` selector keys). Settings is the first native
+window owner (`surfaces.toml` → `owner_rs`).</pre>
+      </div>
+    </div>
+
+    <!-- ───────────── FIX 3 ───────────── -->
+    <div style="margin-top:44px; display:flex; align-items:baseline; gap:12px;">
+      <span class="mono" style="font-size:13px; color:#5F9F72;">FIX 3</span>
+      <span style="font-weight:600; font-size:16px; color:#F5EEDD;">Lift.qml / Origami.qml — already fixed in tree</span>
+      <span class="mono" style="font-size:11px; color:#5F9F72; margin-left:auto;">no patch needed · close the audit item</span>
+    </div>
+
+    <div style="background:#0F1611; border:1px solid #18331F; border-radius:8px; padding:18px 22px; margin-top:14px;">
+      <div style="font-size:13px; color:#9AD0AC; line-height:1.7;">
+        The 2026-06-11 surface audit root-caused the clipped clock ("16:2") to <code>Lift.qml</code> / <code>Origami.qml</code> being bare <code>Item</code>s with no <code>implicitWidth</code>. <strong style="color:#C8E8D2;">That is no longer true in the current tree</strong> — both atoms now propagate it:
+      </div>
+      <pre class="mono" style="margin-top:12px; background:#0A0C0F; border:1px solid #18331F; border-radius:6px; padding:13px 15px; font-size:12px; color:#7FB890; line-height:1.7;">// components/motion/atoms/Lift.qml  &amp;  Origami.qml
+implicitWidth:  holder.width      // holder.implicitWidth: childrenRect.width
+implicitHeight: holder.height     // holder.implicitHeight: childrenRect.height</pre>
+      <div style="font-size:13px; color:#8A939E; line-height:1.7; margin-top:14px;">
+        <span class="mono" style="color:#5F9F72;">action ·</span> Do not patch. Instead: <strong style="color:#C8CACE;">re-run the surface-audit harness against the current tree and close the AUDIT_SURFACES_2026-06-11 P1 item</strong> (it is resolved but never marked done). The forward bar doesn't share this risk anyway — <code>engine/gnuin-bar/src/text.rs</code> measures glyphs natively via <code>fontdue</code> (shared <code>gnuin-shell-chrome</code> rasteriser), so the implicit-size-collapse class can't recur there.
+      </div>
+    </div>
+
+    <!-- ═══════════ P1 ═══════════ -->
+    <div style="margin-top:48px; height:1px; background:#1E2329;"></div>
+    <div style="margin-top:20px; display:flex; align-items:center; gap:12px;">
+      <span class="mono" style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#D4A800;">P1 — this week · authority + provenance</span>
+      <span style="flex:1; height:1px; background:#1A1E24;"></span>
+    </div>
+
+    <!-- FIX 4 -->
+    <div style="margin-top:24px; display:flex; align-items:baseline; gap:12px;">
+      <span class="mono" style="font-size:13px; color:#D4A800;">FIX 4</span>
+      <span style="font-weight:600; font-size:16px; color:#F5EEDD;">gnu.in-design-reference / README.md — canonical surface color</span>
+    </div>
+    <div style="font-size:13px; color:#8A939E; line-height:1.6; margin-top:8px;">
+      The token authority (<code>tokens.json</code> color.surface + <code>colors_and_type.css</code> <code>--gnu-shell</code>) makes <strong style="color:#9AD0AC;">#F7F3ED</strong> the canonical surface and demotes <strong style="color:#C08858;">#F5EEDD</strong> to "filled backgrounds only." README says the opposite. <span style="color:#C08858;">Decision point:</span> align docs → token (below), <em>or</em> if the brand truly wants #F5EEDD canonical, change the token instead — they must match.
+    </div>
+
+    <div data-fix-block style="margin-top:16px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">4a · README line ~142 — canonical-four table row</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">| Shell White (cream) | `#F5EEDD` | Prompt glyph, paper, light identity background |</pre>
+        <pre data-after class="after">| Shell White | `#F7F3ED` | Canonical light surface / paper (`--gnu-shell` = tokens.json color.surface) |
+| Shell White cream | `#F5EEDD` | Warmer cream (`--gnu-shell-cream`) — filled backgrounds only |</pre>
+      </div>
+    </div>
+
+    <div data-fix-block style="margin-top:16px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">4b · README line ~146 — the "light surfaces" rule</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">Light identity surfaces are **`Shell White` cream, not pure white**, to keep the warmth. Pure white (`#FFFFFF`) is reserved for elevated cards floating *over* shell white.</pre>
+        <pre data-after class="after">The canonical light surface is **`#F7F3ED` Shell White** (`--gnu-shell` = `tokens.json` color.surface), not pure white. **`#F5EEDD`** (`--gnu-shell-cream`) is a warmer cream for filled backgrounds only. Pure white (`#FFFFFF`) is reserved for elevated cards floating *over* Shell White.</pre>
+      </div>
+    </div>
+
+    <!-- FIX 5 -->
+    <div style="margin-top:30px; display:flex; align-items:baseline; gap:12px;">
+      <span class="mono" style="font-size:13px; color:#D4A800;">FIX 5</span>
+      <span style="font-weight:600; font-size:16px; color:#F5EEDD;">gnu.in-design-reference / README.md — token codegen list (2 spots)</span>
+    </div>
+    <div style="font-size:13px; color:#8A939E; line-height:1.6; margin-top:8px;">
+      Reality per <code>tokens.json</code> v0.14.0 + TOKEN_AUTHORITY_REPORT: <strong style="color:#9AD0AC;">Rust/C++/GPUI-first</strong>, QML <strong style="color:#9AD0AC;">opt-in</strong>, Dart <strong style="color:#C08858;">retired</strong>. README still lists Dart and frames QML as a primary target in two places.
+    </div>
+
+    <div data-fix-block style="margin-top:16px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">5a · README line ~11 — Repository authority paragraph</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">is lowered into generated QML, Rust, C header, and Dart theme artifacts under `blob.in/gen/`; do not maintain parallel hand-coded token translations.</pre>
+        <pre data-after class="after">is lowered into generated Rust, C header, and GPUI theme artifacts (Rust/C++/GPUI-first), with QML as an opt-in target, under `blob.in/gen/`; Dart is retired; do not maintain parallel hand-coded token translations.</pre>
+      </div>
+    </div>
+
+    <div data-fix-block style="margin-top:16px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">5b · README line ~35 — the blob.in table row</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">`blob.in/blobin-gen` (binaire Rust) lowers `tokens.json` into `blob.in/gen/GnuTheme.qml`, `gnu_theme.rs`, `gnu_theme.h`, and `gnu_theme.dart`.</pre>
+        <pre data-after class="after">`blob.in/blobin-gen` (binaire Rust) lowers `tokens.json` into `gnu_theme.rs`, `gnu_theme.h`, and `gnu_theme.gpui.rs` (GPUI, primary) plus the Rust solver `blobin-core/src/tokens.rs`; `gen/GnuTheme.qml` is opt-in (Qt/Quickshell only). Dart (`gnu_theme.dart`) is retired.</pre>
+      </div>
+    </div>
+
+    <!-- FIX 6 -->
+    <div style="margin-top:30px; display:flex; align-items:baseline; gap:12px;">
+      <span class="mono" style="font-size:13px; color:#D4A800;">FIX 6</span>
+      <span style="font-weight:600; font-size:16px; color:#F5EEDD;">gnu.in-shell / assets/DESIGN_ASSET_MANIFEST.md — June 9 bundles</span>
+    </div>
+    <div style="font-size:13px; color:#8A939E; line-height:1.6; margin-top:8px;">
+      Add the 3 bundles imported 2026-06-09 (IDs + SHA256s from <code>IMPORT_2026-06-09_REPORT.md</code>) to "Canonical source inspected."
+    </div>
+    <div data-fix-block style="margin-top:16px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">6 · Canonical source inspected list</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">- `/home/tension_atoi/Downloads/GNU.IN Design System (3).zip`
+- `/home/tension_atoi/Downloads/Contextmenuv4.zip`</pre>
+        <pre data-after class="after">- `/home/tension_atoi/Downloads/GNU.IN Design System (3).zip`
+- `/home/tension_atoi/Downloads/Contextmenuv4.zip`
+
+2026-06-09 Claude Design bundles (api.anthropic.com/v1/design/h/&lt;id&gt;):
+- context-spec v0.4.0 — JRg03EBXcnwgrFcOx2Hy6w — sha256 a91900725650b82f666b800b681ed5f418dca5e85dfb6ef4da0e1ff7eaf49729
+- gnu-in-design-system — HA-SsOC39xUkJJVyLyoFMw — sha256 adc0929980aa6cd80e8baf9dc891bf8ad3f4c0202eecafb21de656d559218804
+- gnosis-app HUD — ztID4C533zzimECTHu2ATg — sha256 2082349fa56da6d21055428a38968a89d57dd884fb407eb4bb2517ffa08c5774</pre>
+      </div>
+    </div>
+
+    <!-- FIX 7 -->
+    <div style="margin-top:30px; display:flex; align-items:baseline; gap:12px;">
+      <span class="mono" style="font-size:13px; color:#D4A800;">FIX 7</span>
+      <span style="font-weight:600; font-size:16px; color:#F5EEDD;">gnu.in-design-reference / DESIGN_SOURCE_INVENTORY.md — token version</span>
+    </div>
+    <div style="font-size:13px; color:#8A939E; line-height:1.6; margin-top:8px;">
+      The file is <code>v0.14.0</code>; the inventory narrates "tokens v0.4.0." Keep the <em>context-spec bundle</em> as v0.4.0 (that's its bundle id) — only the <strong style="color:#9AD0AC;">token-file</strong> version strings change.
+    </div>
+    <div data-fix-block style="margin-top:16px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">7 · Canonical source surfaces — blob.in rows (~line 34, 37)</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">- blob.in/: full Rust workspace mirror, tokens v0.4.0 (blobin-core/-gen/
+...
+- blob.in/tokens.json: motion/color engine-token surface (v0.4.0; supersedes
+  the v3.1 shell-token surface — see ui_kits/context-spec/</pre>
+        <pre data-after class="after">- blob.in/: full Rust workspace mirror, tokens v0.14.0 (blobin-core/-gen/
+...
+- blob.in/tokens.json: motion/color engine-token surface (v0.14.0; v0.4.0 at
+  import → v0.5.0 B05 unification → v0.14.0 on 2026-06-16; supersedes
+  the v3.1 shell-token surface — see ui_kits/context-spec/</pre>
+      </div>
+    </div>
+
+    <div style="margin-top:44px; padding-top:20px; border-top:1px solid #1E2329; display:flex; justify-content:space-between; align-items:center;">
+      <span class="mono" style="font-size:11px; color:#2B3037;">P0 + P1 fix drafts · 12 paste-ready blocks · copy pastes the green</span>
+      <span class="mono" style="font-size:11px; color:#2B3037;">authority: tokens.json v0.14.0 · lock + GLOBAL-VERSION</span>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      copy: (e) => {
+        const btn = e.currentTarget;
+        const block = btn.closest('[data-fix-block]');
+        const pre = block ? block.querySelector('pre[data-after]') : null;
+        if (pre && navigator.clipboard) {
+          navigator.clipboard.writeText(pre.innerText).catch(() => {});
+        }
+        const prev = btn.textContent;
+        btn.textContent = 'copied \u2713';
+        setTimeout(() => { btn.textContent = prev; }, 1200);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

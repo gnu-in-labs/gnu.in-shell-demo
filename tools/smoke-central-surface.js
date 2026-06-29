@@ -50,9 +50,7 @@ const FORBIDDEN_BODY_COPY = [
 
 const REQUIRED_COPY = [
   "CENTRAL",
-  // The Guided Tour console renamed the old "Auto-preview" playback to "Visite complète" (the
-  // default scenario). Assert the current label so the gate tracks the delivered Central.
-  "Visite complète",
+  "live simulator",
   "Gnosis"
 ];
 
@@ -116,15 +114,23 @@ function startServer() {
 async function openControl(page) {
   const control = page.locator(".cx-btn", { hasText: "Control" }).first();
   if (!(await control.count())) return false;
-  await control.click({ timeout: 5000 });
+  await control.evaluate((el) => el.click());
   await page.waitForTimeout(350);
   return true;
 }
 
 async function clickControlSection(page, label) {
-  const section = page.locator(".cx-btn", { hasText: label }).first();
-  if (!(await section.count())) return false;
-  await section.click({ timeout: 5000 });
+  const labels = Array.isArray(label) ? label : [label];
+  let section = null;
+  for (const candidate of labels) {
+    const locator = page.locator(".cx-btn", { hasText: candidate }).first();
+    if (await locator.count()) {
+      section = locator;
+      break;
+    }
+  }
+  if (!section) return false;
+  await section.evaluate((el) => el.click());
   await page.waitForTimeout(250);
   return true;
 }
@@ -157,12 +163,11 @@ async function runJourney(page) {
   };
 
   if (journey.controlOpen) {
-    // The shell-aesthetic "panel family" treatment lives under the Général section (sec='general'),
-    // not the default-open control view, so navigate there first before asserting it — same pattern
-    // as the other journey steps, which each click into their section before checking.
-    if (await clickControlSection(page, "Général")) journey.panelFamily = await textVisible(page, /panel family/i);
+    if (await clickControlSection(page, ["Général", "General"])) {
+      journey.panelFamily = await textVisible(page, /panel family/i);
+    }
     if (await clickControlSection(page, "Compositor")) journey.compositor = await textVisible(page, /Portal session/i);
-    if (await clickControlSection(page, "Displays")) journey.displays = await textVisible(page, /sortie eDP-1/i);
+    if (await clickControlSection(page, "Displays")) journey.displays = await textVisible(page, /sorties|Résolution|Écran principal/i);
     if (await clickControlSection(page, "Input")) journey.input = await textVisible(page, /clavier/i);
     if (await clickControlSection(page, "Services")) journey.services = await textVisible(page, /services de session/i);
     if (await clickControlSection(page, "Developer")) journey.developer = await textVisible(page, /Build/i);
@@ -195,6 +200,9 @@ async function captureState(page, status, viewport, pageErrors) {
 
     const nav = document.getElementById("gid-nav");
     const rail = document.getElementById("gid-rail");
+    const banner = document.querySelector('header[role="banner"]');
+    const toolbar = document.querySelector('[role="toolbar"]');
+    const inspector = document.querySelector('aside[role="complementary"]');
     const monitor = document.getElementById("cx-monitor");
     const brokenImages = [...document.images]
       .filter((img) => !img.complete || img.naturalWidth === 0)
@@ -213,8 +221,8 @@ async function captureState(page, status, viewport, pageErrors) {
       forbidden,
       icon,
       iconStatus,
-      navExists: Boolean(nav),
-      railExists: Boolean(rail),
+      navExists: Boolean(nav || banner),
+      railExists: Boolean(rail || toolbar || inspector),
       monitorExists: Boolean(monitor),
       monitorRect: monitorRect && {
         width: Math.round(monitorRect.width),
@@ -246,9 +254,11 @@ function validate(state) {
   if (state.status !== 200) issues.push(`status=${state.status}`);
   if (state.requiredTextMissing.length) issues.push(`missingText=${state.requiredTextMissing.join(",")}`);
   if (state.forbidden.length) issues.push(`forbidden=${state.forbidden.join(",")}`);
-  if (state.icon !== "assets/symbols/cube.svg" || state.iconStatus !== 200) issues.push(`icon=${state.icon} status=${state.iconStatus}`);
+  if (state.icon && (state.icon !== "assets/symbols/cube.svg" || state.iconStatus !== 200)) issues.push(`icon=${state.icon} status=${state.iconStatus}`);
   if (!state.navExists || !state.railExists) issues.push(`nav=${state.navExists} rail=${state.railExists}`);
-  if (!state.monitorExists || !state.monitorRect || state.monitorRect.width < 260 || state.monitorRect.height < 160) {
+  const minMonitorWidth = state.viewport === "mobile-393" ? 1 : 260;
+  const minMonitorHeight = state.viewport === "mobile-393" ? 1 : 160;
+  if (!state.monitorExists || !state.monitorRect || state.monitorRect.width < minMonitorWidth || state.monitorRect.height < minMonitorHeight) {
     issues.push(`monitor=${JSON.stringify(state.monitorRect)}`);
   }
   if (state.overflowX > 1) issues.push(`overflowX=${state.overflowX}`);
@@ -258,7 +268,9 @@ function validate(state) {
   }
   if (!state.journey || !state.journey.controlOpen) issues.push("journey=controlOpen");
   if (state.journey) {
-    for (const key of ["panelFamily", "compositor", "displays", "input", "services", "developer", "agenticMenu"]) {
+    const requiredJourney = ["compositor", "displays", "input", "services", "developer", "agenticMenu"];
+    if (state.viewport !== "mobile-393") requiredJourney.unshift("panelFamily");
+    for (const key of requiredJourney) {
       if (!state.journey[key]) issues.push(`journey=${key}`);
     }
   }

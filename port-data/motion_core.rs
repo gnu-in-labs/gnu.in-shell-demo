@@ -117,7 +117,7 @@ pub struct MotionInterruption { pub state: NodeState, pub elapsed_ms: u32, pub v
 
 /// Retarget an in-flight transition WITHOUT a visible jump. For monotonic
 /// easings, resampling with the same spec preserves the current visible_progress
-/// — the load-bearing rule for reversible open/close (no client re-entrancy hacks).
+/// — the load-bearing rule for reversible open/close (no QML re-entrancy hacks).
 pub fn interrupt_motion(current: MotionSample, target: NodeState, spec: MotionSpec) -> MotionInterruption {
     let visible = clamp_unit(current.visible_progress);
     let duration = spec.effective_duration_ms();

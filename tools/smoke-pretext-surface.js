@@ -47,10 +47,7 @@ const SURFACES = [
   { file: "Assets.dc.html",        fr: "Classes d'assets",             en: "Asset classes" },
   { file: "Evidence.dc.html",      fr: "Force de preuve",              en: "Evidence strength" },
   { file: "Communications.dc.html",fr: "Cadre de message",            en: "Message frame" },
-  // Anchor on the lane heading (rm.laneh), not the kicker: .road-kicker is text-transform:uppercase,
-  // so innerText renders it "VOIE ACTIVE" and a lowercase substring check misses it. The heading is
-  // normal-case and carries both FR and EN maps, matching how the other six surfaces anchor.
-  { file: "Roadmap.dc.html",       fr: "Refonte visuelle et comportementale du shell", en: "Visual and behavioural shell redesign" }
+  { file: "Roadmap.dc.html",       fr: "VOIE ACTIVE",                  en: "ACTIVE LANE" }
 ];
 
 const FORBIDDEN_BODY_COPY = [

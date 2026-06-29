@@ -1,7 +1,7 @@
 // gnuin-compose-core :: bar (taskbar) appearance + widget settings (port target)
 // One surface (band 30). `topbar*` is only the legacy ShellSettingsService key prefix —
 // NOT a separate surface. Mirrors those keys + `widgetEnabled`.
-// (components/settings/pages/Shell settings page getters/setters) as a typed,
+// (components/settings/pages/ShellPage.qml getters/setters) as a typed,
 // framework-free model. Resolution is pure: (settings, context) -> resolved.
 //
 // Source of truth: port-data/shell_settings.json (group "topbar" + "widgets").
@@ -134,7 +134,7 @@ pub struct BarSettings {
     pub app_strip_max_shortened: u8,
     pub clock_format: String,
     pub show_tooltips: bool,
-    /// Per-widget enablement; absent key == enabled (matches legacy default-true).
+    /// Per-widget enablement; absent key == enabled (matches QML default-true).
     pub widget_enabled: BTreeMap<&'static str, bool>,
 }
 

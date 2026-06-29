@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="assets/symbols/cube.svg">
+<script src="./dc-boot.js"></script>
+<script src="nav.js" defer></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9/colors_and_type.css">
+<link rel="stylesheet" href="_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9/styles.css">
+<script src="_ds/gnu-in-design-system-7a3afc1d-c275-4300-9429-a5d0f1edb1a9/_ds_bundle.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..800&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..0&display=block" rel="stylesheet">
+<style>
+:root {
+  --idx-ink:#111418;
+  --idx-soft:#505A66;
+  --idx-line:#D7DADF;
+  --idx-paper:#F5EEDD;
+  --idx-paper-2:#FFF9F2;
+  --idx-dark:#0A0C0F;
+  --idx-panel:#111418;
+  --idx-panel-2:#171C22;
+  --idx-orange:#FF6A00;
+  --idx-orange-2:#FF8E40;
+  --idx-accent-text:#B74700;
+  --idx-green:#8DA982;
+  --idx-blue:#3D8DCC;
+  --idx-title-shadow:2px 2px 0 rgba(255,106,0,.30), 4px 4px 0 rgba(17,20,24,.10);
+  --idx-title-shadow-dark:3px 3px 0 rgba(255,106,0,.38), 6px 6px 0 rgba(245,238,221,.08);
+  --idx-pad:clamp(56px,7.4vw,96px);
+}
+body { margin:0; background:var(--idx-paper); }
+@keyframes idxPing { 0%{box-shadow:0 0 0 0 rgba(255,106,0,0.5)} 70%{box-shadow:0 0 0 8px rgba(255,106,0,0)} 100%{box-shadow:0 0 0 0 rgba(255,106,0,0)} }
+@keyframes idxRise { from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)} }
+.idx-page { min-height:100%; background:var(--idx-paper); color:var(--idx-ink); font-family:'Montreal', system-ui, sans-serif; padding:0 0 72px; }
+.idx-wrap { max-width:1320px; margin:0 auto; padding-left:var(--idx-pad); padding-right:var(--idx-pad); box-sizing:border-box; }
+.idx-hero { position:relative; min-height:560px; overflow:hidden; background:#07090B; }
+.idx-hero::before { content:""; position:absolute; inset:0; background:radial-gradient(86% 115% at 74% 26%, #1d242c 0%, #0A0C0F 52%, #060708 100%); }
+.idx-hero::after { content:""; position:absolute; inset:0; background:linear-gradient(100deg,#090B0E 0%,#090B0E 38%,rgba(9,11,14,.82) 58%,rgba(9,11,14,.28) 100%); }
+.idx-hero-grid { position:relative; z-index:1; min-height:560px; display:grid; grid-template-columns:minmax(0,1.08fr) minmax(310px,.58fr); gap:42px; align-items:center; padding-top:42px; padding-bottom:46px; }
+.idx-brand-row { display:flex; align-items:center; gap:12px; }
+.idx-kicker { font:700 10px/1 'JetBrains Mono', monospace; letter-spacing:.18em; text-transform:uppercase; color:#948F94; }
+.idx-hero h1 { margin:22px 0 0; color:#F3EEE9; font-size:clamp(62px,8.4vw,112px); line-height:.9; letter-spacing:0; text-shadow:var(--idx-title-shadow-dark); }
+.idx-hero h1 span { color:var(--idx-orange); }
+.idx-lede { max-width:760px; margin:22px 0 0; color:#D4CFCC; font-size:clamp(18px,1.55vw,24px); line-height:1.42; letter-spacing:0; }
+.idx-lede b { color:#F3EEE9; font-weight:700; }
+.idx-hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:28px; }
+.idx-chip { display:inline-flex; align-items:center; gap:8px; min-height:34px; padding:0 12px; border-radius:9px; border:1px solid rgba(245,238,221,.14); color:#CFC9C5; background:rgba(245,238,221,.045); font:800 10px/1 'JetBrains Mono', monospace; letter-spacing:.06em; text-transform:uppercase; text-decoration:none; }
+.idx-chip strong { color:var(--idx-orange-2); font-weight:800; }
+.idx-ledger { align-self:stretch; display:flex; flex-direction:column; justify-content:center; gap:12px; border-left:1px solid rgba(245,238,221,.1); padding-left:26px; }
+.idx-ledger-row { display:grid; grid-template-columns:46px minmax(0,1fr); gap:12px; align-items:start; padding:14px 0; border-bottom:1px solid rgba(245,238,221,.08); animation:idxRise .5s ease both; }
+.idx-ledger-row:nth-child(2) { animation-delay:.06s; }
+.idx-ledger-row:nth-child(3) { animation-delay:.12s; }
+.idx-ledger-row:nth-child(4) { animation-delay:.18s; }
+.idx-ledger-num { font:800 18px/1 'JetBrains Mono', monospace; color:var(--idx-orange); }
+.idx-ledger-title { display:block; color:#F3EEE9; font-weight:700; font-size:14px; }
+.idx-ledger-copy { display:block; margin-top:5px; color:#9AA0A8; font-size:12px; line-height:1.46; }
+.idx-section { padding-top:48px; }
+.idx-section-head { display:grid; grid-template-columns:42px minmax(220px,.38fr) minmax(0,1fr); gap:10px 18px; align-items:start; margin-bottom:22px; }
+.idx-section-num { padding-top:8px; font:800 13px/1 'JetBrains Mono', monospace; color:var(--idx-accent-text); letter-spacing:.08em; }
+.idx-section-title { margin:0; font-weight:900; font-size:clamp(30px,3.25vw,46px); line-height:.92; color:var(--idx-ink); letter-spacing:0; text-shadow:var(--idx-title-shadow); }
+.idx-section-copy { margin:0; padding-top:6px; max-width:780px; color:var(--idx-soft); font-size:14px; line-height:1.58; }
+.idx-section-head::after { content:""; grid-column:2 / -1; height:1px; background:var(--idx-line); align-self:end; margin-top:8px; }
+.idx-principles { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+.idx-principle { position:relative; overflow:hidden; border:1px solid var(--idx-line); border-radius:12px; background:#FFFFFF; padding:20px 18px 18px; box-shadow:0 8px 18px rgba(17,20,24,.045); }
+.idx-principle::before { content:""; position:absolute; left:0; right:0; top:0; height:4px; background:var(--idx-orange); }
+.idx-principle .material-symbols-rounded { font-family:'Material Symbols Rounded'; font-size:22px; color:var(--idx-accent-text); }
+.idx-principle h3 { margin:13px 0 0; font-size:17px; line-height:1.15; letter-spacing:0; }
+.idx-principle p { margin:9px 0 0; color:var(--idx-soft); font-size:13px; line-height:1.52; }
+.idx-principle code { font-family:'JetBrains Mono', monospace; font-size:11px; color:#343941; background:#F0F2F4; border-radius:5px; padding:1px 5px; }
+.idx-principle-kicker { display:inline-flex; align-items:center; min-height:22px; padding:0 7px; border-radius:6px; background:#F0F2F4; color:#555D68; font:800 9px/1 'JetBrains Mono', monospace; letter-spacing:.08em; text-transform:uppercase; }
+.idx-main-grid { display:grid; grid-template-columns:minmax(0,1.36fr) minmax(318px,.64fr); gap:22px; align-items:start; }
+.idx-cascade { padding:18px; border:1px solid var(--idx-line); border-radius:12px; background:#F9F4EA; }
+.idx-cascade-link { position:relative; display:grid; grid-template-columns:54px minmax(0,1fr) auto; align-items:center; gap:16px; margin-left:calc(var(--step) * 23px); padding:15px 16px; border:1px solid #E6E8EB; border-radius:9px; background:#FFFFFF; color:var(--idx-ink); text-decoration:none; box-shadow:0 4px 12px rgba(17,20,24,.045); transition:transform .18s cubic-bezier(.2,.7,.2,1), border-color .18s, background .18s; }
+.idx-cascade-link + .idx-cascade-link { margin-top:10px; }
+.idx-cascade-link::before { content:""; position:absolute; left:calc(-1 * var(--step) * 23px + 20px); top:-11px; width:calc(var(--step) * 23px - 8px); height:31px; border-left:1px solid #C9CDD3; border-bottom:1px solid #C9CDD3; display:var(--line); }
+.idx-cascade-link:hover { transform:translateX(4px); border-color:var(--idx-orange); background:var(--idx-paper-2); }
+.idx-cascade-num { font:800 12px/1 'JetBrains Mono', monospace; color:var(--idx-accent-text); }
+.idx-cascade-title { font-weight:800; font-size:18px; line-height:1.08; letter-spacing:0; color:var(--idx-ink); }
+.idx-cascade-copy { display:block; margin-top:5px; font-size:12.5px; line-height:1.46; color:var(--idx-soft); }
+.idx-cascade-meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
+.idx-mini { display:inline-flex; align-items:center; min-height:20px; padding:0 7px; border-radius:6px; background:#F0F2F4; color:#555D68; font:800 9px/1 'JetBrains Mono', monospace; letter-spacing:.04em; text-transform:uppercase; }
+.idx-cascade-icon { font-family:'Material Symbols Rounded'; font-size:20px; color:#A1A6AD; }
+.idx-aside { border:1px solid var(--idx-line); border-radius:12px; background:#FFFFFF; padding:18px; box-shadow:0 8px 18px rgba(17,20,24,.045); }
+.idx-aside-title { font:800 11px/1 'JetBrains Mono', monospace; color:var(--idx-accent-text); letter-spacing:.14em; text-transform:uppercase; }
+.idx-aside h3 { margin:10px 0 0; font-size:25px; line-height:1.05; letter-spacing:0; color:var(--idx-ink); }
+.idx-aside p { margin:9px 0 16px; color:var(--idx-soft); font-size:13px; line-height:1.48; }
+.idx-resource { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px; padding:14px; border:1px solid #E6E8EB; border-radius:9px; background:#FFFFFF; color:var(--idx-ink); text-decoration:none; transition:transform .18s cubic-bezier(.2,.7,.2,1), border-color .18s, background .18s; }
+.idx-resource + .idx-resource { margin-top:10px; }
+.idx-resource:hover { transform:translateY(-2px); border-color:var(--idx-orange); background:var(--idx-paper-2); }
+.idx-resource .material-symbols-rounded { font-family:'Material Symbols Rounded'; font-size:20px; color:var(--idx-accent-text); }
+.idx-resource b { font-size:13.5px; }
+.idx-resource small { display:block; color:var(--idx-soft); font-size:12px; line-height:1.35; margin-top:3px; }
+.idx-arrow { font-family:'Material Symbols Rounded'; color:#A1A6AD; transition:transform .18s cubic-bezier(.2,.7,.2,1), color .18s; }
+.idx-resource:hover .idx-arrow, .idx-cascade-link:hover .idx-arrow { transform:translateX(3px); color:var(--idx-orange); }
+.idx-registry { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+.idx-surface { min-height:168px; display:flex; flex-direction:column; border:1px solid var(--idx-line); border-radius:12px; background:#FFFFFF; padding:16px; text-decoration:none; color:var(--idx-ink); box-shadow:0 8px 18px rgba(17,20,24,.04); transition:transform .18s cubic-bezier(.2,.7,.2,1), border-color .18s; }
+.idx-surface:hover { transform:translateY(-3px); border-color:var(--idx-orange); }
+.idx-surface-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.idx-surface-code { font:800 10px/1 'JetBrains Mono', monospace; color:var(--idx-accent-text); letter-spacing:.08em; }
+.idx-status { font:800 9px/1 'JetBrains Mono', monospace; letter-spacing:.08em; text-transform:uppercase; padding:6px 7px; border-radius:999px; color:#435B3B; background:#E8F0E3; }
+.idx-status.orange { color:#87400A; background:#FFE3CF; }
+.idx-status.blue { color:#245A82; background:#DDEDF8; }
+.idx-surface h3 { margin:18px 0 0; font-size:17px; line-height:1.1; letter-spacing:0; }
+.idx-surface p { margin:9px 0 0; color:var(--idx-soft); font-size:12.5px; line-height:1.45; }
+.idx-surface-foot { margin-top:auto; padding-top:14px; color:#8B929C; font:800 9px/1.35 'JetBrains Mono', monospace; letter-spacing:.04em; text-transform:uppercase; }
+.idx-spine { background:var(--idx-panel); border-radius:18px; padding:28px 32px; display:grid; grid-template-columns:220px 1fr 96px; gap:26px; align-items:center; color:#CBC5CA; }
+.idx-spine-kicker { font:800 9px/1 'JetBrains Mono', monospace; letter-spacing:.16em; text-transform:uppercase; color:#7C828A; }
+.idx-spine-main { font:800 24px/1 'JetBrains Mono', monospace; color:var(--idx-orange); margin-top:11px; }
+.idx-spine-copy { font:500 11px/1.6 'JetBrains Mono', monospace; color:#9AA0A8; margin-top:8px; }
+.idx-flow { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.idx-flow span:not(.material-symbols-rounded) { font:800 10px/1 'JetBrains Mono', monospace; color:#CBC5CA; padding:10px 12px; background:#1A1F26; border:1px solid #2B3037; border-radius:9px; letter-spacing:.04em; text-transform:uppercase; }
+.idx-flow .green { color:#CFE0C6; background:#151C15; border-color:#2C3A2C; }
+.idx-flow .orange { color:#FFB36E; background:#241A12; border-color:#4A3320; }
+.idx-flow .material-symbols-rounded { font-family:'Material Symbols Rounded'; font-size:17px; color:#667085; }
+.idx-live { display:grid; grid-template-columns:minmax(0,1.22fr) minmax(316px,.78fr); gap:18px; align-items:stretch; }
+.idx-live-stage { position:relative; min-height:420px; border-radius:18px; overflow:hidden; background:#0A0C0F; border:1px solid #20262D; box-shadow:0 16px 36px rgba(17,20,24,.18); }
+.idx-live-stage::before { content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(255,106,0,.12) 1px,transparent 1px),linear-gradient(0deg,rgba(245,238,221,.07) 1px,transparent 1px); background-size:44px 44px; opacity:.28; pointer-events:none; }
+.idx-live-stage::after { content:""; position:absolute; inset:auto 18px 18px 18px; height:1px; background:linear-gradient(90deg,transparent,rgba(255,106,0,.72),transparent); opacity:.9; pointer-events:none; }
+.idx-live-canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+.idx-live-badge { position:absolute; left:20px; top:18px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; color:#CBC5CA; font:800 10px/1 'JetBrains Mono', monospace; letter-spacing:.09em; text-transform:uppercase; }
+.idx-live-badge span { display:inline-flex; align-items:center; min-height:24px; padding:0 8px; border-radius:7px; border:1px solid rgba(245,238,221,.13); background:rgba(10,12,15,.72); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
+.idx-live-badge strong { color:var(--idx-orange-2); font-weight:800; }
+.idx-live-readout { position:absolute; left:20px; right:20px; bottom:26px; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:14px; align-items:end; }
+.idx-live-readout h3 { margin:0; color:#F3EEE9; font-size:clamp(22px,2.4vw,34px); line-height:.96; letter-spacing:0; text-shadow:var(--idx-title-shadow-dark); }
+.idx-live-readout p { margin:8px 0 0; max-width:680px; color:#AEB5BE; font-size:13px; line-height:1.5; }
+.idx-live-count { min-width:94px; padding:12px 13px; border-radius:12px; border:1px solid rgba(255,106,0,.28); background:rgba(36,26,18,.82); color:#FFB36E; font:800 11px/1.35 'JetBrains Mono', monospace; text-transform:uppercase; text-align:right; }
+.idx-live-panel { border:1px solid var(--idx-line); border-radius:18px; background:#FFFFFF; padding:16px; box-shadow:0 8px 18px rgba(17,20,24,.045); }
+.idx-live-panel h3 { margin:0; font-size:22px; line-height:1.05; letter-spacing:0; color:var(--idx-ink); }
+.idx-live-panel p { margin:8px 0 14px; color:var(--idx-soft); font-size:13px; line-height:1.5; }
+.idx-live-controls { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.idx-live-control { min-height:46px; border:1px solid #E6E8EB; border-radius:9px; background:#FFFFFF; color:var(--idx-ink); font:800 10px/1.1 'JetBrains Mono', monospace; letter-spacing:.05em; text-transform:uppercase; cursor:pointer; transition:background .16s,border-color .16s,color .16s,transform .16s; }
+.idx-live-control:hover { transform:translateY(-1px); border-color:var(--idx-orange); background:var(--idx-paper-2); }
+.idx-live-control[aria-pressed="true"] { border-color:var(--idx-orange); background:#111418; color:#F5EEDD; box-shadow:0 0 0 2px rgba(255,106,0,.12); }
+.idx-live-chain { display:grid; gap:9px; margin-top:16px; }
+.idx-live-node { width:100%; display:grid; grid-template-columns:42px minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px; border:1px solid #E6E8EB; border-radius:10px; background:#FAFBFC; color:var(--idx-ink); text-align:left; cursor:pointer; transition:background .16s,border-color .16s,transform .16s; }
+.idx-live-node:hover,.idx-live-node.is-active { transform:translateX(3px); border-color:var(--idx-orange); background:var(--idx-paper-2); }
+.idx-live-node-num { font:800 11px/1 'JetBrains Mono', monospace; color:var(--idx-accent-text); }
+.idx-live-node b { display:block; font-size:13px; line-height:1.18; }
+.idx-live-node span:not(.idx-live-node-num):not(.material-symbols-rounded) { display:block; margin-top:3px; color:var(--idx-soft); font-size:12px; line-height:1.32; }
+.idx-live-node .material-symbols-rounded { font-family:'Material Symbols Rounded'; color:#9AA0A8; font-size:20px; }
+.idx-gates { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.idx-gate { border:1px solid rgba(245,238,221,.12); border-radius:12px; background:#11161B; padding:15px; color:#D6DDD8; }
+.idx-gate b { display:block; color:#F3EEE9; font-size:13px; line-height:1.2; }
+.idx-gate span { display:block; margin-top:7px; color:#8F98A3; font-size:12px; line-height:1.45; }
+.idx-footer { display:flex; justify-content:space-between; gap:18px; padding-top:26px; color:#A1A6AD; font:700 11px/1.45 'JetBrains Mono', monospace; }
+.idx-chip:focus-visible, .idx-cascade-link:focus-visible, .idx-resource:focus-visible, .idx-surface:focus-visible, .idx-live-control:focus-visible, .idx-live-node:focus-visible { outline:3px solid var(--idx-accent-text); outline-offset:3px; }
+@media (max-width:1100px) {
+  :root { --idx-pad:clamp(74px,9vw,92px); }
+  .idx-hero-grid, .idx-main-grid, .idx-live { grid-template-columns:1fr; }
+  .idx-ledger { border-left:0; border-top:1px solid rgba(245,238,221,.1); padding-left:0; padding-top:18px; }
+  .idx-principles, .idx-registry, .idx-gates { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .idx-section-head { grid-template-columns:38px minmax(200px,.42fr) minmax(0,1fr); }
+  .idx-spine { grid-template-columns:1fr; }
+}
+@media (max-width:720px) {
+  :root { --idx-pad:clamp(22px,7vw,34px); }
+  html[data-gid-vp='mobile'] #dc-root:not(.gid-canvas-root) { padding-left:0 !important; }
+  .idx-hero, .idx-hero-grid { min-height:auto; }
+  .idx-hero-grid { padding-top:42px; padding-bottom:36px; gap:28px; }
+  .idx-hero h1 { font-size:clamp(48px,14vw,66px); }
+  .idx-lede { font-size:17px; }
+  .idx-principles, .idx-registry, .idx-gates { grid-template-columns:1fr; }
+  .idx-section-head { grid-template-columns:34px minmax(0,1fr); gap:8px 12px; }
+  .idx-section-copy { grid-column:2; padding-top:0; }
+  .idx-section-head::after { grid-column:1 / -1; margin-top:4px; }
+  .idx-cascade-link { grid-template-columns:42px minmax(0,1fr) auto; margin-left:0 !important; }
+  .idx-cascade-link::before { display:none !important; }
+  .idx-live-stage { min-height:360px; }
+  .idx-live-readout { grid-template-columns:1fr; }
+  .idx-live-count { text-align:left; width:max-content; min-width:0; }
+  .idx-live-controls { grid-template-columns:1fr; }
+  .idx-footer { flex-direction:column; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .idx-resource, .idx-cascade-link, .idx-surface, .idx-ledger-row, .idx-arrow, .idx-live-control, .idx-live-node { transition:none !important; animation:none !important; }
+}
+@media (forced-colors:active) {
+  .idx-hero h1, .idx-section-title { text-shadow:none; }
+  .idx-chip, .idx-cascade-link, .idx-resource, .idx-surface, .idx-principle, .idx-aside, .idx-gate, .idx-live-panel, .idx-live-control, .idx-live-node { forced-color-adjust:auto; }
+}
+@media (prefers-contrast:more) {
+  .idx-hero h1, .idx-section-title { text-shadow:none; }
+  .idx-section-copy, .idx-principle p, .idx-cascade-copy, .idx-aside p, .idx-resource small, .idx-surface p, .idx-live-panel p, .idx-live-node span:not(.idx-live-node-num):not(.material-symbols-rounded) { color:#343941; }
+}
+</style>
+</helmet>
+
+<div class="idx-page">
+  <section class="idx-hero">
+    <div class="idx-wrap idx-hero-grid">
+      <div>
+        <div class="idx-brand-row">
+          <div style="width:46px;height:52px;"><dc-import name="Syster" state="hello" hint-size="46px,52px"></dc-import></div>
+          <div class="idx-kicker" data-pretext-key="ix.kicker">Gnu.in Labs · documentation & showcase</div>
+        </div>
+        <h1>gnu<span>.in</span>-OS</h1>
+        <p class="idx-lede"><span data-pretext-key="ix.lede">Une porte d'entrée pour lire le shell comme un objet complet: surfaces, moteur, motion, contenu et preuves visuelles raccordés dans une même trajectoire de décision.</span></p>
+        <div class="idx-hero-actions" aria-label="État du corpus">
+          <a class="idx-chip" href="Central.dc.html"><strong data-pretext-key="ix.chip.central.v">ouvrir</strong> <span data-pretext-key="ix.chip.central.n">Central</span></a>
+          <a class="idx-chip" href="Gnu.In-Shell%20-%20Atlas%20Unifi%C3%A9.dc.html"><strong data-pretext-key="ix.chip.atlas.v">lire</strong> <span data-pretext-key="ix.chip.atlas.n">Atlas</span></a>
+          <span class="idx-chip"><strong>version</strong> v0.14.2</span>
+          <a class="idx-chip" href="Project.dc.html"><strong data-pretext-key="ix.chip.docs.v">docs</strong> <span data-pretext-key="ix.chip.docs.n">corpus public</span></a>
+        </div>
+      </div>
+
+      <aside class="idx-ledger" aria-label="Rôle de l'index">
+        <div class="idx-ledger-row">
+          <span class="idx-ledger-num" aria-hidden="true">01</span>
+          <span><span class="idx-ledger-title" data-pretext-key="ix.lg1">Cartographier les surfaces</span><span class="idx-ledger-copy">Docs, Atlas, Context et Central donnent un ordre de lecture stable au corpus.</span></span>
+        </div>
+        <div class="idx-ledger-row">
+          <span class="idx-ledger-num" aria-hidden="true">02</span>
+          <span><span class="idx-ledger-title" data-pretext-key="ix.lg2">Composer les primitives</span><span class="idx-ledger-copy">Fondations, Atomes C.xx et Molécules CM.xx décrivent les mesures, états et assemblages.</span></span>
+        </div>
+        <div class="idx-ledger-row">
+          <span class="idx-ledger-num" aria-hidden="true">03</span>
+          <span><span class="idx-ledger-title" data-pretext-key="ix.lg3">Suivre la descente moteur</span><span class="idx-ledger-copy">Tokens, scènes, données d'état et captures relient les planches aux comportements attendus.</span></span>
+        </div>
+        <div class="idx-ledger-row">
+          <span class="idx-ledger-num" aria-hidden="true">04</span>
+          <span><span class="idx-ledger-title" data-pretext-key="ix.lg4">Vérifier les états</span><span class="idx-ledger-copy">Chaque surface garde un rôle lisible, un état nommé et une preuve de rendu.</span></span>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="idx-wrap idx-section" aria-labelledby="idx-method-title">
+    <div class="idx-section-head">
+      <span class="idx-section-num" aria-hidden="true">00</span>
+      <h2 id="idx-method-title" class="idx-section-title" data-pretext-key="ix.s0h">Grammaire du shell</h2>
+      <p class="idx-section-copy">Le shell se lit en couches: fondations, primitives, compositions, surfaces et transmission moteur. L'Index expose le niveau utile avant d'ouvrir les planches détaillées.</p>
+    </div>
+    <div class="idx-principles">
+      <article class="idx-principle">
+        <span class="material-symbols-rounded" aria-hidden="true">schema</span>
+        <div class="idx-principle-kicker">tokens</div>
+        <h3>Fondations</h3>
+        <p>Palette, type, espace, rayons, densité et motion posent le vocabulaire mesurable des surfaces.</p>
+      </article>
+      <article class="idx-principle">
+        <span class="material-symbols-rounded" aria-hidden="true">fact_check</span>
+        <div class="idx-principle-kicker">C.01-C.24</div>
+        <h3>Atomes</h3>
+        <p>Boutons, rangées, champs, toggles, sliders et statuts fixent les états interactifs de base.</p>
+      </article>
+      <article class="idx-principle">
+        <span class="material-symbols-rounded" aria-hidden="true">design_services</span>
+        <div class="idx-principle-kicker">CM.01-CM.16</div>
+        <h3>Molécules</h3>
+        <p>Menus contextuels, toolbars, notifications et lignes de statut assemblent les primitives en surfaces lisibles.</p>
+      </article>
+      <article class="idx-principle">
+        <span class="material-symbols-rounded" aria-hidden="true">view_quilt</span>
+        <div class="idx-principle-kicker">surfaces</div>
+        <h3>Runtime simulé</h3>
+        <p>Central montre la synthèse; Context regroupe les guides réactifs, motion, renderer et mascotte.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="idx-wrap idx-section" aria-labelledby="idx-cascade-title">
+    <div class="idx-section-head">
+      <span class="idx-section-num" aria-hidden="true">01</span>
+      <h2 id="idx-docs-title" class="idx-section-title" data-pretext-key="ix.s1h">Carte documentaire</h2>
+      <p class="idx-section-copy">Le site doit permettre de comprendre le projet, la méthode, les assets, les preuves, les communications, la roadmap, le plan complet et l'état réel de Central.</p>
+    </div>
+    <div class="idx-registry">
+      <a class="idx-surface" href="Project.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">PROJECT</span><span class="idx-status">current</span></span>
+        <h3>Projet</h3>
+        <p>Vision, périmètre, lecteurs, statut courant et chemins de lecture publics.</p>
+        <span class="idx-surface-foot">vision · scope · status</span>
+      </a>
+      <a class="idx-surface" href="Central%20Live.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">CENTRAL</span><span class="idx-status blue">live</span></span>
+        <h3>Central Live</h3>
+        <p>État de la simulation Central: compositor, inspector, settings, motion, render et chantiers ouverts.</p>
+        <span class="idx-surface-foot">central · engine · statut</span>
+      </a>
+      <a class="idx-surface" href="Methodology.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">METHOD</span><span class="idx-status">current</span></span>
+        <h3>Methodology</h3>
+        <p>Boucle de promotion, statuts, invariants et traitement des nouveaux drops.</p>
+        <span class="idx-surface-foot">canon · source · preuve</span>
+      </a>
+      <a class="idx-surface" href="Assets.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">ASSETS</span><span class="idx-status">current</span></span>
+        <h3>Assets</h3>
+        <p>Symboles, mascotte, tokens, captures, specs et données réutilisables.</p>
+        <span class="idx-surface-foot">cube · mascot · tokens</span>
+      </a>
+      <a class="idx-surface" href="Evidence.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">EVIDENCE</span><span class="idx-status orange">gate</span></span>
+        <h3>Evidence</h3>
+        <p>Gates, captures, fixtures et force de preuve pour les claims publics.</p>
+        <span class="idx-surface-foot">smoke · fixtures · captures</span>
+      </a>
+      <a class="idx-surface" href="Communications.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">COMMS</span><span class="idx-status blue">new</span></span>
+        <h3>Communications</h3>
+        <p>Launch notes, changelog, résumé professionnel et messages traçables.</p>
+        <span class="idx-surface-foot">launch · changelog</span>
+      </a>
+      <a class="idx-surface" href="Roadmap.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">ROADMAP</span><span class="idx-status orange">cadrage</span></span>
+        <h3>Roadmap</h3>
+        <p>Jalons publics, risques à cadrer, dette design et preuves attendues.</p>
+        <span class="idx-surface-foot">priorités · risques</span>
+      </a>
+      <a class="idx-surface" href="gnu.in-OS%20-%20Plan%20de%20Fusion%20(complet).dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">PLAN</span><span class="idx-status">archive</span></span>
+        <h3>Full Plan</h3>
+        <p>Document long de contexte pour conserver les décisions transversales.</p>
+        <span class="idx-surface-foot">contexte · décisions</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="idx-wrap idx-section" aria-labelledby="idx-cascade-title">
+    <div class="idx-section-head">
+      <span class="idx-section-num" aria-hidden="true">02</span>
+      <h2 id="idx-cascade-title" class="idx-section-title" data-pretext-key="ix.s2h">Parcours du système</h2>
+      <p class="idx-section-copy">Atlas reste la colonne des canevas statiques: de l'inventaire général vers la transmission moteur, avec chaque étape responsable d'un niveau d'abstraction.</p>
+    </div>
+    <div class="idx-main-grid">
+      <nav class="idx-cascade" aria-label="Explorer le système">
+        <a class="idx-cascade-link" href="Gnu.In-Shell%20-%20Atlas%20Unifi%C3%A9.dc.html" style="--step:0; --line:none;">
+          <span class="idx-cascade-num">01</span>
+          <span>
+            <span class="idx-cascade-title">Atlas Unifié</span>
+            <span class="idx-cascade-copy">Carte du corpus, structure des surfaces, lecture recommandée et zones à préciser.</span>
+            <span class="idx-cascade-meta"><span class="idx-mini">orientation</span><span class="idx-mini">système</span></span>
+          </span>
+          <span class="idx-cascade-icon" aria-hidden="true">map</span>
+        </a>
+        <a class="idx-cascade-link" href="Gnu.In-Shell%20-%20Fondations.dc.html" style="--step:1; --line:block;">
+          <span class="idx-cascade-num">02</span>
+          <span>
+            <span class="idx-cascade-title">Fondations</span>
+            <span class="idx-cascade-copy">Couleur, type, espace, ombres, rayons, densité et motion comme grammaire minimale.</span>
+            <span class="idx-cascade-meta"><span class="idx-mini">tokens</span><span class="idx-mini">règles</span></span>
+          </span>
+          <span class="idx-cascade-icon" aria-hidden="true">palette</span>
+        </a>
+        <a class="idx-cascade-link" href="Gnu.In-Shell%20-%20Atomes.dc.html" style="--step:2; --line:block;">
+          <span class="idx-cascade-num">03</span>
+          <span>
+            <span class="idx-cascade-title">Atomes</span>
+            <span class="idx-cascade-copy">Primitives mesurées, états, icônes, boutons, inputs et ancres de comportement.</span>
+            <span class="idx-cascade-meta"><span class="idx-mini">primitives</span><span class="idx-mini">états</span></span>
+          </span>
+          <span class="idx-cascade-icon" aria-hidden="true">category</span>
+        </a>
+        <a class="idx-cascade-link" href="Gnu.In-Shell%20-%20Mol%C3%A9cules.dc.html" style="--step:3; --line:block;">
+          <span class="idx-cascade-num">04</span>
+          <span>
+            <span class="idx-cascade-title">Molécules</span>
+            <span class="idx-cascade-copy">Assemblages, menus contextuels, recettes, variantes et preuve que le rendu vient des données.</span>
+            <span class="idx-cascade-meta"><span class="idx-mini">composition</span><span class="idx-mini">menus</span></span>
+          </span>
+          <span class="idx-cascade-icon" aria-hidden="true">widgets</span>
+        </a>
+        <a class="idx-cascade-link" href="Gnu.In-Shell%20-%20Int%C3%A9gration.dc.html" style="--step:4; --line:block;">
+          <span class="idx-cascade-num">05</span>
+          <span>
+            <span class="idx-cascade-title">Intégration</span>
+            <span class="idx-cascade-copy">Surfaces actives, contrats de montage, collisions possibles et comportement attendu.</span>
+            <span class="idx-cascade-meta"><span class="idx-mini">surfaces</span><span class="idx-mini">liaisons</span></span>
+          </span>
+          <span class="idx-cascade-icon" aria-hidden="true">hub</span>
+        </a>
+        <a class="idx-cascade-link" href="Gnu.In-Shell%20-%20Handoff.dc.html" style="--step:5; --line:block; background:#111418; border-color:#2B3037; color:#F3EEE9;">
+          <span class="idx-cascade-num" style="color:var(--idx-orange-2);">06</span>
+          <span>
+            <span class="idx-cascade-title" style="color:#F3EEE9;">Handoff moteur</span>
+            <span class="idx-cascade-copy" style="color:#9AA0A8;">Matrice de transmission, API, couches moteur, reprise et critères de validation.</span>
+            <span class="idx-cascade-meta"><span class="idx-mini" style="background:#241A12;color:#FFB36E;">intégration</span><span class="idx-mini" style="background:#1A1F26;color:#CBC5CA;">transmission</span></span>
+          </span>
+          <span class="idx-cascade-icon" style="color:var(--idx-orange-2);" aria-hidden="true">terminal</span>
+        </a>
+      </nav>
+
+      <aside class="idx-aside">
+        <div class="idx-aside-title">portes rapides</div>
+        <h3>Groupes publics</h3>
+        <p>Accès direct aux grands ensembles: canevas statiques, guides réactifs, documentation et simulation Central.</p>
+        <a class="idx-resource" href="Central.dc.html"><span class="material-symbols-rounded" aria-hidden="true">view_quilt</span><span><b>Central</b><small>hub de simulation et lecture des scènes</small></span><span class="idx-arrow" aria-hidden="true">arrow_forward</span></a>
+        <a class="idx-resource" href="Gnu.In-Shell%20-%20Atlas%20Unifi%C3%A9.dc.html"><span class="material-symbols-rounded" aria-hidden="true">map</span><span><b>Atlas</b><small>canevas statiques et ordre des planches</small></span><span class="idx-arrow" aria-hidden="true">arrow_forward</span></a>
+        <a class="idx-resource" href="Context.dc.html"><span class="material-symbols-rounded" aria-hidden="true">dynamic_form</span><span><b>Context</b><small>menus, renderer, animations, motion et Syster kit</small></span><span class="idx-arrow" aria-hidden="true">arrow_forward</span></a>
+        <a class="idx-resource" href="Motion.dc.html"><span class="material-symbols-rounded" aria-hidden="true">motion_photos_auto</span><span><b>Motion</b><small>recettes settle, reveal, handoff et reduced</small></span><span class="idx-arrow" aria-hidden="true">arrow_forward</span></a>
+        <a class="idx-resource" href="Project.dc.html"><span class="material-symbols-rounded" aria-hidden="true">library_books</span><span><b>Docs</b><small>projet, méthode, preuves, roadmap et plan</small></span><span class="idx-arrow" aria-hidden="true">arrow_forward</span></a>
+        <a class="idx-resource" href="https://github.com/gnu-in-labs/gnu.in-shell-docs" target="_blank" rel="noreferrer"><span class="material-symbols-rounded" aria-hidden="true">code_blocks</span><span><b>GitHub</b><small>source publique du corpus docs</small></span><span class="idx-arrow" aria-hidden="true">open_in_new</span></a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="idx-wrap idx-section" aria-labelledby="idx-registry-title">
+    <div class="idx-section-head">
+      <span class="idx-section-num" aria-hidden="true">03</span>
+      <h2 id="idx-registry-title" class="idx-section-title" data-pretext-key="ix.s3h">Registre des surfaces</h2>
+      <p class="idx-section-copy">Le registre montre qui fait quoi dans le corpus: documentation, canevas statiques, guides réactifs, hub live, mascotte et source publique.</p>
+    </div>
+    <div class="idx-registry">
+      <a class="idx-surface" href="Central.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">CENTRAL</span><span class="idx-status">actif</span></span>
+        <h3>Hub adaptatif</h3>
+        <p>Surface de synthèse: scènes, contrôles, inspecteur, données d'état et comportement du shell simulé.</p>
+        <span class="idx-surface-foot">scènes · modes · inspecteur</span>
+      </a>
+      <a class="idx-surface" href="Gnu.In-Shell%20-%20Atlas%20Unifi%C3%A9.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">ATLAS</span><span class="idx-status">canon</span></span>
+        <h3>Canevas statiques</h3>
+        <p>Planche de lecture pour Fondations, Atomes, Molécules, Intégration et Handoff.</p>
+        <span class="idx-surface-foot">fondations · handoff</span>
+      </a>
+      <a class="idx-surface" href="Context.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">CONTEXT</span><span class="idx-status blue">réactif</span></span>
+        <h3>Guides dynamiques</h3>
+        <p>Regroupe menus contextuels, renderer, animations, motion et Syster kit comme références interactives.</p>
+        <span class="idx-surface-foot">menus · renderer · motion</span>
+      </a>
+      <a class="idx-surface" href="Molecule%20Renderer.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">RENDERER</span><span class="idx-status blue">cadrage</span></span>
+        <h3>Hydratation data</h3>
+        <p>Galerie exhaustive des molécules rendues à partir des données de référence.</p>
+        <span class="idx-surface-foot">compositions · états</span>
+      </a>
+      <a class="idx-surface" href="Animations.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">MOTION</span><span class="idx-status">cadrage</span></span>
+        <h3>États vivants</h3>
+        <p>Montre les états de Sys.ter et les primitives d'animation à raccorder aux surfaces.</p>
+        <span class="idx-surface-foot">idle · listening · working</span>
+      </a>
+      <a class="idx-surface" href="Sys.ter%20Mascot%20Kit.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">SYSTER</span><span class="idx-status orange">showcase</span></span>
+        <h3>Kit mascotte</h3>
+        <p>Surface de présentation. Elle ne remplace pas le canon visuel courant.</p>
+        <span class="idx-surface-foot">showcase · canon conservé</span>
+      </a>
+      <a class="idx-surface" href="Project.dc.html">
+        <span class="idx-surface-top"><span class="idx-surface-code">DOCS</span><span class="idx-status">current</span></span>
+        <h3>Corpus public</h3>
+        <p>Projet, méthode, assets, preuves, communications, roadmap et plan complet.</p>
+        <span class="idx-surface-foot">méthode · preuves · plan</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="idx-wrap idx-section" aria-labelledby="idx-live-title">
+    <div class="idx-section-head">
+      <span class="idx-section-num" aria-hidden="true">04</span>
+      <h2 id="idx-live-title" class="idx-section-title" data-pretext-key="ix.s4h">Carte vivante</h2>
+      <p class="idx-section-copy">L'Index expose un circuit réactif borné: la lecture, la composition et la transmission changent le signal sans quitter la surface.</p>
+    </div>
+    <div class="idx-live" data-idx-live data-mode="orienter">
+      <div class="idx-live-stage" aria-label="Signal de lecture du corpus">
+        <canvas class="idx-live-canvas" width="960" height="540" aria-hidden="true"></canvas>
+        <div class="idx-live-badge" aria-hidden="true">
+          <span><strong>signal</strong> corpus</span>
+          <span>borne visuelle</span>
+        </div>
+        <div class="idx-live-readout">
+          <div>
+            <h3 data-idx-live-title>Lecture orientée</h3>
+            <p data-idx-live-copy>Docs cadre le corpus, Atlas ordonne les canevas, Context porte les guides réactifs, puis Central montre la synthèse.</p>
+          </div>
+          <div class="idx-live-count" data-idx-live-count>6 nœuds actifs</div>
+        </div>
+      </div>
+      <aside class="idx-live-panel">
+        <h3>Signal de surface</h3>
+        <p>Chaque mode resserre la lecture autour d'un usage précis: comprendre le corpus, inspecter les assemblages ou suivre la descente vers le moteur.</p>
+        <div class="idx-live-controls" role="group" aria-label="Modes de lecture">
+          <button class="idx-live-control" type="button" data-idx-mode="orienter" aria-pressed="true">Lecture</button>
+          <button class="idx-live-control" type="button" data-idx-mode="composer" aria-pressed="false">Composition</button>
+          <button class="idx-live-control" type="button" data-idx-mode="transmettre" aria-pressed="false">Transmission</button>
+        </div>
+        <div class="idx-live-chain" aria-label="Chaîne active du corpus">
+          <button class="idx-live-node is-active" type="button" data-idx-node="Docs">
+            <span class="idx-live-node-num">01</span>
+            <span><b>Docs</b><span>rôle, statut, méthode, preuves et trajectoire</span></span>
+            <span class="material-symbols-rounded" aria-hidden="true">library_books</span>
+          </button>
+          <button class="idx-live-node" type="button" data-idx-node="Atlas">
+            <span class="idx-live-node-num">02</span>
+            <span><b>Atlas</b><span>canevas statiques, ordre des planches et handoff</span></span>
+            <span class="material-symbols-rounded" aria-hidden="true">map</span>
+          </button>
+          <button class="idx-live-node" type="button" data-idx-node="Context">
+            <span class="idx-live-node-num">03</span>
+            <span><b>Context</b><span>menus, renderer, animations, motion et Syster kit</span></span>
+            <span class="material-symbols-rounded" aria-hidden="true">dynamic_form</span>
+          </button>
+          <button class="idx-live-node" type="button" data-idx-node="Central">
+            <span class="idx-live-node-num">04</span>
+            <span><b>Central</b><span>simulation, scènes, inspector et état vivant</span></span>
+            <span class="material-symbols-rounded" aria-hidden="true">view_quilt</span>
+          </button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="idx-wrap idx-section" aria-labelledby="idx-spine-title">
+    <div class="idx-section-head">
+      <span class="idx-section-num" aria-hidden="true">05</span>
+      <h2 id="idx-spine-title" class="idx-section-title">Colonne vertébrale</h2>
+      <p class="idx-section-copy">La cohérence du site dépend d'une descente unique: des tokens vers le moteur, du moteur vers les composants, des composants vers les surfaces.</p>
+    </div>
+    <div class="idx-spine">
+      <div>
+        <div class="idx-spine-kicker">source de vérité</div>
+        <div class="idx-spine-main">tokens.json</div>
+        <div class="idx-spine-copy">compositions · données d'état · scènes · captures · navigation</div>
+      </div>
+      <div class="idx-flow" aria-label="Flux du système">
+        <span>design reference</span>
+        <span class="material-symbols-rounded" aria-hidden="true">east</span>
+        <span class="green">moteur natif</span>
+        <span class="material-symbols-rounded" aria-hidden="true">east</span>
+        <span>Gnu* composants</span>
+        <span class="material-symbols-rounded" aria-hidden="true">east</span>
+        <span class="orange">surface native</span>
+      </div>
+      <div style="justify-self:end;align-self:start;" aria-hidden="true"><span style="width:10px;height:10px;border-radius:50%;background:var(--idx-orange);display:inline-block;animation:idxPing 1400ms ease-out infinite;"></span></div>
+    </div>
+  </section>
+
+  <section class="idx-wrap idx-section" aria-labelledby="idx-gates-title">
+    <div class="idx-section-head">
+      <span class="idx-section-num" aria-hidden="true">06</span>
+      <h2 id="idx-gates-title" class="idx-section-title">Critères de rendu</h2>
+      <p class="idx-section-copy">Une surface reste dans le corpus lorsqu'elle se charge proprement, garde son vocabulaire visuel et expose son état sans ambiguïté.</p>
+    </div>
+    <div style="background:#0A0C0F;border-radius:18px;padding:28px 32px;">
+      <div class="idx-gates">
+        <div class="idx-gate"><b>Navigation commune</b><span>Chaque page expose le même repère: nav horizontale, rail flottant, favicon cube, cascades Docs, Atlas et Context.</span></div>
+        <div class="idx-gate"><b>Texte utile</b><span>Les textes nomment un rôle, un état ou un comportement observable; les libellés décoratifs sortent de la surface.</span></div>
+        <div class="idx-gate"><b>Preuve de rendu</b><span>Les surfaces critiques passent sans overflow desktop/tablette, sans images cassées, sans erreur de chargement.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="idx-wrap idx-footer">
+    <span>&gt;_ gnu.in-OS · documentation & showcase · Gnosis ⊕ Context.Spec ⊕ GNU.IN</span>
+    <span>Corpus public · docs, surfaces, preuves visuelles</span>
+  </footer>
+</div>
+</x-dc>
+<script>
+(() => {
+  const MODES = {
+    orienter: {
+      title: "Lecture orientée",
+      copy: "Docs cadre le corpus, Atlas ordonne les canevas, Context porte les guides réactifs, puis Central montre la synthèse.",
+      count: "6 nœuds actifs",
+      accent: "#FF6A00",
+      soft: "#8DA982",
+      nodes: ["Docs", "Atlas", "Context", "Central", "Roadmap", "Evidence"]
+    },
+    composer: {
+      title: "Assemblage visible",
+      copy: "Context prend le centre: menus, renderer, animations, motion et mascotte révèlent les règles communes.",
+      count: "4 familles suivies",
+      accent: "#8DA982",
+      soft: "#FF8E40",
+      nodes: ["Context", "Menus", "Renderer", "Animations", "Motion", "Syster"]
+    },
+    transmettre: {
+      title: "Descente moteur",
+      copy: "La chaîne se resserre vers les données, la transmission et les preuves visuelles attendues par les surfaces.",
+      count: "3 liaisons fortes",
+      accent: "#3D8DCC",
+      soft: "#FF6A00",
+      nodes: ["Docs", "tokens.json", "Scènes", "Motion", "Central", "Handoff"]
+    }
+  };
+
+  function installLiveIndex() {
+    const host = document.getElementById("dc-root");
+    const root = host && host.querySelector("[data-idx-live]");
+    if (!root || root.dataset.idxMounted === "true") return Boolean(root);
+    const canvas = root.querySelector(".idx-live-canvas");
+    const ctx = canvas && canvas.getContext("2d");
+    if (!ctx) return false;
+
+    root.dataset.idxMounted = "true";
+    const title = root.querySelector("[data-idx-live-title]");
+    const copy = root.querySelector("[data-idx-live-copy]");
+    const count = root.querySelector("[data-idx-live-count]");
+    const controls = [...root.querySelectorAll("[data-idx-mode]")];
+    const nodeButtons = [...root.querySelectorAll("[data-idx-node]")];
+    const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let modeName = root.dataset.mode || "orienter";
+    let activeNode = 0;
+    let frame = 0;
+    let points = [];
+    let raf = 0;
+
+    function mode() {
+      return MODES[modeName] || MODES.orienter;
+    }
+
+    function resize() {
+      window.cancelAnimationFrame(raf);
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(320, Math.round(rect.width));
+      const height = Math.max(280, Math.round(rect.height));
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw();
+    }
+
+    function layout(width, height) {
+      const padX = Math.max(42, width * 0.09);
+      const top = Math.max(92, height * 0.25);
+      const band = Math.max(118, height * 0.34);
+      return mode().nodes.map((name, index, all) => {
+        const p = all.length === 1 ? 0 : index / (all.length - 1);
+        const wave = Math.sin(p * Math.PI * 2 + frame * 0.018) * band * 0.18;
+        return {
+          name,
+          x: padX + p * (width - padX * 2),
+          y: top + Math.sin(p * Math.PI) * band + wave,
+          index
+        };
+      });
+    }
+
+    function roundedRect(x, y, width, height, radius) {
+      if (ctx.roundRect) {
+        ctx.roundRect(x, y, width, height, radius);
+        return;
+      }
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+    }
+
+    function draw() {
+      const width = canvas.clientWidth || 960;
+      const height = canvas.clientHeight || 420;
+      const current = mode();
+      points = layout(width, height);
+
+      ctx.clearRect(0, 0, width, height);
+      const gradient = ctx.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, "#090B0E");
+      gradient.addColorStop(0.55, "#111820");
+      gradient.addColorStop(1, "#07090B");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.save();
+      ctx.globalAlpha = 0.5;
+      for (let i = 0; i < points.length - 1; i++) {
+        const a = points[i];
+        const b = points[i + 1];
+        const line = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+        line.addColorStop(0, i === activeNode ? current.accent : "rgba(245,238,221,.22)");
+        line.addColorStop(1, i + 1 === activeNode ? current.accent : "rgba(245,238,221,.16)");
+        ctx.strokeStyle = line;
+        ctx.lineWidth = i === activeNode || i + 1 === activeNode ? 3 : 1.25;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.bezierCurveTo(a.x + 48, a.y - 42, b.x - 48, b.y + 42, b.x, b.y);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      for (let i = 0; i < points.length - 1; i++) {
+        const a = points[i];
+        const b = points[i + 1];
+        const p = reducedMotion ? 0.55 : ((frame * 0.011 + i * 0.18) % 1);
+        const x = a.x + (b.x - a.x) * p;
+        const y = a.y + (b.y - a.y) * p + Math.sin(p * Math.PI) * 16;
+        ctx.fillStyle = i === activeNode ? current.accent : current.soft;
+        ctx.globalAlpha = 0.72;
+        ctx.beginPath();
+        ctx.arc(x, y, i === activeNode ? 4.8 : 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      points.forEach((point, index) => {
+        const active = index === activeNode;
+        const radius = active ? 18 : 12;
+        ctx.fillStyle = active ? current.accent : "#F5EEDD";
+        ctx.strokeStyle = active ? "rgba(255,255,255,.55)" : "rgba(245,238,221,.25)";
+        ctx.lineWidth = active ? 3 : 1.5;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = active ? "#07090B" : "#111418";
+        ctx.font = "800 10px JetBrains Mono, monospace";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(String(index + 1).padStart(2, "0"), point.x, point.y + 0.5);
+
+        const labelWidth = Math.min(128, Math.max(72, point.name.length * 8 + 22));
+        const labelX = Math.min(Math.max(point.x - labelWidth / 2, 18), width - labelWidth - 18);
+        const labelY = Math.min(point.y + 28, height - 52);
+        ctx.beginPath();
+        roundedRect(labelX, labelY, labelWidth, 24, 7);
+        ctx.fillStyle = active ? "rgba(255,106,0,.18)" : "rgba(10,12,15,.68)";
+        ctx.strokeStyle = active ? "rgba(255,106,0,.55)" : "rgba(245,238,221,.12)";
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = active ? "#FFB36E" : "#C9D0D8";
+        ctx.font = "800 9px JetBrains Mono, monospace";
+        ctx.fillText(point.name, labelX + labelWidth / 2, labelY + 12.5);
+      });
+
+      frame += 1;
+      if (!reducedMotion) raf = window.requestAnimationFrame(draw);
+    }
+
+    function sync() {
+      const current = mode();
+      root.dataset.mode = modeName;
+      if (title) title.textContent = current.title;
+      if (copy) copy.textContent = current.copy;
+      if (count) count.textContent = current.count;
+      controls.forEach((button) => button.setAttribute("aria-pressed", button.dataset.idxMode === modeName ? "true" : "false"));
+      nodeButtons.forEach((button, index) => button.classList.toggle("is-active", index === activeNode));
+      window.cancelAnimationFrame(raf);
+      draw();
+    }
+
+    controls.forEach((button) => {
+      button.addEventListener("click", () => {
+        modeName = button.dataset.idxMode || "orienter";
+        activeNode = 0;
+        sync();
+      });
+    });
+
+    nodeButtons.forEach((button, index) => {
+      button.addEventListener("click", () => {
+        activeNode = index;
+        sync();
+      });
+      button.addEventListener("mouseenter", () => {
+        activeNode = index;
+        sync();
+      });
+      button.addEventListener("focus", () => {
+        activeNode = index;
+        sync();
+      });
+    });
+
+    canvas.addEventListener("pointermove", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      let nearest = activeNode;
+      let nearestDistance = Infinity;
+      points.forEach((point, index) => {
+        const distance = Math.hypot(point.x - x, point.y - y);
+        if (distance < nearestDistance) {
+          nearest = index;
+          nearestDistance = distance;
+        }
+      });
+      if (nearestDistance < 72 && nearest !== activeNode) {
+        activeNode = nearest;
+        sync();
+      }
+    });
+
+    if (window.ResizeObserver) {
+      new ResizeObserver(resize).observe(canvas);
+    } else {
+      window.addEventListener("resize", resize, { passive: true });
+    }
+    resize();
+    sync();
+    return true;
+  }
+
+  function bootLiveIndex() {
+    if (installLiveIndex()) return;
+    let tries = 0;
+    const timer = window.setInterval(() => {
+      tries += 1;
+      if (installLiveIndex() || tries > 40) window.clearInterval(timer);
+    }, 125);
+    if (window.MutationObserver) {
+      const observer = new MutationObserver(() => {
+        if (installLiveIndex()) {
+          observer.disconnect();
+          window.clearInterval(timer);
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bootLiveIndex);
+  else bootLiveIndex();
+})();
+</script>
+<script>
+(function () {
+  var EN = {
+    "ix.kicker": "Gnu.in Labs \u00b7 documentation & showcase",
+    "ix.lede": "An entry point to read the shell as a complete object: surfaces, engine, motion, content, and visual proof connected along one reading path.",
+    "ix.chip.central.v": "open", "ix.chip.central.n": "Central",
+    "ix.chip.atlas.v": "read", "ix.chip.atlas.n": "Atlas",
+    "ix.chip.docs.v": "docs", "ix.chip.docs.n": "public corpus",
+    "ix.s0h": "Shell grammar",
+    "ix.s1h": "Documentation map",
+    "ix.s2h": "System path",
+    "ix.s3h": "Surface registry",
+    "ix.s4h": "Living map",
+    "ix.lg1": "Map the surfaces",
+    "ix.lg2": "Compose the primitives",
+    "ix.lg3": "Follow the engine descent",
+    "ix.lg4": "Verify the states"
+  };
+  function go(){ if (window.GnuInPretext && GnuInPretext.register) { GnuInPretext.register("en", EN); } else { setTimeout(go, 20); } }
+  go();
+})();
+</script>
+</body>
+</html>

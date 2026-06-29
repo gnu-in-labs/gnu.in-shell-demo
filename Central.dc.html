@@ -3,9 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/svg+xml" href="assets/symbols/cube.svg">
 <script src="./dc-boot.js"></script>
-<script src="nav.js" defer></script>
 </head>
 <body>
 <x-dc>
@@ -43,10 +41,6 @@ html,body{margin:0;height:100%;background:#0a0c0f;}
 .cx-skip{position:absolute;left:10px;top:-64px;z-index:9999;background:#141313;color:#f3eee9;border:1px solid #9ecbff;border-radius:8px;padding:9px 14px;font:600 12px 'Montreal',system-ui,sans-serif;text-decoration:none;transition:top .16s ease;}
 .cx-skip:focus{top:10px;}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}}
-/* Reserve the shared floating rail's left strip so it never overlaps Central's emit/control column.
-   The rail (#gid-rail, position:fixed) is an expanded left strip on tablet/desktop (right edge ~62-74px)
-   and a collapsed bottom-right bubble on mobile, so the clearance is scoped to the non-mobile viewports. */
-html[data-gid-vp="tablet"] .cx-emit-col,html[data-gid-vp="desktop"] .cx-emit-col{padding-left:clamp(72px,6vw,92px)!important;}
 </style>
 </helmet>
 
@@ -81,7 +75,7 @@ html[data-gid-vp="tablet"] .cx-emit-col,html[data-gid-vp="desktop"] .cx-emit-col
   <main style="flex:1;display:flex;min-height:0;">
 
     <!-- ─────── STAGE (live compositor) ─────── -->
-    <section class="cx-emit-col" style="flex:1;min-width:0;display:flex;flex-direction:column;padding:16px 18px;gap:13px;overflow-y:auto;">
+    <section style="flex:1;min-width:0;display:flex;flex-direction:column;padding:16px 18px;gap:13px;overflow-y:auto;">
 
       <!-- control rail -->
       <div role="toolbar" aria-label="Émettre des surfaces" style="flex:none;display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
@@ -684,45 +678,144 @@ html[data-gid-vp="tablet"] .cx-emit-col,html[data-gid-vp="desktop"] .cx-emit-col
 
                     <!-- SETTINGS-APP PAGES · Displays/Input/Services/Developer (real GnuSettingsApp) -->
                     <sc-if value="{{ isSecAppPage }}" hint-placeholder-val="{{ false }}">
-                      <div style="display:flex;flex-direction:column;gap:14px;max-width:640px;">
-                        <div style="display:flex;align-items:center;gap:10px;">
-                          <span class="ms" style="font-size:20px;color:{{ accent }};">{{ appPageIcon }}</span>
-                          <div>
+                      <div style="display:flex;flex-direction:column;gap:13px;max-width:660px;">
+                        <div style="display:flex;align-items:center;gap:11px;">
+                          <span style="flex:none;width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:#161516;border:1px solid #2b2a2a;"><span class="ms" style="font-size:21px;color:{{ accent }};">{{ appPageIcon }}</span></span>
+                          <div style="flex:1;min-width:0;">
                             <div style="font-size:15px;font-weight:700;color:#f3eee9;">{{ appPageTitle }}</div>
-                            <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-top:1px;">{{ appPageDesc }}</div>
+                            <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-top:2px;">{{ appPageDesc }}</div>
                           </div>
-                          <div style="flex:1;"></div>
-                          <span class="ctl-mono" style="font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:#CE8E3F;background:rgba(206,142,63,0.12);padding:3px 8px;border-radius:5px;">scaffold · page réelle</span>
+                          <span class="ctl-mono" style="flex:none;font-size:9px;font-weight:700;letter-spacing:0.04em;color:{{ accent }};background:{{ appAccentSoft }};border:1px solid {{ appAccentLine }};padding:4px 10px;border-radius:7px;">{{ appPageBadge }}</span>
                         </div>
-                        <div style="display:flex;flex-direction:column;gap:7px;">
-                          <sc-for list="{{ appPageControls }}" as="c" hint-placeholder-count="4">
+
+                        <sc-for list="{{ appPageBlocks }}" as="b" hint-placeholder-count="6">
+
+                          <sc-if value="{{ b.isSection }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;align-items:baseline;gap:9px;margin-top:9px;padding-bottom:6px;border-bottom:1px solid #232122;">
+                              <span class="ctl-mono" style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7c828a;">{{ b.label }}</span>
+                              <span class="ctl-mono" style="font-size:8.5px;color:#5f656d;display:{{ b.hintShow }};">{{ b.hint }}</span>
+                            </div>
+                          </sc-if>
+
+                          <sc-if value="{{ b.isRow }}" hint-placeholder-val="{{ false }}">
                             <div style="display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:10px;background:#141313;border:1px solid #232122;">
                               <div style="flex:1;min-width:0;">
-                                <div style="font-size:11.5px;font-weight:600;color:#cbc5ca;">{{ c.label }}</div>
-                                <sc-if value="{{ c.desc }}" hint-placeholder-val="{{ false }}"><div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-top:2px;">{{ c.desc }}</div></sc-if>
+                                <div style="font-size:11.5px;font-weight:600;color:#cbc5ca;">{{ b.label }}</div>
+                                <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-top:2px;display:{{ b.descShow }};">{{ b.desc }}</div>
                               </div>
-                              <sc-if value="{{ c.isToggle }}" hint-placeholder-val="{{ false }}">
-                                <div class="cx-btn" onClick="{{ c.go }}" style="width:34px;height:19px;border-radius:10px;background:{{ c.track }};position:relative;flex:none;"><span style="position:absolute;top:2px;left:{{ c.knobX }};width:15px;height:15px;border-radius:50%;background:#fff;"></span></div>
+                              <sc-if value="{{ b.isToggle }}" hint-placeholder-val="{{ false }}">
+                                <div class="cx-btn" onClick="{{ b.go }}" style="width:34px;height:19px;border-radius:10px;background:{{ b.track }};position:relative;flex:none;"><span style="position:absolute;top:2px;left:{{ b.knobX }};width:15px;height:15px;border-radius:50%;background:#fff;"></span></div>
                               </sc-if>
-                              <sc-if value="{{ c.isSelect }}" hint-placeholder-val="{{ false }}">
-                                <div style="display:flex;gap:4px;flex:none;">
-                                  <sc-for list="{{ c.pills }}" as="p" hint-placeholder-count="3">
+                              <sc-if value="{{ b.isSelect }}" hint-placeholder-val="{{ false }}">
+                                <div style="display:flex;gap:4px;flex:none;flex-wrap:wrap;justify-content:flex-end;max-width:320px;">
+                                  <sc-for list="{{ b.pills }}" as="p" hint-placeholder-count="3">
                                     <span class="cx-btn ctl-mono" onClick="{{ p.go }}" style="font-size:10px;font-weight:600;padding:5px 9px;border-radius:6px;background:{{ p.bg }};border:1px solid {{ p.bd }};color:{{ p.fg }};">{{ p.label }}</span>
                                   </sc-for>
                                 </div>
                               </sc-if>
-                              <sc-if value="{{ c.isSlider }}" hint-placeholder-val="{{ false }}">
+                              <sc-if value="{{ b.isSlider }}" hint-placeholder-val="{{ false }}">
                                 <div style="display:flex;align-items:center;gap:10px;flex:none;width:210px;">
-                                  <input type="range" class="cx-rng" min="{{ c.min }}" max="{{ c.max }}" step="{{ c.step }}" value="{{ c.value }}" onInput="{{ c.onInput }}" style="flex:1;" />
-                                  <span class="ctl-mono" style="font-size:10px;color:{{ accent }};width:52px;text-align:right;">{{ c.valLabel }}</span>
+                                  <input type="range" class="cx-rng" min="{{ b.min }}" max="{{ b.max }}" step="{{ b.step }}" value="{{ b.value }}" onInput="{{ b.onInput }}" style="flex:1;" />
+                                  <span class="ctl-mono" style="font-size:10px;color:{{ accent }};width:54px;text-align:right;font-variant-numeric:tabular-nums;">{{ b.valLabel }}</span>
                                 </div>
                               </sc-if>
-                              <sc-if value="{{ c.isStatus }}" hint-placeholder-val="{{ false }}">
-                                <span class="ctl-mono" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;background:{{ c.bg }};color:{{ c.fg }};flex:none;">{{ c.state }}</span>
+                              <sc-if value="{{ b.isStatus }}" hint-placeholder-val="{{ false }}">
+                                <span class="ctl-mono" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;background:{{ b.bg }};color:{{ b.fg }};flex:none;">{{ b.state }}</span>
                               </sc-if>
                             </div>
-                          </sc-for>
-                        </div>
+                          </sc-if>
+
+                          <sc-if value="{{ b.isMon }}" hint-placeholder-val="{{ false }}">
+                            <div style="position:relative;width:560px;max-width:100%;margin:2px auto;height:{{ b.canvasH }}px;background:#0e0d0e;border:1px solid #232122;border-radius:12px;overflow:hidden;background-image:radial-gradient(#1c1b1d 1px, transparent 1px);background-size:15px 15px;">
+                              <sc-for list="{{ b.mons }}" as="m" hint-placeholder-count="2">
+                                <div class="cx-btn" onClick="{{ m.go }}" style="position:absolute;left:{{ m.x }}px;top:{{ m.y }}px;width:{{ m.w }}px;height:{{ m.h }}px;border-radius:7px;background:{{ m.bg }};border:1.5px solid {{ m.bd }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+                                  <span style="font-size:11px;font-weight:700;color:{{ m.fg }};">{{ m.name }}</span>
+                                  <span class="ctl-mono" style="font-size:8px;color:{{ m.sub }};">{{ m.spec }}</span>
+                                  <sc-if value="{{ m.primary }}" hint-placeholder-val="{{ false }}"><span class="ctl-mono" style="font-size:7px;letter-spacing:0.08em;text-transform:uppercase;color:{{ accent }};">principal</span></sc-if>
+                                </div>
+                              </sc-for>
+                            </div>
+                          </sc-if>
+
+                          <sc-if value="{{ b.isStat }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                              <sc-for list="{{ b.cards }}" as="c" hint-placeholder-count="4">
+                                <div style="display:flex;flex-direction:column;gap:3px;padding:11px;border-radius:10px;background:#141313;border:1px solid #232122;">
+                                  <span class="ctl-mono" style="font-size:8px;letter-spacing:0.08em;text-transform:uppercase;color:#7c828a;">{{ c.label }}</span>
+                                  <span style="font-size:14px;font-weight:700;color:#f3eee9;font-variant-numeric:tabular-nums;">{{ c.value }}</span>
+                                  <span class="ctl-mono" style="font-size:8px;color:#5f656d;display:{{ c.subShow }};">{{ c.sub }}</span>
+                                </div>
+                              </sc-for>
+                            </div>
+                          </sc-if>
+
+                          <sc-if value="{{ b.isGauge }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;flex-direction:column;gap:8px;padding:13px;border-radius:11px;background:#141313;border:1px solid #232122;">
+                              <div style="display:flex;align-items:baseline;gap:9px;"><span style="font-size:11.5px;font-weight:600;color:#cbc5ca;">{{ b.label }}</span><span style="flex:1;"></span><span class="ctl-mono" style="font-size:10px;color:{{ b.gcol }};font-variant-numeric:tabular-nums;">{{ b.valLabel }}</span></div>
+                              <div style="height:7px;border-radius:4px;background:#201f20;overflow:hidden;"><span style="display:block;height:100%;width:{{ b.pct }}%;background:{{ b.gcol }};border-radius:4px;"></span></div>
+                            </div>
+                          </sc-if>
+
+                          <sc-if value="{{ b.isCheck }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:10px;background:#141313;border:1px solid #232122;">
+                              <span class="ms" style="font-size:18px;color:{{ b.cfg }};flex:none;">{{ b.cicon }}</span>
+                              <div style="flex:1;min-width:0;">
+                                <div style="font-size:11.5px;font-weight:600;color:#cbc5ca;">{{ b.label }}</div>
+                                <div class="ctl-mono" style="font-size:9px;color:#5f656d;margin-top:1px;display:{{ b.descShow }};">{{ b.desc }}</div>
+                              </div>
+                              <span class="ctl-mono" style="font-size:9.5px;font-weight:700;padding:4px 9px;border-radius:6px;background:{{ b.cbg }};color:{{ b.cfg }};flex:none;">{{ b.state }}</span>
+                            </div>
+                          </sc-if>
+
+                          <sc-if value="{{ b.isKey }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;align-items:center;gap:12px;padding:9px 13px;border-radius:10px;background:#141313;border:1px solid #232122;">
+                              <div style="flex:none;display:flex;align-items:center;gap:4px;width:172px;flex-wrap:wrap;">
+                                <sc-for list="{{ b.chips }}" as="k" hint-placeholder-count="2">
+                                  <span class="ctl-mono" style="font-size:9.5px;font-weight:700;color:#e6e1e1;background:#201f20;border:1px solid #2b2a2a;border-bottom-width:2px;padding:3px 7px;border-radius:5px;">{{ k.t }}</span>
+                                </sc-for>
+                              </div>
+                              <div style="flex:1;min-width:0;">
+                                <div class="ctl-mono" style="font-size:10px;color:{{ accent }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ b.disp }}</div>
+                                <div style="font-size:10.5px;color:#948f94;margin-top:1px;">{{ b.desc }}</div>
+                              </div>
+                              <div class="cx-btn" onClick="{{ b.go }}" style="width:34px;height:19px;border-radius:10px;background:{{ b.track }};position:relative;flex:none;"><span style="position:absolute;top:2px;left:{{ b.knobX }};width:15px;height:15px;border-radius:50%;background:#fff;"></span></div>
+                            </div>
+                          </sc-if>
+
+                          <sc-if value="{{ b.isRule }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;align-items:center;gap:12px;padding:10px 13px;border-radius:10px;background:#141313;border:1px solid #232122;">
+                              <span class="ms" style="font-size:16px;color:#7c828a;flex:none;">web_asset</span>
+                              <div style="flex:1;min-width:0;">
+                                <div class="ctl-mono" style="font-size:10px;color:#cbc5ca;">{{ b.match }}</div>
+                                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;">
+                                  <sc-for list="{{ b.acts }}" as="a" hint-placeholder-count="2">
+                                    <span class="ctl-mono" style="font-size:8.5px;color:{{ accent }};background:{{ b.actBg }};border:1px solid {{ b.actBd }};padding:2px 7px;border-radius:5px;">{{ a.t }}</span>
+                                  </sc-for>
+                                </div>
+                              </div>
+                              <div class="cx-btn" onClick="{{ b.go }}" style="width:34px;height:19px;border-radius:10px;background:{{ b.track }};position:relative;flex:none;"><span style="position:absolute;top:2px;left:{{ b.knobX }};width:15px;height:15px;border-radius:50%;background:#fff;"></span></div>
+                            </div>
+                          </sc-if>
+
+                          <sc-if value="{{ b.isItem }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:10px;background:#141313;border:1px solid #232122;">
+                              <span class="ms" style="font-size:17px;color:#7c828a;flex:none;">{{ b.icon }}</span>
+                              <span style="flex:none;width:13px;height:13px;border-radius:4px;background:{{ b.dna }};display:{{ b.dnaShow }};"></span>
+                              <div style="flex:1;min-width:0;">
+                                <div class="{{ b.nameCls }}" style="font-size:11.5px;font-weight:600;color:#e6e1e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ b.name }}</div>
+                                <div class="ctl-mono" style="font-size:9px;color:#7c828a;margin-top:1px;display:{{ b.metaShow }};">{{ b.meta }}</div>
+                              </div>
+                              <span class="ctl-mono" style="flex:none;font-size:8.5px;font-weight:700;padding:3px 8px;border-radius:5px;background:{{ b.tbg }};color:{{ b.tfg }};display:{{ b.tagShow }};">{{ b.tag }}</span>
+                              <div class="cx-btn" onClick="{{ b.go }}" style="display:{{ b.toggleShow }};width:34px;height:19px;border-radius:10px;background:{{ b.track }};position:relative;flex:none;"><span style="position:absolute;top:2px;left:{{ b.knobX }};width:15px;height:15px;border-radius:50%;background:#fff;"></span></div>
+                              <span class="cx-btn ctl-mono" onClick="{{ b.actGo }}" style="display:{{ b.actShow }};flex:none;font-size:9.5px;font-weight:700;padding:5px 11px;border-radius:7px;background:{{ b.actBg }};color:{{ b.actFg }};border:1px solid {{ b.actBd }};">{{ b.actLabel }}</span>
+                            </div>
+                          </sc-if>
+
+                          <sc-if value="{{ b.isNote }}" hint-placeholder-val="{{ false }}">
+                            <div class="ctl-mono" style="font-size:9px;color:#5f656d;line-height:1.6;padding:1px 4px;">{{ b.text }}</div>
+                          </sc-if>
+
+                        </sc-for>
                       </div>
                     </sc-if>
 
@@ -2030,7 +2123,19 @@ class Component extends DCLogic {
       nightShift: false,
       showDamage: false,
       compositor: { profile:'stable', experimental:false, reload:true, focus:'official-focus', edge:'off', capture:'builtin', diag:null },
-      appPages: { display:{ res:'2560×1440', scale:1.0, refresh:'144', vrr:false }, input:{ repeat:40, delay:300, accel:false, natural:true, tap:true }, services:{ clipboard:true, idle:false }, dev:{ logging:false, reloadOnSave:true } },
+      appPages: {
+        display:{ res:'2560×1440', scale:1.0, refresh:'144', vrr:false, hdr:false, tenbit:false, transform:'normal', mirror:false, sel:'eDP-1' },
+        input:{ layout:'fr', repeat:40, delay:300, numlock:true, accel:false, sens:0.0, mouseNatural:false, lefthand:false, tap:true, padNatural:true, dwt:true, scroll:'two-finger', click:'clickfinger' },
+        driver:{ hwcursor:true, explicitSync:true, scanout:false, cursorTheme:'Bibata-Modern', cursorSize:24 },
+        nav:{ count:5, persistent:true, wrap:false, gestures:true, gestureSens:0.30 },
+        window:{ layout:'dwindle', gapsIn:6, gapsOut:14, rounding:10, border:2, followMouse:'loose', focusActivate:false },
+        binds:[ {c:'SUPER Q',d:'exec · kitty',l:'terminal',on:true}, {c:'SUPER E',d:'exec · findin',l:'fichiers',on:true}, {c:'SUPER C',d:'killactive',l:'fermer la fenêtre',on:true}, {c:'SUPER 1…0',d:'workspace n',l:'aller à l’espace n',on:true}, {c:'SUPER SHIFT 1…0',d:'movetoworkspace n',l:'déplacer la fenêtre',on:true}, {c:'SUPER ←→↑↓',d:'movefocus',l:'changer de focus',on:true}, {c:'SUPER V',d:'togglefloating',l:'flottant',on:true}, {c:'SUPER F',d:'fullscreen',l:'plein écran',on:false} ],
+        rules:[ {m:'class: pavucontrol',a:['float','size 460 580','center'],on:true}, {m:'title: Picture-in-Picture',a:['float','pin','keepaspectratio'],on:true}, {m:'class: Spotify',a:['workspace 9'],on:true}, {m:'class: ^(kitty)$',a:['opacity 0.96'],on:false}, {m:'class: org.gnome.Calculator',a:['float'],on:true} ],
+        autostart:[ {k:'exec-once',c:'gnuin-shell',on:true}, {k:'exec-once',c:'hypridle',on:true}, {k:'exec-once',c:'hyprpaper',on:true}, {k:'exec-once',c:'wl-paste --watch cliphist store',on:true}, {k:'exec-once',c:'systemctl --user start hyprpolkitagent',on:false} ],
+        env:[ {k:'LIBVA_DRIVER_NAME',v:'radeonsi'}, {k:'__GLX_VENDOR_LIBRARY_NAME',v:'mesa'}, {k:'WLR_RENDERER',v:'vulkan'}, {k:'AQ_DRM_DEVICES',v:'/dev/dri/card1'} ],
+        profiles:[ {n:'Atelier',dna:'#C8783C',active:true}, {n:'Fondations',dna:'#5F7F52',active:false}, {n:'Atomes',dna:'#3D8DCC',active:false} ],
+        services:{ clipboard:true, idle:false }, dev:{ logging:false, reloadOnSave:true }
+      },
       systerActive: true,
       inspectorOpen: true,
       volume: 64, muted: false, workspace: 2, query: '', luSel: 0,
@@ -2613,6 +2718,8 @@ class Component extends DCLogic {
   toggleTheme = () => this.setTheme(this.state.theme==='light'?'dark':'light');
   setAppToggle(page, key){ this.setState(s=>{ const a=Object.assign({}, s.appPages); a[page]=Object.assign({}, a[page]); a[page][key]=!a[page][key]; return { appPages:a }; }); this.fires['Settings{']=(this.fires['Settings{']||0)+1; this.pushLog('▸','Settings{ '+page+'.'+key+' } toggle','#3D8DCC'); }
   setAppVal(page, key, val){ this.setState(s=>{ const a=Object.assign({}, s.appPages); a[page]=Object.assign({}, a[page]); a[page][key]=val; return { appPages:a }; }); this.fires['Settings{']=(this.fires['Settings{']||0)+1; this.pushLog('▸','Settings{ '+page+'.'+key+'='+val+' }','#3D8DCC'); }
+  appListToggle(list, idx){ this.setState(s=>{ const a=Object.assign({}, s.appPages); const arr=(a[list]||[]).slice(); if(arr[idx]) arr[idx]=Object.assign({}, arr[idx], { on:!arr[idx].on }); a[list]=arr; return { appPages:a }; }); this.fires['Settings{']=(this.fires['Settings{']||0)+1; this.pushLog('▸','Settings{ '+list+'['+idx+'] } toggle','#3D8DCC'); }
+  appProfile(idx){ this.setState(s=>{ const a=Object.assign({}, s.appPages); a.profiles=(a.profiles||[]).map((p,i)=>Object.assign({}, p, { active:i===idx })); return { appPages:a }; }); this.pushLog('▸','Profile{ load } v1','#8DA982'); }
   // ── compositor profile (hyprlandPlugin*): preset → resolve → override, with experimental-gate diagnostic (never silent) ──
   setCompProfile(k){
     if(k!=='stable' && !this.state.compositor.experimental){
@@ -3240,7 +3347,7 @@ class Component extends DCLogic {
   _sectionVals(st, ac){
     const cl=(v)=>Math.max(0,Math.min(1,v));
     const sec = st.settingsSection;
-    const navDefs = [['quick','Quick','tune'],['general','Général','settings'],['taskbar','Taskbar','space_dashboard'],['dock','Dock','view_carousel'],['compositor','Compositor','display_settings'],['display','Displays','desktop_windows'],['input','Input','keyboard'],['services','Services','dns'],['developer','Developer','code'],['engine','Engine','deployed_code'],['tokens','Tokens','data_object'],['motion','Motion','animation'],['atoms','Atomes','category'],['molecules','Molécules','widgets'],['assets','Assets','folder_special'],['behaviors','Behaviours','checklist']];
+    const navDefs = [['quick','Quick','tune'],['general','Général','settings'],['taskbar','Taskbar','space_dashboard'],['dock','Dock','view_carousel'],['compositor','Compositor','display_settings'],['display','Displays','desktop_windows'],['input','Input','keyboard'],['driver','Driver','memory'],['navigation','Navigation','keyboard_command_key'],['window','Window','view_quilt'],['install','Installation','install_desktop'],['services','Services','dns'],['developer','Developer','code'],['engine','Engine','deployed_code'],['tokens','Tokens','data_object'],['motion','Motion','animation'],['atoms','Atomes','category'],['molecules','Molécules','widgets'],['assets','Assets','folder_special'],['behaviors','Behaviours','checklist']];
     const _acSoft = 'color-mix(in srgb, '+ac+' 14%, transparent)', _acLine = 'color-mix(in srgb, '+ac+' 32%, transparent)';
     const _navRaw = (st.navQuery||'').trim().toLowerCase();
     let _navList = navDefs.map(([key,label,icon])=>({ key, label, icon, pos:[] }));
@@ -3543,46 +3650,152 @@ class Component extends DCLogic {
 
     // ── settings-app pages (real GnuSettingsApp: Displays · Input · Services · Developer) — scaffolds, generic renderer ──
     const ap = st.appPages;
-    const _atog=(on,go)=>({ isToggle:true, isSelect:false, isSlider:false, isStatus:false, on, track:on?ac:'#39363a', knobX:on?'17px':'2px', go });
-    const _asel=(cur,opts,page,key)=>({ isToggle:false, isSelect:true, isSlider:false, isStatus:false, pills: opts.map(o=>({ label:o, sel:o===cur, bg:o===cur?ac:'#161516', fg:o===cur?'#1a1207':'#cbc5ca', bd:o===cur?ac:'#232122', go:()=>this.setAppVal(page,key,o) })) });
-    const _asld=(val,min,max,step,page,key,unit)=>({ isToggle:false, isSelect:false, isSlider:true, isStatus:false, value:val, min, max, step, valLabel: val+(unit||''), onInput:(e)=>this.setAppVal(page,key, step<1? +(+e.target.value).toFixed(2) : +e.target.value) });
-    const _astat=(state,ok)=>({ isToggle:false, isSelect:false, isSlider:false, isStatus:true, state, fg: ok?'#5F7F52':'#E5675F', bg: ok?'rgba(95,127,82,0.12)':'rgba(229,72,77,0.12)' });
-    const _arow=(label,desc,ctl)=>Object.assign({ label, desc }, ctl);
+    // control-cell builders (toggle · select pills · slider · status)
+    const _atog=(on,go)=>({ isToggle:true, on, track:on?ac:'#39363a', knobX:on?'17px':'2px', go });
+    const _asel=(cur,opts,page,key)=>({ isSelect:true, pills: opts.map(o=>{ const v=(o&&o.val!==undefined)?o.val:o, lb=(o&&o.label!==undefined)?o.label:o, s=v===cur; return { label:lb, sel:s, bg:s?ac:'#161516', fg:s?'#1a1207':'#cbc5ca', bd:s?ac:'#232122', go:()=>this.setAppVal(page,key,v) }; }) });
+    const _aselGo=(cur,opts)=>({ isSelect:true, pills: opts.map(o=>{ const s=o.val===cur; return { label:o.label, sel:s, bg:s?ac:'#161516', fg:s?'#1a1207':'#cbc5ca', bd:s?ac:'#232122', go:o.go }; }) });
+    const _asld=(val,min,max,step,page,key,unit)=>({ isSlider:true, value:val, min, max, step, valLabel:(step<1?(+val).toFixed(2):val)+(unit||''), onInput:(e)=>this.setAppVal(page,key, step<1? +(+e.target.value).toFixed(2) : +e.target.value) });
+    const _astat=(state,ok)=>({ isStatus:true, state, fg: ok?'#8DA982':'#E5675F', bg: ok?'rgba(141,169,130,0.14)':'rgba(229,103,95,0.14)' });
+    // block normalizer — every render-hole carries a defined default
+    const _blk=(o)=>Object.assign({
+      isSection:false,isRow:false,isMon:false,isKey:false,isRule:false,isStat:false,isItem:false,isNote:false,isGauge:false,isCheck:false,
+      isToggle:false,isSelect:false,isSlider:false,isStatus:false,
+      label:'',desc:'',descShow:'none',hint:'',hintShow:'none',text:'',
+      on:false,track:'#39363a',knobX:'2px',go:()=>{},pills:[],value:0,min:0,max:1,step:1,valLabel:'',onInput:()=>{},state:'',fg:'#cbc5ca',bg:'transparent',
+      icon:'circle',name:'',nameCls:'',meta:'',metaShow:'none',tag:'',tagShow:'none',tfg:'#cbc5ca',tbg:'transparent',
+      dna:'transparent',dnaShow:'none',toggleShow:'none',actShow:'none',actLabel:'',actBg:'#161516',actFg:'#cbc5ca',actBd:'#232122',actGo:()=>{},
+      pct:0,gcol:ac,cards:[],cfg:'#8DA982',cbg:'transparent',cicon:'check_circle',canvasH:172,mons:[],chips:[],disp:'',acts:[],match:''
+    }, o);
+    // block constructors
+    const _sec=(label,hint)=>_blk({ isSection:true, label, hint:hint||'', hintShow: hint?'block':'none' });
+    const _row=(label,desc,ctl)=>_blk(Object.assign({ isRow:true, label, desc, descShow: desc?'block':'none' }, ctl));
+    const _note=(text)=>_blk({ isNote:true, text });
+    const _gauge=(label,valLabel,pct,col)=>_blk({ isGauge:true, label, valLabel, pct, gcol: col||ac });
+    const _stat=(cards)=>_blk({ isStat:true, cards: cards.map(c=>({ label:c[0], value:c[1], sub:c[2]||'', subShow: c[2]?'block':'none' })) });
+    const _check=(label,desc,ok,state)=>_blk({ isCheck:true, label, desc, descShow: desc?'block':'none', state, cfg: ok?'#8DA982':'#E5675F', cbg: ok?'rgba(141,169,130,0.14)':'rgba(229,103,95,0.14)', cicon: ok?'check_circle':'error' });
+    const _env=(k,v)=>_blk({ isItem:true, icon:'data_object', name:k, nameCls:'ctl-mono', meta:'= '+v, metaShow:'block' });
+    const _file=(path,tag,ok)=>_blk({ isItem:true, icon:'description', name:path, nameCls:'ctl-mono', tag, tagShow:'inline-block', tfg: ok?'#8DA982':'#CE8E3F', tbg: ok?'rgba(141,169,130,0.14)':'rgba(206,142,63,0.14)' });
+    const _auto=(a,i)=>_blk({ isItem:true, icon:'bolt', name:a.c, nameCls:'ctl-mono', meta:a.k, metaShow:'block', toggleShow:'block', on:a.on, track:a.on?ac:'#39363a', knobX:a.on?'17px':'2px', go:()=>this.appListToggle('autostart',i) });
+    const _prof=(p,i)=>_blk({ isItem:true, icon:'fingerprint', dna:p.dna, dnaShow:'block', name:p.n, meta:p.active?'profil actif':'snapshot config', metaShow:'block', actShow:'inline-block', actLabel:p.active?'actif':'appliquer', actBg:p.active?ac:'#161516', actFg:p.active?'#1a1207':'#cbc5ca', actBd:p.active?ac:'#232122', actGo:()=>this.appProfile(i) });
+    const _key=(b,i)=>_blk({ isKey:true, chips:b.c.split(' ').map(t=>({ t })), disp:b.d, desc:b.l, on:b.on, track:b.on?ac:'#39363a', knobX:b.on?'17px':'2px', go:()=>this.appListToggle('binds',i) });
+    const _rule=(r,i)=>_blk({ isRule:true, match:r.m, acts:r.a.map(t=>({ t })), on:r.on, track:r.on?ac:'#39363a', knobX:r.on?'17px':'2px', go:()=>this.appListToggle('rules',i), actBg:this.hexA(ac,0.10), actBd:this.hexA(ac,0.22) });
+    // monitor canvas (display) — scaled logical layout, bottom-aligned
+    const _MONS=[ { id:'eDP-1', w:2560, h:1440, hz:'144', x:0, primary:true }, { id:'DP-1', w:3840, h:2160, hz:'60', x:2560, primary:false } ];
+    const _MW=560,_MH=172,_MP=20;
+    const _totW=_MONS.reduce((m,o)=>Math.max(m,o.x+o.w),0), _totH=Math.max.apply(null,_MONS.map(o=>o.h));
+    const _scl=Math.min((_MW-_MP*2)/_totW,(_MH-_MP*2)/_totH), _gw=_totW*_scl, _gh=_totH*_scl, _ox=(_MW-_gw)/2, _oy=(_MH-_gh)/2;
+    const monBlk=_blk({ isMon:true, canvasH:_MH, mons:_MONS.map(o=>{ const sel=ap.display.sel===o.id, w=o.w*_scl, h=o.h*_scl; return {
+      x:(_ox+o.x*_scl).toFixed(1), y:(_oy+(_gh-h)).toFixed(1), w:w.toFixed(1), h:h.toFixed(1),
+      name:o.id, spec:o.w+'×'+o.h+' · '+o.hz+'Hz', primary:o.primary,
+      bg: sel?this.hexA(ac,0.16):'#16151a', bd: sel?ac:'#2b2a2a', fg: sel?'#f3eee9':'#cbc5ca', sub: sel?'#cbc5ca':'#7c828a',
+      go:()=>this.setAppVal('display','sel',o.id) }; }) });
+    const _rLabel = st.renderer==='gpui' ? 'gpui' : 'tiny-skia';
     const _portalOk = !(st.compositor.capture==='hyprcapture' && !st.compositor.experimental);
     const APP_PAGES = {
-      display: { title:'Displays', desc:'sortie eDP-1 · résolution · échelle · rafraîchissement', icon:'desktop_windows', ctrls:[
-        _arow('Résolution','mode de la sortie', _asel(ap.display.res,['3840×2160','2560×1440','1920×1080'],'display','res')),
-        _arow('Échelle','facteur HiDPI', _asld(ap.display.scale,1,2,0.05,'display','scale','×')),
-        _arow('Rafraîchissement','Hz', _asel(ap.display.refresh,['60','120','144','165'],'display','refresh')),
-        _arow('VRR · adaptive sync','tearing-free', _atog(ap.display.vrr, ()=>this.setAppToggle('display','vrr')))
+      display:{ title:'Displays', desc:'sorties · résolution · échelle · disposition', icon:'desktop_windows', badge:'2 sorties', blocks:[
+        monBlk,
+        _sec('Sortie · '+ap.display.sel),
+        _row('Résolution','mode de la sortie', _asel(ap.display.res,['3840×2160','2560×1440','1920×1080'],'display','res')),
+        _row('Rafraîchissement','Hz', _asel(ap.display.refresh,['60','120','144','165'],'display','refresh')),
+        _row('Échelle','facteur HiDPI', _asld(ap.display.scale,1,2,0.05,'display','scale','×')),
+        _row('Rotation','transform', _asel(ap.display.transform,[{label:'0°',val:'normal'},{label:'90°',val:'90'},{label:'180°',val:'180'},{label:'270°',val:'270'}],'display','transform')),
+        _row('VRR · adaptive sync','tearing-free', _atog(ap.display.vrr, ()=>this.setAppToggle('display','vrr'))),
+        _row('HDR','plage dynamique étendue', _atog(ap.display.hdr, ()=>this.setAppToggle('display','hdr'))),
+        _row('Profondeur 10-bit','color depth', _atog(ap.display.tenbit, ()=>this.setAppToggle('display','tenbit'))),
+        _row('Miroir','dupliquer la sortie', _atog(ap.display.mirror, ()=>this.setAppToggle('display','mirror'))),
+        _sec('Disposition'),
+        _row('Écran principal','sortie par défaut', _asel(ap.display.sel,['eDP-1','DP-1'],'display','sel')),
+        _note('glisser une sortie dans l’aperçu pour repositionner · hyprctl keyword monitor'),
+        _stat([['VRR','détecté','adaptive sync'],['HDR','disponible','BT.2020'],['Bit depth','10-bit','par sortie']])
       ]},
-      input: { title:'Input', desc:'clavier · souris · touchpad', icon:'keyboard', ctrls:[
-        _arow('Répétition clavier','touches/s', _asld(ap.input.repeat,10,80,1,'input','repeat','')),
-        _arow('Délai de répétition','ms', _asld(ap.input.delay,150,600,10,'input','delay',' ms')),
-        _arow('Accélération souris','libinput', _atog(ap.input.accel, ()=>this.setAppToggle('input','accel'))),
-        _arow('Défilement naturel','', _atog(ap.input.natural, ()=>this.setAppToggle('input','natural'))),
-        _arow('Tap-to-click','touchpad', _atog(ap.input.tap, ()=>this.setAppToggle('input','tap')))
+      input:{ title:'Input', desc:'clavier · souris · touchpad', icon:'keyboard', badge:'libinput', blocks:[
+        _sec('Clavier'),
+        _row('Disposition','layout', _asel(ap.input.layout,['fr','us','de','es'],'input','layout')),
+        _row('Répétition','touches/s', _asld(ap.input.repeat,10,80,1,'input','repeat','')),
+        _row('Délai de répétition','ms', _asld(ap.input.delay,150,600,10,'input','delay',' ms')),
+        _row('Verr. num au démarrage','numlock', _atog(ap.input.numlock, ()=>this.setAppToggle('input','numlock'))),
+        _sec('Souris'),
+        _row('Accélération','libinput accel', _atog(ap.input.accel, ()=>this.setAppToggle('input','accel'))),
+        _row('Sensibilité','-1 … 1', _asld(ap.input.sens,-1,1,0.05,'input','sens','')),
+        _row('Défilement naturel','', _atog(ap.input.mouseNatural, ()=>this.setAppToggle('input','mouseNatural'))),
+        _row('Gaucher','left-handed', _atog(ap.input.lefthand, ()=>this.setAppToggle('input','lefthand'))),
+        _sec('Touchpad'),
+        _row('Tap-to-click','', _atog(ap.input.tap, ()=>this.setAppToggle('input','tap'))),
+        _row('Défilement naturel','', _atog(ap.input.padNatural, ()=>this.setAppToggle('input','padNatural'))),
+        _row('Désactiver pendant la frappe','dwt', _atog(ap.input.dwt, ()=>this.setAppToggle('input','dwt'))),
+        _row('Méthode de défilement','', _asel(ap.input.scroll,[{label:'2 doigts',val:'two-finger'},{label:'bord',val:'edge'}],'input','scroll')),
+        _row('Méthode de clic','', _asel(ap.input.click,[{label:'clickfinger',val:'clickfinger'},{label:'zones',val:'areas'}],'input','click'))
       ]},
-      services: { title:'Services', desc:'services de session · état', icon:'dns', ctrls:[
-        _arow('xdg-desktop-portal','capture · permissions', _astat(_portalOk?'healthy':'dependency-failed', _portalOk)),
-        _arow('Notifications daemon','', _astat('running', true)),
-        _arow('Polkit agent','', _astat('running', true)),
-        _arow('Clipboard manager','', _atog(ap.services.clipboard, ()=>this.setAppToggle('services','clipboard'))),
-        _arow('Idle inhibitor','', _atog(ap.services.idle, ()=>this.setAppToggle('services','idle')))
+      driver:{ title:'Driver', desc:'gpu · backend de rendu · curseur', icon:'memory', badge:_rLabel, blocks:[
+        _stat([['GPU','Radeon 780M','amdgpu'],['Mesa','24.1.5','radeonsi'],['Vulkan','1.3.290','RADV'],['Noyau','6.9.7','zen']]),
+        _gauge('VRAM','3.2 / 8.0 GiB',40,'#8DA982'),
+        _sec('Backend de rendu'),
+        _row('Renderer','moteur de composition', _aselGo(st.renderer,[{label:'gpui',val:'gpui',go:()=>this.setRenderer('gpui')},{label:'tiny-skia',val:'tiny-skia',go:()=>this.setRenderer('tiny-skia')}])),
+        _row('Curseurs matériels','hw cursors', _atog(ap.driver.hwcursor, ()=>this.setAppToggle('driver','hwcursor'))),
+        _row('Synchronisation explicite','explicit sync', _atog(ap.driver.explicitSync, ()=>this.setAppToggle('driver','explicitSync'))),
+        _row('Direct scanout','plein écran direct', _atog(ap.driver.scanout, ()=>this.setAppToggle('driver','scanout'))),
+        _sec('Curseur'),
+        _row('Thème','XCURSOR_THEME', _asel(ap.driver.cursorTheme,[{label:'Bibata',val:'Bibata-Modern'},{label:'Adwaita',val:'Adwaita'},{label:'Vimix',val:'Vimix'}],'driver','cursorTheme')),
+        _row('Taille','XCURSOR_SIZE', _asld(ap.driver.cursorSize,16,48,4,'driver','cursorSize',' px')),
+        _sec('Variables d’environnement','pilote · session'),
+        ...ap.env.map(e=>_env(e.k,e.v))
       ]},
-      services: { title:'Services', desc:'services de session · état', icon:'dns', ctrls:[
-        _arow('xdg-desktop-portal','capture · permissions', _astat(_portalOk?'healthy':'dependency-failed', _portalOk)),
-        _arow('Notifications daemon','', _astat('running', true)),
-        _arow('Polkit agent','', _astat('running', true)),
-        _arow('Clipboard manager','', _atog(ap.services.clipboard, ()=>this.setAppToggle('services','clipboard'))),
-        _arow('Idle inhibitor','', _atog(ap.services.idle, ()=>this.setAppToggle('services','idle')))
+      navigation:{ title:'Navigation', desc:'raccourcis · espaces · gestes', icon:'keyboard_command_key', badge: ap.binds.filter(b=>b.on).length+' binds', blocks:[
+        _sec('Raccourcis','SUPER = touche logo'),
+        ...ap.binds.map((b,i)=>_key(b,i)),
+        _sec('Espaces de travail'),
+        _row('Nombre d’espaces','workspaces', _asld(ap.nav.count,4,10,1,'nav','count','')),
+        _row('Persistants','toujours présents', _atog(ap.nav.persistent, ()=>this.setAppToggle('nav','persistent'))),
+        _row('Boucler aux extrémités','wrap', _atog(ap.nav.wrap, ()=>this.setAppToggle('nav','wrap'))),
+        _sec('Gestes','touchpad'),
+        _row('Balayage 3 doigts → espaces','workspace_swipe', _atog(ap.nav.gestures, ()=>this.setAppToggle('nav','gestures'))),
+        _row('Sensibilité','swipe', _asld(ap.nav.gestureSens,0.1,0.6,0.05,'nav','gestureSens','×'))
       ]},
-      developer: { title:'Developer', desc:'debug · drapeaux · build', icon:'code', ctrls:[
-        _arow('Logging verbeux','journal compositeur', _atog(ap.dev.logging, ()=>this.setAppToggle('dev','logging'))),
-        _arow('Overlay de damage','inspecteur de scène (réel)', _atog(st.showDamage, ()=>this.toggleDamage())),
-        _arow('Flags expérimentaux','plugins compositeur (réel)', _atog(st.compositor.experimental, ()=>this.toggleCompExperimental())),
-        _arow('Reload on save','hot-reload', _atog(ap.dev.reloadOnSave, ()=>this.setAppToggle('dev','reloadOnSave'))),
-        _arow('Build','version active', _astat(st.renderer==='gpui'?'v0.14.2 · gpui':'v0.14.2 · tiny-skia', true))
+      window:{ title:'Window Control', desc:'disposition · focus · règles', icon:'view_quilt', badge: ap.window.layout, blocks:[
+        _sec('Disposition'),
+        _row('Agencement','layout', _asel(ap.window.layout,['dwindle','master'],'window','layout')),
+        _row('Gaps intérieurs','gaps_in', _asld(ap.window.gapsIn,0,20,1,'window','gapsIn',' px')),
+        _row('Gaps extérieurs','gaps_out', _asld(ap.window.gapsOut,0,40,1,'window','gapsOut',' px')),
+        _row('Arrondi','rounding', _asld(ap.window.rounding,0,24,1,'window','rounding',' px')),
+        _row('Bordure','border_size', _asld(ap.window.border,0,6,1,'window','border',' px')),
+        _sec('Focus'),
+        _row('Suivre la souris','follow_mouse', _asel(ap.window.followMouse,[{label:'désactivé',val:'none'},{label:'souple',val:'loose'},{label:'strict',val:'full'}],'window','followMouse')),
+        _row('Focus à l’activation','focus_on_activate', _atog(ap.window.focusActivate, ()=>this.setAppToggle('window','focusActivate'))),
+        _sec('Règles de fenêtre','windowrulev2'),
+        ...ap.rules.map((r,i)=>_rule(r,i))
+      ]},
+      install:{ title:'Installation', desc:'autorité · démarrage · profils', icon:'install_desktop', badge:'gnuin-shell.conf', blocks:[
+        _gauge('Configuration', ap.autostart.filter(a=>a.on).length+' services actifs', 92, ac),
+        _sec('Autorité de configuration'),
+        _file('~/.config/hypr/gnuin-shell.conf','sourcée',true),
+        _note('source = ~/.config/hypr/gnuin-shell.conf  ·  ligne ajoutée à hyprland.conf'),
+        _sec('Vérifications'),
+        _check('Hyprland ≥ 0.55','compositeur', true, '0.55.0'),
+        _check('gnuin-shell.conf sourcée','autorité de config', true, 'ok'),
+        _check('hyprconfd','daemon de configuration', true, 'v0.3.1'),
+        _check('xdg-desktop-portal-hyprland','capture · permissions', _portalOk, _portalOk?'actif':'dépendance'),
+        _check('Polices · Montreal · JetBrains Mono','identité', true, 'ok'),
+        _sec('Démarrage automatique','exec-once'),
+        ...ap.autostart.map((a,i)=>_auto(a,i)),
+        _sec('Profils','config DNA'),
+        ...ap.profiles.map((p,i)=>_prof(p,i))
+      ]},
+      services:{ title:'Services', desc:'services de session · état', icon:'dns', badge:'session', blocks:[
+        _sec('État'),
+        _row('xdg-desktop-portal','capture · permissions', _astat(_portalOk?'sain':'dépendance', _portalOk)),
+        _row('Notifications daemon','', _astat('actif', true)),
+        _row('Polkit agent','', _astat('actif', true)),
+        _row('Gestionnaire de presse-papiers','cliphist', _atog(ap.services.clipboard, ()=>this.setAppToggle('services','clipboard'))),
+        _row('Inhibiteur de veille','idle inhibitor', _atog(ap.services.idle, ()=>this.setAppToggle('services','idle')))
+      ]},
+      developer:{ title:'Developer', desc:'debug · drapeaux · build', icon:'code', badge:_rLabel, blocks:[
+        _sec('Débogage'),
+        _row('Logging verbeux','journal compositeur', _atog(ap.dev.logging, ()=>this.setAppToggle('dev','logging'))),
+        _row('Overlay de damage','inspecteur de scène', _atog(st.showDamage, ()=>this.toggleDamage())),
+        _row('Flags expérimentaux','plugins compositeur', _atog(st.compositor.experimental, ()=>this.toggleCompExperimental())),
+        _row('Reload on save','hot-reload', _atog(ap.dev.reloadOnSave, ()=>this.setAppToggle('dev','reloadOnSave'))),
+        _sec('Build'),
+        _row('Version active','', _astat(st.renderer==='gpui'?'v0.14.2 · gpui':'v0.14.2 · tiny-skia', true))
       ]}
     };
     const _appPage = APP_PAGES[sec];
@@ -3612,7 +3825,9 @@ class Component extends DCLogic {
     const appPageTitle = _appPage ? _appPage.title : '';
     const appPageDesc = _appPage ? _appPage.desc : '';
     const appPageIcon = _appPage ? _appPage.icon : 'settings';
-    const appPageControls = _appPage ? _appPage.ctrls : [];
+    const appPageBadge = _appPage ? (_appPage.badge||'') : '';
+    const appPageBlocks = _appPage ? _appPage.blocks : [];
+    const appAccentSoft = this.hexA(ac,0.12), appAccentLine = this.hexA(ac,0.26);
     return {
       navItems, navQuery: st.navQuery, navEmpty, onNavQuery: this.onNavQuery, onNavQueryKey: this.onNavQueryKey,
       isSecQuick: sec==='quick', qsTiles, qsWorkspaces, qsPower, qsMedia,
@@ -3623,7 +3838,7 @@ class Component extends DCLogic {
       powerIcon: {lock:'lock',logout:'logout',restart:'restart_alt',shutdown:'power_settings_new'}[st.powerAsk]||'power_settings_new',
       powerDesc: {lock:'verrouille la session courante',logout:'ferme la session',restart:'redémarre le système',shutdown:'arrête le système'}[st.powerAsk]||'',
       powerCancel: this.powerCancel, powerConfirm: this.powerConfirm, stopEvt: (e)=>{ if(e) e.stopPropagation(); },
-      isSecAppPage, appPageTitle, appPageDesc, appPageIcon, appPageControls,
+      isSecAppPage, appPageTitle, appPageDesc, appPageIcon, appPageBadge, appPageBlocks, appAccentSoft, appAccentLine,
       isSecServices, svcRows, authLegend, authReqShow, authReqVM,
       isSecGeneral: sec==='general', isSecTaskbar: sec==='taskbar', isSecDock: sec==='dock', isSecCompositor: sec==='compositor', isSecTokens: sec==='tokens', isSecMotion: sec==='motion', isSecAtoms: sec==='atoms', isSecMolecules: sec==='molecules', isSecAssets: sec==='assets', isSecBehaviors: sec==='behaviors',
       radiusScale: st.radiusScale, spacingScale: st.spacingScale, onRadius: this.setRadiusScaleE, onSpacing: this.setSpacingScaleE,
@@ -3667,8 +3882,8 @@ class Component extends DCLogic {
       label:s.label, icon:s.icon, sel, go:()=>this.loadScenario(i),
       bg: sel?this.hexA(ac,0.16):'#161516', bd: sel?ac:'#2c2a2e', fg: sel?ac:'#b8b3ba' }; });
     const _theme = st.theme || 'dark', _light = _theme==='light';
-    // ── chrome ink ── the bar + dock commit to a light surface in light theme (any material/family), so their ink flips to dark
-    const _chromeLight = _light;
+    // ── chrome ink ── in light theme with the default material the bar + dock become light surfaces, so their ink flips to dark
+    const _chromeLight = _light && (st.shellMaterial||'auto')==='auto';
     const chromeBg = 'rgba(250,248,252,0.92)';
     const barInkHi = _chromeLight ? '#26222b' : '#cbc5ca';
     const barInk   = _chromeLight ? '#46424c' : '#948f94';
@@ -3965,7 +4180,7 @@ class Component extends DCLogic {
     const membraneBg = 'radial-gradient(74% 58% at 50% 100%, '+this.hexA(ac,0.34)+', rgba(0,0,0,0) 70%), radial-gradient(64% 44% at 50% 0%, '+this.hexA(ac,0.24)+', rgba(0,0,0,0) 64%), radial-gradient(52% 66% at 100% 8%, '+this.hexA(ac,0.30)+', rgba(0,0,0,0) 62%), radial-gradient(48% 66% at 0% 52%, '+this.hexA(ac,0.20)+', rgba(0,0,0,0) 60%)';
     // calestia coherence: the launcher AND the bar adopt the organic material + accent membrane when hug is active,
     // so the surfaces read as ONE surface-aware shell (not just a restyled sidebar).
-    const barBgEff   = famHug ? (_light ? ('linear-gradient(180deg, '+this.hexA(ac,0.14)+', rgba(250,248,252,0.90))') : ('linear-gradient(180deg, '+this.hexA(ac,0.18)+', rgba(20,19,20,0.84))')) : (_chromeLight ? chromeBg : (_mat ? famBgR : 'rgba(20,19,19,0.86)'));
+    const barBgEff   = famHug ? ('linear-gradient(180deg, '+this.hexA(ac,0.18)+', rgba(20,19,20,0.84))') : (_chromeLight ? chromeBg : (_mat ? famBgR : 'rgba(20,19,19,0.86)'));
     const barBlurEff = famHug ? 'blur(14px) saturate(1.2)' : (_mat ? famBlurR : 'blur(8px)');
     const luBgEff = (_mat || famHug) ? famBgR : luShellBg;
     const luBdEff = famHug ? famBorderR : luShellBd;

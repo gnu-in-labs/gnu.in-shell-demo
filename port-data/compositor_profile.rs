@@ -1,5 +1,5 @@
 // gnuin-compose-core :: compositor profile (port target)
-// Mirrors ShellSettingsService.hyprlandPlugin* (components/settings/pages/Appearance settings page)
+// Mirrors ShellSettingsService.hyprlandPlugin* (components/settings/pages/AppearancePage.qml)
 // as a typed, framework-free model. A *profile* is a PRESET that RESOLVES the
 // focus/edge/capture candidates; individual candidates may then override.
 //

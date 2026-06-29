@@ -61,7 +61,7 @@ pub mod layer {
     }
 }
 
-/// Blob inflation around each backed element (legacy UI `panelEdgeMargin`).
+/// Blob inflation around each backed element (QML `panelEdgeMargin`).
 pub const DEFAULT_EDGE_MARGIN: f64 = 6.0;
 // geometry_px: bar_radius 14, menu_radius 12, blob_radius 12, bar_height 40
 pub const MENU_RADIUS: f64 = 12.0;

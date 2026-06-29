@@ -4,8 +4,8 @@
 // Appearance/Shell/Surfaces/Gnosis are realized as Central's General / Taskbar /
 // Compositor+Dock / Sidebar sections; these four close the gap.
 //
-// Source of truth: ShellSettingsService + per-page settings views (DisplaysPage /
-// InputPage / ServicesPage / DeveloperPage). Mirrors the representative real controls; the
+// Source of truth: ShellSettingsService + per-page QML (DisplaysPage / InputPage /
+// ServicesPage / DeveloperPage). Mirrors the representative real controls; the
 // Developer page ties two flags to live engine state (damage overlay, experimental
 // plugins) so it is partly real, not pure placeholder.
 

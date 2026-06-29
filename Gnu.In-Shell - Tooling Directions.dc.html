@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./dc-boot.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:'Montreal','Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
+  @font-face{font-family:'Montreal'; src:url('fonts/Montreal-Regular.woff') format('woff'); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{font-family:'Montreal'; src:url('fonts/Montreal-Bold.woff') format('woff'); font-weight:700; font-style:normal; font-display:swap;}
+  @keyframes gpulse{0%{box-shadow:0 0 0 0 rgba(255,106,0,.5)}70%{box-shadow:0 0 0 7px rgba(255,106,0,0)}100%{box-shadow:0 0 0 0 rgba(255,106,0,0)}}
+  @keyframes gblink{0%,48%{opacity:1}49%,100%{opacity:0}}
+  @keyframes gscan{0%{opacity:.32}50%{opacity:.9}100%{opacity:.32}}
+</style>
+</helmet>
+
+<!-- ════════════════════ FRAME 0 · BRIEF ════════════════════ -->
+<div style="position:absolute; left:80px; top:80px; width:760px;">
+  <div data-drags-parent="1" style="font:600 11px/1 'JetBrains Mono',monospace; letter-spacing:0.2em; text-transform:uppercase; color:#7d7a82; margin:0 0 11px 3px;">00 · brief</div>
+  <div style="height:912px; background:#0D1014; border:1px solid #23282F; border-radius:16px; box-shadow:0 1px 3px rgba(0,0,0,.2), 0 26px 60px rgba(0,0,0,.34); overflow:hidden; display:flex; flex-direction:column;">
+    <div style="padding:27px 28px 0;">
+      <div style="display:flex; align-items:center; gap:9px;">
+        <span style="width:7px; height:7px; border-radius:50%; background:#FF6A00; display:inline-block; animation:gpulse 1600ms ease-out infinite;"></span>
+        <span style="font:600 9.5px/1 'JetBrains Mono',monospace; letter-spacing:0.2em; text-transform:uppercase; color:#6b727b;">gnu.in labs · tooling · 2026-06-26</span>
+      </div>
+      <div style="font:700 47px/0.98 'Montreal',sans-serif; letter-spacing:-0.02em; color:#F3EEE9; margin-top:18px;">gnosis<span style="color:#FF6A00;"> ▸</span> ux</div>
+      <div style="font:400 14px/1.55 'Montreal',sans-serif; color:#9aa0a8; margin-top:13px; max-width:600px;">un seul instrument pour l'ui/ux du shell — <b style="color:#cdc7c2; font-weight:700;">inférer · décider · fonder · varier · auditer</b> chaque surface, câblé au bus d'agents gnu6.</div>
+    </div>
+
+    <div style="padding:24px 28px 0;">
+      <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b; margin-bottom:12px;">les 5 métiers</div>
+      <div style="display:flex; flex-direction:column; gap:1px; background:#1E2329; border:1px solid #23282F; border-radius:12px; overflow:hidden;">
+        <div style="display:flex; align-items:flex-start; gap:13px; padding:12px 15px; background:#14181D;">
+          <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF8E40; width:16px; flex:none; padding-top:2px;">01</span>
+          <div style="flex:1;"><div style="font:700 12px/1 'JetBrains Mono',monospace; letter-spacing:0.03em; color:#E6E1E1;">INFER<span style="color:#5b626b; font-weight:500;"> · frontières & manques</span></div><div style="font:400 11.5px/1.45 'Montreal',sans-serif; color:#8a909a; margin-top:5px;">audit · parity · manifest — classés par priorité inférée.</div></div>
+          <span style="font:400 12px/1 'JetBrains Mono'; color:#3a4048; padding-top:2px;">◇</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:13px; padding:12px 15px; background:#14181D;">
+          <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF8E40; width:16px; flex:none; padding-top:2px;">02</span>
+          <div style="flex:1;"><div style="font:700 12px/1 'JetBrains Mono',monospace; letter-spacing:0.03em; color:#E6E1E1;">DECIDE<span style="color:#5b626b; font-weight:500;"> · questionnaire guidé → spec</span></div><div style="font:400 11.5px/1.45 'Montreal',sans-serif; color:#8a909a; margin-top:5px;">l'arbre de décision dérive une spec; l'agent propose, tu tranches.</div></div>
+          <span style="font:400 12px/1 'JetBrains Mono'; color:#3a4048; padding-top:2px;">▸</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:13px; padding:12px 15px; background:#14181D;">
+          <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF8E40; width:16px; flex:none; padding-top:2px;">03</span>
+          <div style="flex:1;"><div style="font:700 12px/1 'JetBrains Mono',monospace; letter-spacing:0.03em; color:#E6E1E1;">GROUND<span style="color:#5b626b; font-weight:500;"> · surface → backend → port → tests → docs</span></div><div style="font:400 11.5px/1.45 'Montreal',sans-serif; color:#8a909a; margin-top:5px;">chaque surface tracée à sa vraie source dorsale.</div></div>
+          <span style="font:400 12px/1 'JetBrains Mono'; color:#3a4048; padding-top:2px;">⊕</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:13px; padding:12px 15px; background:#14181D;">
+          <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF8E40; width:16px; flex:none; padding-top:2px;">04</span>
+          <div style="flex:1;"><div style="font:700 12px/1 'JetBrains Mono',monospace; letter-spacing:0.03em; color:#E6E1E1;">VARY<span style="color:#5b626b; font-weight:500;"> · variantes ui/ux</span></div><div style="font:400 11.5px/1.45 'Montreal',sans-serif; color:#8a909a; margin-top:5px;">candidats générés depuis les tokens + le filtre TASTE.</div></div>
+          <span style="font:400 12px/1 'JetBrains Mono'; color:#3a4048; padding-top:2px;">░</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:13px; padding:12px 15px; background:#14181D;">
+          <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF8E40; width:16px; flex:none; padding-top:2px;">05</span>
+          <div style="flex:1;"><div style="font:700 12px/1 'JetBrains Mono',monospace; letter-spacing:0.03em; color:#E6E1E1;">AUDIT<span style="color:#5b626b; font-weight:500;"> · dérive vs TASTE</span></div><div style="font:400 11.5px/1.45 'Montreal',sans-serif; color:#8a909a; margin-top:5px;">8 contrôles durs — accent dynamique, radii, densité, motion.</div></div>
+          <span style="font:400 12px/1 'JetBrains Mono'; color:#3a4048; padding-top:2px;">✓</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:20px 28px 0;">
+      <div style="background:#0A0C0F; border:1px solid #20252B; border-radius:12px; padding:15px 17px;">
+        <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b; margin-bottom:11px;">constant sur les 3 directions</div>
+        <div style="display:flex; align-items:baseline; gap:10px; padding:7px 0;">
+          <span style="font:700 10px/1.4 'JetBrains Mono',monospace; color:#8DA982; width:70px; flex:none;">inférence</span>
+          <span style="font:500 11px/1.5 'JetBrains Mono',monospace; color:#aeb4bc;">bus d'agents Gnosis · gnu6 socket <span style="color:#5b626b;">(CM-7)</span> — live <span style="color:#FF6A00;">●</span></span>
+        </div>
+        <div style="display:flex; align-items:baseline; gap:10px; padding:7px 0; border-top:1px solid #181D22;">
+          <span style="font:700 10px/1.4 'JetBrains Mono',monospace; color:#6FB1DC; width:70px; flex:none;">portée</span>
+          <span style="font:500 11px/1.5 'JetBrains Mono',monospace; color:#aeb4bc;">design ⊕ port ⊕ docs ⊕ backend — pipeline entier</span>
+        </div>
+        <div style="display:flex; align-items:baseline; gap:10px; padding:7px 0; border-top:1px solid #181D22;">
+          <span style="font:700 10px/1.4 'JetBrains Mono',monospace; color:#CE8E3F; width:70px; flex:none;">sortie</span>
+          <span style="font:500 11px/1.5 'JetBrains Mono',monospace; color:#aeb4bc;">spec · molécule · cible .rs · preview live</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:auto; padding:17px 28px 21px; border-top:1px solid #1A1F25; display:flex; align-items:center; justify-content:space-between;">
+      <span style="font:400 11px/1.4 'Montreal',sans-serif; color:#6b727b;">même langage · caractère d'instrument propre.</span>
+      <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#E6E1E1;">colonne vertébrale →</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ FRAME A · ATELIER ════════════════════ -->
+<div style="position:absolute; left:920px; top:80px; width:1140px;">
+  <div data-drags-parent="1" style="font:600 11px/1 'JetBrains Mono',monospace; letter-spacing:0.2em; text-transform:uppercase; color:#7d7a82; margin:0 0 11px 3px;">direction α · atelier <span style="color:#54515a;">— le métier guidé</span></div>
+  <div style="height:912px; background:#0D1014; border:1px solid #23282F; border-radius:16px; box-shadow:0 1px 3px rgba(0,0,0,.2), 0 26px 60px rgba(0,0,0,.34); overflow:hidden; display:flex; flex-direction:column;">
+    <!-- chrome header -->
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:15px 22px; border-bottom:1px solid #20252B; background:#0F1318;">
+      <div style="display:flex; align-items:center; gap:13px;">
+        <span style="font:700 13px/1 'JetBrains Mono',monospace; color:#E6E1E1;"><span style="color:#FF6A00;">▸</span> atelier</span>
+        <span style="width:1px; height:14px; background:#2B3037;"></span>
+        <span style="font:500 11px/1 'JetBrains Mono',monospace; color:#8a909a;">surface ▸ <span style="color:#cbc4cb;">context-menu</span> · band 100</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <span style="display:flex; align-items:center; gap:7px; font:600 10px/1 'JetBrains Mono',monospace; color:#9aa0a8;"><span style="width:6px; height:6px; border-radius:50%; background:#FF6A00; display:inline-block; animation:gpulse 1600ms ease-out infinite;"></span> bus live</span>
+        <span style="font:500 10px/1 'JetBrains Mono',monospace; color:#54515a;">engine v0.14.2</span>
+      </div>
+    </div>
+
+    <!-- pipeline rail -->
+    <div style="padding:15px 22px; border-bottom:1px solid #1A1F25; display:flex; align-items:center; gap:0;">
+      <div style="display:flex; align-items:center; gap:8px;"><span style="width:18px; height:18px; border-radius:50%; background:#161b16; border:1px solid #2c3a2c; color:#8DA982; font:700 9px/16px 'JetBrains Mono'; text-align:center;">✓</span><span style="font:700 10px/1 'JetBrains Mono'; color:#8DA982;">research</span></div>
+      <span style="flex:1; height:1px; background:#23282F; min-width:16px; margin:0 9px;"></span>
+      <div style="display:flex; align-items:center; gap:8px;"><span style="width:18px; height:18px; border-radius:50%; background:#161b16; border:1px solid #2c3a2c; color:#8DA982; font:700 9px/16px 'JetBrains Mono'; text-align:center;">✓</span><span style="font:700 10px/1 'JetBrains Mono'; color:#8DA982;">infer</span></div>
+      <span style="flex:1; height:1px; background:#23282F; min-width:16px; margin:0 9px;"></span>
+      <div style="display:flex; align-items:center; gap:8px;"><span style="width:18px; height:18px; border-radius:50%; background:#1A1407; border:1px solid #FF8E40; color:#FF8E40; font:700 9px/16px 'JetBrains Mono'; text-align:center; box-shadow:0 0 0 3px rgba(255,142,64,.12);">◉</span><span style="font:700 10px/1 'JetBrains Mono'; color:#F3EEE9;">decide</span></div>
+      <span style="flex:1; height:1px; background:#23282F; min-width:16px; margin:0 9px;"></span>
+      <div style="display:flex; align-items:center; gap:8px;"><span style="width:18px; height:18px; border-radius:50%; background:#14181D; border:1px solid #2B3037; color:#5b626b; font:700 9px/16px 'JetBrains Mono'; text-align:center;">○</span><span style="font:700 10px/1 'JetBrains Mono'; color:#6b727b;">generate</span></div>
+      <span style="flex:1; height:1px; background:#23282F; min-width:16px; margin:0 9px;"></span>
+      <div style="display:flex; align-items:center; gap:8px;"><span style="width:18px; height:18px; border-radius:50%; background:#14181D; border:1px solid #2B3037; color:#5b626b; font:700 9px/16px 'JetBrains Mono'; text-align:center;">○</span><span style="font:700 10px/1 'JetBrains Mono'; color:#6b727b;">audit</span></div>
+      <span style="flex:1; height:1px; background:#23282F; min-width:16px; margin:0 9px;"></span>
+      <div style="display:flex; align-items:center; gap:8px;"><span style="width:18px; height:18px; border-radius:50%; background:#14181D; border:1px solid #2B3037; color:#5b626b; font:700 9px/16px 'JetBrains Mono'; text-align:center;">○</span><span style="font:700 10px/1 'JetBrains Mono'; color:#6b727b;">ship</span></div>
+    </div>
+
+    <!-- main split -->
+    <div style="flex:1; display:flex; min-height:0;">
+      <!-- left · decide station -->
+      <div style="flex:1.62; padding:20px 22px; border-right:1px solid #1A1F25; display:flex; flex-direction:column; min-width:0;">
+        <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b;">03 ▸ decide</div>
+        <div style="font:700 19px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">décision guidée → spec</div>
+        <div style="font:400 12px/1.5 'Montreal',sans-serif; color:#8a909a; margin-top:6px;">le questionnaire dérive la spec, ancré au corpus. l'agent propose; tu tranches.</div>
+
+        <div style="margin-top:17px; background:#14181D; border:1px solid #23282F; border-radius:12px; padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#cbc4cb;">Q3 / 5</span>
+            <span style="font:500 10px/1 'JetBrains Mono',monospace; color:#6b727b;">comportement à l'ouverture</span>
+          </div>
+          <div style="font:600 14px/1.35 'Montreal',sans-serif; color:#E6E1E1; margin-top:11px;">quand le menu s'ouvre, les suggestions de l'agent…</div>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
+            <div style="display:flex; align-items:center; gap:12px; padding:12px 13px; background:#1A1407; border:1px solid #4a3320; border-radius:9px;">
+              <span style="font:400 14px/1 'JetBrains Mono'; color:#FF8E40;">◉</span>
+              <span style="flex:1; font:500 12.5px/1.3 'Montreal',sans-serif; color:#F3EEE9;">s'ouvrent <b style="font-weight:700;">instantanément</b>, suggestions différées ≈620ms</span>
+              <span style="font:600 9px/1 'JetBrains Mono'; color:#6b727b; padding:4px 7px; border:1px solid #2b3037; border-radius:6px;">observe</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding:12px 13px; background:#0F1318; border:1px solid #20252B; border-radius:9px;">
+              <span style="font:400 14px/1 'JetBrains Mono'; color:#4a515a;">○</span>
+              <span style="flex:1; font:500 12.5px/1.3 'Montreal',sans-serif; color:#9aa0a8;">bloquent l'ouverture jusqu'à ce qu'elles soient prêtes</span>
+              <span style="font:600 9px/1 'JetBrains Mono'; color:#F5A524; padding:4px 7px; background:#241c0c; border:1px solid #4a3a18; border-radius:6px;">local</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding:12px 13px; background:#0F1318; border:1px solid #20252B; border-radius:9px;">
+              <span style="font:400 14px/1 'JetBrains Mono'; color:#4a515a;">○</span>
+              <span style="flex:1; font:500 12.5px/1.3 'Montreal',sans-serif; color:#9aa0a8;">sont désactivées — sections déterministes seules</span>
+              <span style="font:600 9px/1 'JetBrains Mono'; color:#6b727b; padding:4px 7px; border:1px solid #2b3037; border-radius:6px;">observe</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.16em; text-transform:uppercase; color:#6b727b; margin-bottom:8px;">spec en construction</div>
+          <pre style="margin:0; background:#0A0C0F; border:1px solid #20252B; border-radius:10px; padding:14px 15px; font:500 11px/1.7 'JetBrains Mono',monospace; color:#9aa0a8; white-space:pre; overflow:hidden;">spec: <span style="color:#cbc4cb;">GnuContextMenu</span>
+  anatomy : header · sections · suggest · footer
+  open    : <span style="color:#8DA982;">instant + deferred(620ms)</span>   <span style="color:#54515a;">◄ Q3</span>
+  risk    : observe · local · system
+  family  : agentic              <span style="color:#54515a;">molecule_specs.json</span></pre>
+        </div>
+      </div>
+
+      <!-- right · inference rail -->
+      <div style="flex:1; padding:20px 20px; display:flex; flex-direction:column; min-width:0; background:#0B0E12;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#FF6A00; display:inline-block; animation:gpulse 1600ms ease-out infinite;"></span>
+          <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF8E40;">gnosis suggère</span>
+          <span style="font:500 9.5px/1 'JetBrains Mono',monospace; color:#54515a; margin-left:auto;">ready · 0.62s</span>
+        </div>
+
+        <div style="margin-top:14px; background:#14181D; border:1px solid #2c2620; border-radius:12px; padding:15px; box-shadow:0 0 0 1px rgba(255,142,64,0.05);">
+          <div style="font:600 13px/1.35 'Montreal',sans-serif; color:#F3EEE9;">ouverture instantanée + suggestions différées</div>
+          <div style="font:400 11px/1.5 'Montreal',sans-serif; color:#8a909a; margin-top:8px;">« le menu s'ouvre <span style="color:#cbc4cb;">instantanément</span> avec les actions connues; les suggestions remplissent après — l'engine ne bloque jamais l'ouverture. »</div>
+          <div style="display:flex; align-items:center; gap:9px; margin-top:14px;">
+            <span style="font:600 9px/1 'JetBrains Mono',monospace; color:#6b727b;">conf</span>
+            <span style="flex:1; height:4px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:91%; height:100%; background:#8DA982;"></span></span>
+            <span style="font:700 10px/1 'JetBrains Mono',monospace; color:#8DA982;">0.91</span>
+          </div>
+          <div style="margin-top:11px; padding-top:11px; border-top:1px solid #20252B; font:500 10px/1.5 'JetBrains Mono',monospace; color:#6b727b;">source ▸ <span style="color:#9aa0a8;">CONTEXT_MENU_FRONTIERS</span> · CM-1</div>
+          <div style="margin-top:12px; text-align:center; padding:9px; background:#FF6A00; border-radius:8px; font:700 11px/1 'JetBrains Mono',monospace; color:#1a0f06;">appliquer ▸ Q3</div>
+        </div>
+
+        <div style="margin-top:11px; background:#0F1318; border:1px solid #20252B; border-radius:10px; padding:12px 13px;">
+          <div style="font:500 11.5px/1.3 'Montreal',sans-serif; color:#9aa0a8;">bloquer jusqu'à prêt</div>
+          <div style="display:flex; align-items:center; gap:9px; margin-top:10px;">
+            <span style="font:600 9px/1 'JetBrains Mono',monospace; color:#6b727b;">conf</span>
+            <span style="flex:1; height:4px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:24%; height:100%; background:#54515a;"></span></span>
+            <span style="font:700 10px/1 'JetBrains Mono',monospace; color:#6b727b;">0.24</span>
+          </div>
+          <div style="font:500 9.5px/1.5 'JetBrains Mono',monospace; color:#E5686C; margin-top:9px;">⚠ viole « l'engine ne bloque jamais l'ouverture »</div>
+        </div>
+
+        <div style="margin-top:auto; padding-top:14px; font:500 9.5px/1.6 'JetBrains Mono',monospace; color:#54515a;">câblé ▸ Gnosis agent bus<br>gnu6 socket · grant capability</div>
+      </div>
+    </div>
+
+    <!-- footer outputs -->
+    <div style="padding:13px 22px; border-top:1px solid #20252B; background:#0F1318; display:flex; align-items:center; justify-content:space-between;">
+      <div style="display:flex; align-items:center; gap:9px;">
+        <span style="display:flex; align-items:center; gap:7px; padding:7px 11px; background:#14181D; border:1px solid #23282F; border-radius:8px; font:600 10px/1 'JetBrains Mono',monospace; color:#9aa0a8;"><span style="color:#CE8E3F;">◐</span> spec</span>
+        <span style="display:flex; align-items:center; gap:7px; padding:7px 11px; background:#14181D; border:1px solid #23282F; border-radius:8px; font:600 10px/1 'JetBrains Mono',monospace; color:#6b727b;"><span>○</span> molécule</span>
+        <span style="display:flex; align-items:center; gap:7px; padding:7px 11px; background:#14181D; border:1px solid #23282F; border-radius:8px; font:600 10px/1 'JetBrains Mono',monospace; color:#6b727b;"><span>○</span> cible .rs</span>
+        <span style="display:flex; align-items:center; gap:7px; padding:7px 11px; background:#14181D; border:1px solid #23282F; border-radius:8px; font:600 10px/1 'JetBrains Mono',monospace; color:#9aa0a8;"><span style="color:#8DA982;">●</span> preview</span>
+      </div>
+      <span style="font:700 10px/1 'JetBrains Mono',monospace; color:#54515a;">ship ▸</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ FRAME B · RADAR ════════════════════ -->
+<div style="position:absolute; left:2140px; top:80px; width:1180px;">
+  <div data-drags-parent="1" style="font:600 11px/1 'JetBrains Mono',monospace; letter-spacing:0.2em; text-transform:uppercase; color:#7d7a82; margin:0 0 11px 3px;">direction β · radar <span style="color:#54515a;">— l'observatoire d'inférence</span></div>
+  <div style="height:912px; background:#0D1014; border:1px solid #23282F; border-radius:16px; box-shadow:0 1px 3px rgba(0,0,0,.2), 0 26px 60px rgba(0,0,0,.34); overflow:hidden; display:flex; flex-direction:column;">
+    <!-- chrome header -->
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:15px 22px; border-bottom:1px solid #20252B; background:#0F1318;">
+      <div style="display:flex; align-items:center; gap:13px;">
+        <span style="font:700 13px/1 'JetBrains Mono',monospace; color:#E6E1E1;"><span style="color:#FF6A00;">▸</span> radar</span>
+        <span style="width:1px; height:14px; background:#2B3037;"></span>
+        <span style="font:500 11px/1 'JetBrains Mono',monospace; color:#8a909a;">observatoire des surfaces</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <span style="font:500 10px/1 'JetBrains Mono',monospace; color:#9aa0a8;">14 surfaces · <span style="color:#FF8E40;">5 frontières ouvertes</span></span>
+        <span style="display:flex; align-items:center; gap:7px; font:600 10px/1 'JetBrains Mono',monospace; color:#9aa0a8;"><span style="width:6px; height:6px; border-radius:50%; background:#FF6A00; display:inline-block; animation:gpulse 1600ms ease-out infinite;"></span> bus live</span>
+      </div>
+    </div>
+
+    <!-- main split -->
+    <div style="flex:1; display:flex; min-height:0;">
+      <!-- surface map -->
+      <div style="flex:1.78; padding:18px 20px; border-right:1px solid #1A1F25; min-width:0; overflow:hidden;">
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:11px;">
+
+          <!-- node template repeated -->
+          <div style="background:#14181D; border:1px solid #23282F; border-radius:11px; padding:12px 13px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">band 0</span><span style="font:400 11px/1 'JetBrains Mono'; color:#CE8E3F;">◐</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">background</div>
+            <div style="margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#CE8E3F; padding:4px 7px; background:#221c10; border:1px solid #46391f; border-radius:6px;">AUGMENT</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">drift</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:12%; height:100%; background:#8DA982;"></span></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#8DA982;">12%</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #3a2c1e; border-radius:11px; padding:12px 13px; box-shadow:0 0 0 1px rgba(255,142,64,.14);">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">band 1</span><span style="font:400 11px/1 'JetBrains Mono'; color:#CE8E3F;">◐</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">wallpaper</div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#CE8E3F; padding:4px 7px; background:#221c10; border:1px solid #46391f; border-radius:6px;">AUGMENT</span><span style="font:700 9px/1 'JetBrains Mono'; color:#FF8E40; padding:4px 6px; background:#1d1610; border:1px solid #3a2c1e; border-radius:6px;">▲F2</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">drift</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:22%; height:100%; background:#CE8E3F;"></span></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#CE8E3F;">22%</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #23282F; border-radius:11px; padding:12px 13px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">band 30</span><span style="font:400 11px/1 'JetBrains Mono'; color:#8DA982;">●</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">bar</div>
+            <div style="margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#8DA982; padding:4px 7px; background:#161b16; border:1px solid #2c3a2c; border-radius:6px;">KEEP</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">drift</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:3%; height:100%; background:#8DA982;"></span></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#8DA982;">3%</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #23282F; border-radius:11px; padding:12px 13px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">band 30</span><span style="font:400 11px/1 'JetBrains Mono'; color:#8DA982;">●</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">dock</div>
+            <div style="margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#8DA982; padding:4px 7px; background:#161b16; border:1px solid #2c3a2c; border-radius:6px;">KEEP</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">drift</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:5%; height:100%; background:#8DA982;"></span></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#8DA982;">5%</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #23282F; border-radius:11px; padding:12px 13px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">band 60</span><span style="font:400 11px/1 'JetBrains Mono'; color:#8DA982;">●</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">sidebar</div>
+            <div style="margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#8DA982; padding:4px 7px; background:#161b16; border:1px solid #2c3a2c; border-radius:6px;">KEEP</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">drift</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:8%; height:100%; background:#8DA982;"></span></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#8DA982;">8%</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #3a2c1e; border-radius:11px; padding:12px 13px; box-shadow:0 0 0 1px rgba(255,142,64,.14);">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">band 100</span><span style="font:400 11px/1 'JetBrains Mono'; color:#8DA982;">●</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">context-menu</div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#8DA982; padding:4px 7px; background:#161b16; border:1px solid #2c3a2c; border-radius:6px;">KEEP</span><span style="font:700 9px/1 'JetBrains Mono'; color:#FF8E40; padding:4px 6px; background:#1d1610; border:1px solid #3a2c1e; border-radius:6px;">▲F1</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">drift</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:4%; height:100%; background:#8DA982;"></span></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#8DA982;">4%</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #23282F; border-radius:11px; padding:12px 13px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">band 120</span><span style="font:400 11px/1 'JetBrains Mono'; color:#8DA982;">●</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">launcher</div>
+            <div style="margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#8DA982; padding:4px 7px; background:#161b16; border:1px solid #2c3a2c; border-radius:6px;">KEEP</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">drift</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:6%; height:100%; background:#8DA982;"></span></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#8DA982;">6%</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #3a2c1e; border-radius:11px; padding:12px 13px; box-shadow:0 0 0 1px rgba(255,142,64,.14);">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">band 850</span><span style="font:400 11px/1 'JetBrains Mono'; color:#CE8E3F;">◐</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">notifications</div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#6FB1DC; padding:4px 7px; background:#11202a; border:1px solid #224150; border-radius:6px;">EDIT</span><span style="font:700 9px/1 'JetBrains Mono'; color:#FF8E40; padding:4px 6px; background:#1d1610; border:1px solid #3a2c1e; border-radius:6px;">▲F3</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">drift</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:38%; height:100%; background:#E5686C;"></span></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#E5686C;">38%</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #23282F; border-radius:11px; padding:12px 13px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">band 800</span><span style="font:400 11px/1 'JetBrains Mono'; color:#8DA982;">●</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">osd</div>
+            <div style="margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#8DA982; padding:4px 7px; background:#161b16; border:1px solid #2c3a2c; border-radius:6px;">KEEP</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">drift</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:5%; height:100%; background:#8DA982;"></span></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#8DA982;">5%</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #3a2c1e; border-radius:11px; padding:12px 13px; box-shadow:0 0 0 1px rgba(255,142,64,.14);">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">band 500</span><span style="font:400 11px/1 'JetBrains Mono'; color:#5b626b;">○</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">modal</div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#FF8E40; padding:4px 7px; background:#241a12; border:1px solid #4a3320; border-radius:6px;">ADD</span><span style="font:700 9px/1 'JetBrains Mono'; color:#FF8E40; padding:4px 6px; background:#1d1610; border:1px solid #3a2c1e; border-radius:6px;">▲F4</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">parity</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F;"></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#5b626b;">n.a</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #23282F; border-radius:11px; padding:12px 13px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">band 880</span><span style="font:400 11px/1 'JetBrains Mono'; color:#5b626b;">○</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">screen-corner</div>
+            <div style="margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#8DA982; padding:4px 7px; background:#161b16; border:1px solid #2c3a2c; border-radius:6px;">KEEP</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">parity</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F;"></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#5b626b;">pend</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #23282F; border-radius:11px; padding:12px 13px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono'; color:#54515a;">profil</span><span style="font:400 11px/1 'JetBrains Mono'; color:#8DA982;">●</span></div>
+            <div style="font:700 13px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:9px;">compositor</div>
+            <div style="margin-top:9px;"><span style="font:700 9px/1 'JetBrains Mono'; color:#8DA982; padding:4px 7px; background:#161b16; border:1px solid #2c3a2c; border-radius:6px;">KEEP</span></div>
+            <div style="display:flex; align-items:center; gap:7px; margin-top:11px;"><span style="font:600 8px/1 'JetBrains Mono'; color:#54515a;">drift</span><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:7%; height:100%; background:#8DA982;"></span></span><span style="font:700 8.5px/1 'JetBrains Mono'; color:#8DA982;">7%</span></div>
+          </div>
+
+        </div>
+
+        <!-- legend strip -->
+        <div style="margin-top:16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding-top:14px; border-top:1px solid #1A1F25;">
+          <span style="font:700 8.5px/1 'JetBrains Mono'; color:#8DA982;">KEEP</span>
+          <span style="font:700 8.5px/1 'JetBrains Mono'; color:#6FB1DC;">EDIT</span>
+          <span style="font:700 8.5px/1 'JetBrains Mono'; color:#CE8E3F;">AUGMENT</span>
+          <span style="font:700 8.5px/1 'JetBrains Mono'; color:#FF8E40;">ADD</span>
+          <span style="font:700 8.5px/1 'JetBrains Mono'; color:#E5686C;">REPLACE</span>
+          <span style="width:1px; height:11px; background:#2B3037;"></span>
+          <span style="font:500 8.5px/1 'JetBrains Mono'; color:#6b727b;">parity <span style="color:#8DA982;">●</span> complete <span style="color:#CE8E3F;">◐</span> partial <span style="color:#5b626b;">○</span> pending</span>
+          <span style="font:500 8.5px/1 'JetBrains Mono'; color:#54515a; margin-left:auto;">node → backend → port → tests → docs</span>
+        </div>
+      </div>
+
+      <!-- agent feed -->
+      <div style="flex:1; padding:18px 18px; min-width:0; background:#0B0E12; display:flex; flex-direction:column;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#FF6A00; display:inline-block; animation:gpulse 1600ms ease-out infinite;"></span>
+          <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF8E40;">gnosis suggère…</span>
+          <span style="font:700 8.5px/1 'JetBrains Mono'; color:#1a0f06; background:#FF8E40; padding:3px 6px; border-radius:5px; margin-left:auto;">3 nouvelles</span>
+        </div>
+        <div style="font:500 9px/1.5 'JetBrains Mono'; color:#54515a; margin-top:9px;">frontières classées par priorité inférée du corpus.</div>
+
+        <div style="margin-top:13px; display:flex; flex-direction:column; gap:9px;">
+          <div style="background:#14181D; border:1px solid #2c2620; border-radius:11px; padding:13px;">
+            <div style="display:flex; align-items:center; gap:9px;"><span style="font:700 10px/1 'JetBrains Mono'; color:#FF8E40; padding:3px 6px; background:#241a12; border:1px solid #4a3320; border-radius:6px;">F1</span><span style="font:600 12px/1.2 'Montreal',sans-serif; color:#E6E1E1;">context-menu ▸ CM-5</span><span style="font:600 8px/1 'JetBrains Mono'; color:#6b727b; padding:3px 6px; border:1px solid #2b3037; border-radius:5px; margin-left:auto;">observe</span></div>
+            <div style="font:400 10.5px/1.5 'Montreal',sans-serif; color:#8a909a; margin-top:9px;">nav clavier — ↑/↓/Enter sur items + suggestions ready.</div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:11px;"><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:88%; height:100%; background:#8DA982;"></span></span><span style="font:700 9px/1 'JetBrains Mono'; color:#8DA982;">0.88</span></div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:9px; border-top:1px solid #20252B;"><span style="font:500 8.5px/1 'JetBrains Mono'; color:#54515a;">CONTEXT_MENU_FRONTIERS</span><span style="font:700 9px/1 'JetBrains Mono'; color:#FF8E40;">→ atelier</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #23282F; border-radius:11px; padding:13px;">
+            <div style="display:flex; align-items:center; gap:9px;"><span style="font:700 10px/1 'JetBrains Mono'; color:#FF8E40; padding:3px 6px; background:#241a12; border:1px solid #4a3320; border-radius:6px;">F2</span><span style="font:600 12px/1.2 'Montreal',sans-serif; color:#E6E1E1;">wallpaper ▸ wallSource</span><span style="font:600 8px/1 'JetBrains Mono'; color:#F5A524; padding:3px 6px; background:#241c0c; border:1px solid #4a3a18; border-radius:5px; margin-left:auto;">local</span></div>
+            <div style="font:400 10.5px/1.5 'Montreal',sans-serif; color:#8a909a; margin-top:9px;">clé backend absente — wire un vrai modèle ou étiqueter sim-only.</div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:11px;"><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:74%; height:100%; background:#CE8E3F;"></span></span><span style="font:700 9px/1 'JetBrains Mono'; color:#CE8E3F;">0.74</span></div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:9px; border-top:1px solid #20252B;"><span style="font:500 8.5px/1 'JetBrains Mono'; color:#54515a;">SHELL_INVENTORY_AUDIT</span><span style="font:700 9px/1 'JetBrains Mono'; color:#FF8E40;">→ atelier</span></div>
+          </div>
+
+          <div style="background:#14181D; border:1px solid #23282F; border-radius:11px; padding:13px;">
+            <div style="display:flex; align-items:center; gap:9px;"><span style="font:700 10px/1 'JetBrains Mono'; color:#FF8E40; padding:3px 6px; background:#241a12; border:1px solid #4a3320; border-radius:6px;">F3</span><span style="font:600 12px/1.2 'Montreal',sans-serif; color:#E6E1E1;">notifications ▸ modèle</span><span style="font:600 8px/1 'JetBrains Mono'; color:#F5A524; padding:3px 6px; background:#241c0c; border:1px solid #4a3a18; border-radius:5px; margin-left:auto;">local</span></div>
+            <div style="font:400 10.5px/1.5 'Montreal',sans-serif; color:#8a909a; margin-top:9px;">ancrer le tray sur un vrai notification model (EDIT).</div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:11px;"><span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="display:block; width:69%; height:100%; background:#CE8E3F;"></span></span><span style="font:700 9px/1 'JetBrains Mono'; color:#CE8E3F;">0.69</span></div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:9px; border-top:1px solid #20252B;"><span style="font:500 8.5px/1 'JetBrains Mono'; color:#54515a;">SHELL_INVENTORY_AUDIT</span><span style="font:700 9px/1 'JetBrains Mono'; color:#FF8E40;">→ atelier</span></div>
+          </div>
+        </div>
+
+        <div style="margin-top:auto; padding-top:13px; font:500 9px/1.6 'JetBrains Mono'; color:#54515a;">inférence ▸ Gnosis agent bus · gnu6 socket<br>recalcul live à chaque commit du corpus</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ FRAME C · CONSOLE ════════════════════ -->
+<div style="position:absolute; left:3400px; top:80px; width:1140px;">
+  <div data-drags-parent="1" style="font:600 11px/1 'JetBrains Mono',monospace; letter-spacing:0.2em; text-transform:uppercase; color:#7d7a82; margin:0 0 11px 3px;">direction γ · console <span style="color:#54515a;">— le REPL agentique</span></div>
+  <div style="height:912px; background:#08090C; border:1px solid #23282F; border-radius:16px; box-shadow:0 1px 3px rgba(0,0,0,.2), 0 26px 60px rgba(0,0,0,.34); overflow:hidden; display:flex; flex-direction:column;">
+    <!-- chrome header -->
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid #1A1F25; background:#0B0D11;">
+      <div style="display:flex; align-items:center; gap:11px;">
+        <span style="display:flex; gap:6px;"><span style="width:9px; height:9px; border-radius:50%; background:#23282F;"></span><span style="width:9px; height:9px; border-radius:50%; background:#23282F;"></span><span style="width:9px; height:9px; border-radius:50%; background:#2c3a2c;"></span></span>
+        <span style="font:700 12px/1 'JetBrains Mono',monospace; color:#E6E1E1; margin-left:6px;">gnosis <span style="color:#FF6A00;">▸</span> console</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:13px;">
+        <span style="font:500 10px/1 'JetBrains Mono',monospace; color:#6b727b;">~/shell · context-menu</span>
+        <span style="display:flex; align-items:center; gap:7px; font:600 10px/1 'JetBrains Mono',monospace; color:#9aa0a8;"><span style="width:6px; height:6px; border-radius:50%; background:#FF6A00; display:inline-block; animation:gpulse 1600ms ease-out infinite;"></span> bus</span>
+      </div>
+    </div>
+
+    <!-- transcript -->
+    <div style="flex:1; padding:18px 20px; min-height:0; overflow:hidden; display:flex; flex-direction:column; gap:13px;">
+
+      <!-- ground -->
+      <div>
+        <div style="font:500 12px/1.6 'JetBrains Mono',monospace;"><span style="color:#8DA982;">gnosis</span> <span style="color:#FF6A00;">▸</span> <span style="color:#E6E1E1;">ground context-menu</span></div>
+        <div style="margin-top:8px; margin-left:13px; border-left:2px solid #20252B; padding:2px 0 2px 14px; display:grid; grid-template-columns:64px 1fr; gap:3px 12px; font:500 11px/1.55 'JetBrains Mono',monospace;">
+          <span style="color:#5b626b;">surface</span><span style="color:#aeb4bc;">context-menu · band 100 · <span style="color:#8DA982;">KEEP</span></span>
+          <span style="color:#5b626b;">backend</span><span style="color:#aeb4bc;">gnuin-compose-core::menu <span style="color:#54515a;">v0.14.2</span></span>
+          <span style="color:#5b626b;">port</span><span style="color:#aeb4bc;">compose_core.rs · 23 styles · parity_tests</span>
+          <span style="color:#5b626b;">tests</span><span style="color:#aeb4bc;">6 input · 6 edge · 10 diff · invariants</span>
+          <span style="color:#5b626b;">docs</span><span style="color:#aeb4bc;">PARITY · MANIFEST · molecule_specs<span style="color:#54515a;">(30)</span></span>
+        </div>
+      </div>
+
+      <!-- infer -->
+      <div>
+        <div style="font:500 12px/1.6 'JetBrains Mono',monospace;"><span style="color:#8DA982;">gnosis</span> <span style="color:#FF6A00;">▸</span> <span style="color:#E6E1E1;">infer frontiers --surface context-menu</span></div>
+        <div style="margin-top:8px; margin-left:13px; border-left:2px solid #2c2620; padding:2px 0 2px 14px; font:500 11px/1.7 'JetBrains Mono',monospace;">
+          <div style="color:#FF8E40;"><span style="animation:gscan 1400ms ease-in-out infinite;">●</span> gnosis · thinking… <span style="color:#54515a;">→ ready 0.6s</span></div>
+          <div style="margin-top:4px; color:#aeb4bc;">▸ CM-5 keyboard nav&nbsp;&nbsp;&nbsp;<span style="color:#8DA982;">conf 0.88</span>&nbsp;&nbsp;<span style="color:#6b727b;">observe</span>&nbsp;&nbsp;<span style="color:#FF8E40;">next</span></div>
+          <div style="color:#aeb4bc;">▸ CM-7 agent-bus bind <span style="color:#CE8E3F;">conf 0.71</span>&nbsp;&nbsp;<span style="color:#F5A524;">local</span>&nbsp;&nbsp;&nbsp;<span style="color:#6b727b;">final</span></div>
+          <div style="margin-top:4px; color:#54515a;">source: CONTEXT_MENU_FRONTIERS.md</div>
+        </div>
+      </div>
+
+      <!-- spec interactive -->
+      <div>
+        <div style="font:500 12px/1.6 'JetBrains Mono',monospace;"><span style="color:#8DA982;">gnosis</span> <span style="color:#FF6A00;">▸</span> <span style="color:#E6E1E1;">spec --interactive</span></div>
+        <div style="margin-top:8px; margin-left:13px; border-left:2px solid #20252B; padding:2px 0 2px 14px; font:500 11px/1.7 'JetBrains Mono',monospace;">
+          <div style="color:#cbc4cb;">Q3 · comportement à l'ouverture?</div>
+          <div style="margin-top:3px; color:#F3EEE9; background:#1A1407; border:1px solid #4a3320; border-radius:6px; padding:4px 8px; display:inline-block;">[1] instant + différé (≈620ms)&nbsp;&nbsp;<span style="color:#FF8E40;">◄ gnosis 0.91</span></div>
+          <div style="color:#6b727b; margin-top:4px;">[2] bloquant&nbsp;&nbsp;&nbsp;[3] déterministe seul</div>
+          <div style="margin-top:6px; color:#E6E1E1;"><span style="color:#FF6A00;">▸</span> 1</div>
+          <div style="color:#8DA982; margin-top:2px;">✓ spec.open = instant + deferred(620)</div>
+        </div>
+      </div>
+
+      <!-- live preview chip -->
+      <div>
+        <div style="font:500 9px/1 'JetBrains Mono',monospace; letter-spacing:0.16em; text-transform:uppercase; color:#6b727b; margin-bottom:8px;">preview ▸ <span style="color:#8DA982;">live</span></div>
+        <div style="width:248px; background:#14181D; border:1px solid #2B3037; border-radius:12px; padding:7px; box-shadow:0 10px 24px rgba(0,0,0,.4);">
+          <div style="padding:7px 9px; font:500 11px/1 'Montreal',sans-serif; color:#E6E1E1; border-radius:7px;">nouveau</div>
+          <div style="padding:7px 9px; font:500 11px/1 'Montreal',sans-serif; color:#E6E1E1; background:#1c2630; border-radius:7px;">ouvrir un terminal</div>
+          <div style="padding:7px 9px; font:500 11px/1 'Montreal',sans-serif; color:#E6E1E1;">changer le fond</div>
+          <div style="height:1px; background:#23282F; margin:5px 6px;"></div>
+          <div style="display:flex; align-items:center; gap:7px; padding:7px 9px;"><span style="width:5px; height:5px; border-radius:50%; background:#FF6A00; animation:gpulse 1600ms ease-out infinite;"></span><span style="font:600 10px/1 'JetBrains Mono',monospace; color:#FF8E40;">gnosis suggère…</span></div>
+          <div style="padding:0 9px 6px;"><span style="display:block; height:9px; width:80%; background:#1E2329; border-radius:4px; animation:gscan 1400ms ease-in-out infinite;"></span><span style="display:block; height:9px; width:58%; background:#1E2329; border-radius:4px; margin-top:5px; animation:gscan 1400ms ease-in-out infinite;"></span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- input line -->
+    <div style="border-top:1px solid #1A1F25; background:#0B0D11; padding:13px 20px;">
+      <div style="display:flex; align-items:center; gap:8px; font:500 12.5px/1 'JetBrains Mono',monospace;">
+        <span style="color:#8DA982;">gnosis</span><span style="color:#FF6A00;">▸</span><span style="color:#E6E1E1;">audit dock --against TASTE</span><span style="width:8px; height:16px; background:#FF6A00; display:inline-block; animation:gblink 1100ms step-end infinite;"></span>
+      </div>
+      <div style="margin-top:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font:500 9.5px/1 'JetBrains Mono',monospace; color:#54515a;">
+        <span style="color:#6b727b;">verbes ▸</span>
+        <span>infer</span><span>·</span><span>ground</span><span>·</span><span>decide</span><span>·</span><span>vary</span><span>·</span><span>audit</span><span>·</span><span>spec</span><span>·</span><span>ship</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { background:#0E1115; color:#F5EEDD; margin:0; font-family:'IBM Plex Sans',sans-serif; }
+  * { box-sizing:border-box; }
+  code { font-family:'IBM Plex Mono',monospace; font-size:0.86em; background:#0A0C0F; color:#9AA3AD; padding:1px 5px; border-radius:3px; }
+  .mono { font-family:'IBM Plex Mono',monospace; }
+</style>
+</helmet>
+
+<div style="min-height:100vh; background:#0E1115; padding:0 0 100px;">
+
+  <div style="position:sticky; top:0; z-index:20; background:#111418; border-bottom:1px solid #1E2329; padding:16px 0;">
+    <div style="max-width:920px; margin:0 auto; padding:0 40px;">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px;">
+        <span class="mono" style="font-size:11px; color:#FF6A00; letter-spacing:0.16em;">GNU.IN</span>
+        <span style="color:#2B3037;">·</span>
+        <span class="mono" style="font-size:11px; color:#3A4250;">Audit Remediation · Agent Work Order · v2</span>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:12px;">
+          <span class="mono" style="font-size:12px; color:#8A939E;">{{ doneCount }}/{{ total }} done · {{ pct }}%</span>
+          <button onClick="{{ reset }}" style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#4A5568; background:transparent; border:1px solid #232830; border-radius:5px; padding:4px 10px; cursor:pointer; letter-spacing:0.06em;" style-hover="color:#8A939E; border-color:#3A4250;">RESET</button>
+        </div>
+      </div>
+      <div style="height:6px; background:#0A0C0F; border-radius:999px; overflow:hidden; border:1px solid #1A1E24;">
+        <div style="{{ progressFillStyle }}"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:920px; margin:0 auto; padding:0 40px;">
+
+    <div style="background:#101820; border:1px solid #1A3040; border-radius:8px; padding:16px 20px; margin-top:28px;">
+      <div class="mono" style="font-size:10px; color:#6090A8; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:8px;">▸ Agent brief</div>
+      <div style="font-size:13px; color:#7FA8C0; line-height:1.7;">
+        Work top to bottom; priorities are ordered. Each task is <strong style="color:#A8D0E0;">atomic</strong> — one repo, one change, one <span class="mono" style="color:#9AA3AD;">verify</span> condition. Check a box only when verify passes. Live-state authority is <code>components.lock.toml</code> + <code>release/VERSION</code> + <code>GLOBAL-VERSION.json</code> + <code>tokens.json</code> — never the stale WORKSPACE_INVENTORY or the "v0.4.0" docs. Paste-ready text for the P0/P1 doc edits is in <strong style="color:#A8D0E0;">Gnu.in P0 Fix Drafts</strong>.
+      </div>
+    </div>
+
+    <div style="background:#1A0E08; border:1px solid #5C2108; border-radius:8px; padding:16px 20px; margin-top:12px;">
+      <div class="mono" style="font-size:10px; color:#FF6A00; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:8px;">▸ QML is retired-as-tech</div>
+      <div style="font-size:13px; color:#C08858; line-height:1.7;">
+        Forward chrome is native Rust/sctk (<code>engine/gnuin-*</code>); token codegen is GPUI/Rust-first, QML opt-in. <strong style="color:#E0A070;">Do not invest in dying QML.</strong> QML preview/archived surfaces (uikit, controls, dock, ServiceManager) are reference/legacy — fixes there are downgraded or wontfix. Tasks that touch QML say so in <span class="mono" style="color:#C08858;">note</span>.
+      </div>
+    </div>
+
+    <sc-for list="{{ sections }}" as="sec" hint-placeholder-count="5">
+      <sc-if value="{{ sec.hasTasks }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:34px;">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+            <span class="mono" style="{{ sec.labelStyle }}">{{ sec.title }}</span>
+            <span class="mono" style="font-size:11px; color:#3A4250;">{{ sec.sub }}</span>
+            <span style="flex:1; height:1px; background:#1A1E24;"></span>
+            <span class="mono" style="font-size:11px; color:#3A4250;">{{ sec.countLabel }}</span>
+          </div>
+
+          <sc-for list="{{ sec.tasks }}" as="t" hint-placeholder-count="3">
+            <div style="{{ t.cardStyle }}">
+              <div onClick="{{ t.onToggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</div>
+              <div style="flex:1; min-width:0;">
+                <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;">
+                  <span class="mono" style="{{ t.codeStyle }}">{{ t.code }}</span>
+                  <span class="mono" style="font-size:10px; color:#3A4250;">{{ t.repo }}</span>
+                </div>
+                <div style="{{ t.titleStyle }}">{{ t.title }}</div>
+                <div class="mono" style="font-size:11px; color:#5A6470; margin-top:7px; line-height:1.6;">{{ t.files }}</div>
+                <sc-if value="{{ t.hasNote }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px; color:#C08858; margin-top:7px; line-height:1.55; background:#16100A; border-left:2px solid #5C2108; padding:6px 10px; border-radius:0 4px 4px 0;"><span class="mono" style="font-size:10px; color:#A8602F;">qml-retired · </span>{{ t.note }}</div>
+                </sc-if>
+                <sc-if value="{{ showFixDetail }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:12.5px; color:#8A939E; margin-top:8px; line-height:1.6;"><span class="mono" style="color:#5F9F72; font-size:11px;">change · </span>{{ t.change }}</div>
+                </sc-if>
+                <sc-if value="{{ showVerifySteps }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:12.5px; color:#6A7280; margin-top:5px; line-height:1.6;"><span class="mono" style="color:#C99A2E; font-size:11px;">verify · </span>{{ t.verify }}</div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </sc-for>
+
+    <div style="margin-top:48px; padding-top:20px; border-top:1px solid #1E2329; display:flex; justify-content:space-between; align-items:center;">
+      <span class="mono" style="font-size:11px; color:#2B3037;">{{ total }} tasks · audit + deep-dive · 2026-06-27</span>
+      <span class="mono" style="font-size:11px; color:#2B3037;">target: v0.14.2 beta · authority tokens.json v0.14.0</span>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:920,&quot;height&quot;:1500},&quot;hideCompleted&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Display&quot;,&quot;label&quot;:&quot;Hide completed tasks&quot;},&quot;showVerifySteps&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Display&quot;,&quot;label&quot;:&quot;Show verify steps&quot;},&quot;showFixDetail&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Display&quot;,&quot;label&quot;:&quot;Show change detail&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem('gnuin-audit-checklist-v2') || '{}'); } catch (e) {}
+    this.state = { checked: saved };
+  }
+
+  persist(checked) {
+    try { localStorage.setItem('gnuin-audit-checklist-v2', JSON.stringify(checked)); } catch (e) {}
+  }
+
+  toggle(id) {
+    this.setState(s => {
+      const checked = Object.assign({}, s.checked, { [id]: !s.checked[id] });
+      this.persist(checked);
+      return { checked };
+    });
+  }
+
+  reset() { this.persist({}); this.setState({ checked: {} }); }
+
+  rawTasks() {
+    return [
+      // ---- P0 ----
+      { id:'T01', p:'P0', repo:'gnu.in-design-reference',
+        title:'SKILL.md \u2014 apply the 5 corrections (see Fix Drafts)',
+        files:'SKILL.md \u00b7 chrome kit, motion, mascot, surface #F7F3ED, token v0.14.0',
+        change:'SKILL.md is the agent entry point and contradicts the live authority on 5 points: deprecated chrome kit (index.html\u2192ii-bar-upgrade.html), flat motion presented as default, wrong mascot asset, wrong canonical surface (#F5EEDD\u2192#F7F3ED), stale token version (v0.4.0\u2192v0.14.0). Paste-ready in "Gnu.in P0 Fix Drafts".',
+        verify:'SKILL.md agrees with TASTE.md, colors_and_type.css, and tokens.json on all 5; no agent reading it alone produces off-brand chrome.' },
+      { id:'T02', p:'P0', repo:'workspace root',
+        title:'Delete error.log \u2014 it exposes a live account ID',
+        files:'error.log (workspace root, untracked)',
+        change:'Contains a ChatGPT account_id in plaintext. Remove it; add *.log to a root .gitignore; repoint the superpowers bridge to a runtime/temp log path.',
+        verify:'error.log gone; no account ID anywhere in tree; git status clean at root.' },
+
+      // ---- P1 ----
+      { id:'T03', p:'P1', repo:'gnu.in-os/docs',
+        title:'Regenerate WORKSPACE_INVENTORY (v0.12.0 \u2192 v0.14.2)',
+        files:'docs/WORKSPACE_INVENTORY.md \u2014 header + component table + retirement note',
+        change:'Header, build id, and all 4 component revs/branches are stale (shell branch is wrong: jj-overhaul vs feat/osd-rust-slice). Add the QML-retirement note. Paste-ready in Fix Drafts (FIX 2).',
+        verify:'Version + build + 4 revs match components.lock.toml / GLOBAL-VERSION.json; QML-retirement direction stated.' },
+      { id:'T04', p:'P1', repo:'gnu.in-design-reference',
+        title:'README.md \u2014 fix canonical light surface #F5EEDD \u2192 #F7F3ED',
+        files:'README.md \u00a7Color + \u00a7Caveats',
+        change:'README hard-states #F5EEDD as canonical Shell White, but tokens.json color.surface + colors_and_type.css --gnu-shell define #F7F3ED as canonical; #F5EEDD is "filled backgrounds only". Reconcile README to the token authority.',
+        verify:'README surface color == tokens.json color.surface (#F7F3ED); #F5EEDD described as cream-for-fills only.' },
+      { id:'T05', p:'P1', repo:'gnu.in-design-reference',
+        title:'README.md \u2014 fix the token codegen-target list',
+        files:'README.md \u00a7Repository authority / blob.in row',
+        change:'README says blobin-gen lowers tokens into "GnuTheme.qml, gnu_theme.rs, gnu_theme.h, gnu_theme.dart". Reality (tokens.json v0.14.0): Dart retired, GPUI primary (gnu_theme.gpui.rs), QML opt-in. Update the list + framing.',
+        verify:'README codegen list matches tokens.json comment + TOKEN_AUTHORITY_REPORT (GPUI-first, QML opt-in, no Dart).' },
+      { id:'T06', p:'P1', repo:'gnu.in-shell/assets',
+        title:'Add the 2026-06-09 bundle provenance to DESIGN_ASSET_MANIFEST',
+        files:'assets/DESIGN_ASSET_MANIFEST.md',
+        change:'Manifest lists only the original 2 ZIPs; 3 bundles (context-spec v0.4.0, gnu-in-design-system, gnosis-app HUD \u2014 120 files incl. the blob.in Rust workspace) imported 06-09 are unlisted.',
+        verify:'Manifest lists all 5 sources with IDs/SHA256s and runtime-eligible mappings.' },
+      { id:'T07', p:'P1', repo:'gnu.in-shell',
+        title:'Close AUDIT_SURFACES_2026-06-11 \u2014 the clock fix already landed',
+        files:'components/motion/atoms/Lift.qml \u00b7 Origami.qml \u00b7 the audit doc',
+        change:'The audit\u2019s P1 root cause (Lift/Origami lack implicitWidth) is no longer true \u2014 both now propagate implicitWidth: holder.width / implicitHeight: holder.height. Re-run the harness and mark the item resolved.',
+        verify:'Surface audit re-run is clean for the clock; the 06-11 doc P1 is marked done with the resolving commit.',
+        note:'No QML patch needed \u2014 already fixed in tree. The native gnuin-bar measures text via fontdue, so the clip class can\u2019t recur on the forward path.' },
+
+      // ---- P2 ----
+      { id:'T08', p:'P2', repo:'gnu.in-design-reference',
+        title:'Bump token version v0.4.0 \u2192 v0.14.0 across docs',
+        files:'DESIGN_SOURCE_INVENTORY.md \u00b7 README.md \u00b7 SKILL.md (\u2713 in T01)',
+        change:'tokens.json is v0.14.0 but the inventory + README narrate "tokens v0.4.0". Also note B05 unified versions (was 0.4.0 / 4.0.0 / 0.5.0). Reconcile every prose version string to 0.14.0.',
+        verify:'No doc states a token version other than 0.14.0 (or an explicit history note).' },
+      { id:'T09', p:'P2', repo:'gnu.in-os',
+        title:'surfaces.toml \u2014 migration-state keys + topbar\u2192taskbar rename',
+        files:'contracts/surfaces.toml (+ grep topbar across os/shell)',
+        change:'Only shellSettings has owner_rs; ~18 surfaces have native Rust hosts in engine/gnuin-* but the contract lists only owner_qml. Add native_host / host_selector / migration_state per surface. Also rename topbar\u2192taskbar: gnuin-topbar namespace, shell.topbar.host selector, TopbarHost.qml \u2014 they\u2019re inconsistent with the [surfaces.taskbar] name. See "Gnu.in P2 Contract Drafts".',
+        verify:'Each migrating surface lists its native host + selector + state; no "topbar" identifier remains; schema enum + call sites updated in lockstep.' },
+      { id:'T10', p:'P2', repo:'gnu.in-os',
+        title:'runtime.toml \u2014 refresh stale pointers',
+        files:'contracts/runtime.toml',
+        change:'active_release = "2026-05-26-gnuin-os" and profile = "stable" are stale vs the v0.14.2 beta train (build 2026-06-24, CHANNEL=beta). Update or document why profile=stable coexists with CHANNEL=beta.',
+        verify:'active_release points at the current train; profile/channel relationship is correct or documented.' },
+      { id:'T11', p:'P2', repo:'gnu.in-design-reference / gnu.in-os',
+        title:'Resolve chrome icon-family authority (Material Symbols vs Nerd Font)',
+        files:'TASTE.md/README/SKILL \u00b7 engine/gnuin-bar/src/text.rs',
+        change:'Design system mandates Material Symbols Rounded for chrome (from the old QML Appearance.qml). The native gnuin-bar ships Nerd-Font MDI codepoints (nf-md-*). With QML retiring, decide the forward chrome icon family and align both sides.',
+        verify:'One documented chrome icon family; design docs + native bar agree.' },
+      { id:'T12', p:'P2', repo:'gnu.in-shell \u2192 gnuin-launcher',
+        title:'Remove the orphaned "v3.2" launcher badge',
+        files:'AppLauncher surface (and native gnuin-launcher)',
+        change:'"v3.2" matches no current version. Remove or bind to release/VERSION. Land the fix on whichever launcher is forward (native gnuin-launcher), not only the QML one.',
+        verify:'No stale version string in the launcher; any version shown == release/VERSION.',
+        note:'AppLauncher is mid-migration to native gnuin-launcher \u2014 prefer fixing the native target.' },
+
+      // ---- P3 ----
+      { id:'T13', p:'P3', repo:'gnu.in-shell',
+        title:'UiKitSurface placeholders (LockWake date, ALERTS, onboarding)',
+        files:'components/preview/UiKitSurface.qml',
+        change:'Static date "21:47 \u00b7 TUESDAY, MAY 13", near-empty ALERTS panel, onboarding overlaps mascot, "veille" chip clipped.',
+        verify:'If the preview stays a shipped design surface: date is live, no overlap/clip, ALERTS composed.',
+        note:'QML preview/reference surface. Fix only if it stays a shipped design surface; otherwise migrate the reference to HTML/native and skip.' },
+      { id:'T14', p:'P3', repo:'gnu.in-shell',
+        title:'ControlsSurface gallery (C.11\u2013C.17 gap, C.18 divider, C.02 overflow)',
+        files:'components/preview/ControlsSurface.qml',
+        change:'Numbering jumps C.10\u2192C.18; C.18 Divider draws no line; C.02 Button overflows its card.',
+        verify:'Numbering contiguous or documented; C.18 line visible; C.02 contained.',
+        note:'QML preview/reference surface \u2014 same retired-tech caveat as T13.' },
+      { id:'T15', p:'P3', repo:'gnu.in-shell',
+        title:'GnuinMotion.qml \u2014 duplicate checkTick key in motionAtomMetrics',
+        files:'services/GnuinMotion.qml',
+        change:'TOKEN_AUTHORITY_REPORT flags a duplicated checkTick key (JS last-wins) \u2014 latent, no current effect. De-dupe to prevent a future silent override.',
+        verify:'Single checkTick key; motion metrics unchanged.',
+        note:'Low-value if GnuinMotion retires with QML motion \u2014 but it is a one-line de-dupe and the report calls it out.' },
+      { id:'T16', p:'P3', repo:'gnu.in-os',
+        title:'Pin alaelestia + syster-app in components.toml',
+        files:'components.toml \u00b7 components.lock.toml \u00b7 COMPONENT_REPOS.md',
+        change:'gnuin-alaelestia-component and gnu.in-syster-app are complete but unpinned, so the build rail can\u2019t lock/verify them. Pin (kind=library/optional) or document the exclusion.',
+        verify:'verify.sh recognizes both, or COMPONENT_REPOS.md states the exclusion.' },
+
+      // ---- P4 ----
+      { id:'T17', p:'P4', repo:'gnu.in-shell',
+        title:'Dock + ServiceManager glyphs \u2014 likely wontfix',
+        files:'Dock tiles \u00b7 ServiceManagerPanel',
+        change:'Initials-fallback glyphs + "ADV/DOC/PN" monograms. But both are source_family=legacy / kind=archived in surfaces.toml.',
+        verify:'Confirm archived status; close as wontfix unless un-archived.',
+        note:'Dock and ServiceManager are archived/legacy surfaces \u2014 do not invest unless they are un-archived.' },
+      { id:'T18', p:'P4', repo:'gnu.in-os/docs',
+        title:'Reference the v0.14.3 draft in ROADMAP',
+        files:'docs/ROADMAP.md \u00a7Phase S4 \u00b7 docs/releases/v0.14.3.md',
+        change:'v0.14.3.md drafts real work (settings-core, schema split, rail automation) but isn\u2019t referenced anywhere.',
+        verify:'ROADMAP Phase S4 points to docs/releases/v0.14.3.md.' },
+      { id:'T19', p:'P4', repo:'gnu.in-design-reference',
+        title:'Reconcile the 24-file inventory delta',
+        files:'DESIGN_SOURCE_INVENTORY.md \u00b7 tools/verify-design-reference.sh',
+        change:'Inventory claims 571 files; import report accounts for 547. Run the verifier; document the 24-file gap.',
+        verify:'verify-design-reference.sh passes; the 571 vs 547 gap is explained in-doc.' },
+      { id:'T20', p:'P4', repo:'workspace root',
+        title:'Triage orphan artifacts DP-1/ DP-2/ audits/',
+        files:'DP-1/ \u00b7 DP-2/ \u00b7 audits/settings-launcher-2026-06-07/',
+        change:'Untracked screenshot/audit artifacts at root. Move into gnu.in-os/audit/visual/ or delete; add root .gitignore.',
+        verify:'git status clean at root; artifacts tracked or removed.' },
+      { id:'T21', p:'P4', repo:'gnu.in.lab',
+        title:'Define gnu.in.lab scope',
+        files:'gnu.in.lab/README.md',
+        change:'Repo is initialized only. Add a scope statement (vs gnu.in-os/docs/prospect vs throwaway) + .gitignore.',
+        verify:'README states the boundary; no longer "initialized only".' },
+      { id:'T22', p:'P4', repo:'gnu.in-os',
+        title:'Close carried-forward Phase 0/1 gates',
+        files:'GitHub settings \u00b7 tools/status.sh \u00b7 CI workflows',
+        change:'Branch protection on main; split status.sh source-only/runtime; confirm CI green on a clean (no-GUI) runner. Open since the 06-16 inventory.',
+        verify:'Rulesets active; status.sh has a source-only mode; CI red/green on a headless runner.' },
+    ];
+  }
+
+  buildView(t) {
+    const done = !!this.state.checked[t.id];
+    const pmeta = { P0:'#FF6A00', P1:'#D4A800', P2:'#C99A2E', P3:'#7A8290', P4:'#5A6470' };
+    const accent = pmeta[t.p];
+    const cardBase = 'display:flex; gap:14px; align-items:flex-start; border-radius:9px; padding:16px 18px; margin-bottom:8px; transition:border-color .12s;';
+    const boxBase = 'width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; margin-top:1px; cursor:pointer; transition:all .12s; user-select:none;';
+    const titleBase = 'font-weight:600; font-size:14px; line-height:1.4; margin-top:5px;';
+    return {
+      code: t.id + ' \u00b7 ' + t.p,
+      repo: t.repo,
+      title: t.title,
+      files: t.files,
+      change: t.change,
+      verify: t.verify,
+      hasNote: !!t.note,
+      note: t.note || '',
+      mark: done ? '\u2713' : '',
+      onToggle: () => this.toggle(t.id),
+      cardStyle: cardBase + (done
+        ? ' background:#10140F; border:1px solid #1A2A1E;'
+        : ' background:#141618; border:1px solid #1E2329;'),
+      boxStyle: boxBase + (done
+        ? ' border:1.5px solid #5F9F72; background:#5F9F72; color:#0E1115;'
+        : ' border:1.5px solid #3A4250; background:transparent; color:transparent;'),
+      titleStyle: titleBase + (done ? ' color:#46505C; text-decoration:line-through;' : ' color:#F5EEDD;'),
+      codeStyle: 'font-size:11px; color:' + (done ? '#3A4250' : accent) + ';'
+    };
+  }
+
+  renderVals() {
+    const hideCompleted = this.props.hideCompleted ?? false;
+    const showVerifySteps = this.props.showVerifySteps ?? true;
+    const showFixDetail = this.props.showFixDetail ?? true;
+
+    const all = this.rawTasks();
+    const checked = this.state.checked;
+    const doneCount = all.filter(t => checked[t.id]).length;
+    const total = all.length;
+    const pct = Math.round((doneCount / total) * 100);
+
+    const groupMeta = [
+      { key:'P0', title:'P0 \u2014 do now',         sub:'entry-point truth + security', color:'#FF6A00' },
+      { key:'P1', title:'P1 \u2014 this week',       sub:'authority + provenance',  color:'#D4A800' },
+      { key:'P2', title:'P2 \u2014 coherence',       sub:'contracts + version truth',color:'#C99A2E' },
+      { key:'P3', title:'P3 \u2014 surfaces',        sub:'qml-reference + tracking', color:'#7A8290' },
+      { key:'P4', title:'P4 \u2014 hygiene',         sub:'governance + orphans',    color:'#5A6470' },
+    ];
+
+    const sections = groupMeta.map(g => {
+      let tasks = all.filter(t => t.p === g.key);
+      const groupDone = tasks.filter(t => checked[t.id]).length;
+      const groupTotal = tasks.length;
+      if (hideCompleted) tasks = tasks.filter(t => !checked[t.id]);
+      return {
+        title: g.title,
+        sub: g.sub,
+        countLabel: groupDone + '/' + groupTotal,
+        labelStyle: 'font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:' + g.color + ';',
+        hasTasks: tasks.length > 0,
+        tasks: tasks.map(t => this.buildView(t)),
+      };
+    });
+
+    return {
+      sections,
+      doneCount, total, pct,
+      progressFillStyle: 'height:100%; background:linear-gradient(90deg,#FF6A00,#FF8A3A); border-radius:999px; transition:width .3s cubic-bezier(0.38,1.21,0.22,1); width:' + pct + '%;',
+      showVerifySteps, showFixDetail,
+      reset: () => this.reset(),
+    };
+  }
+}
+</script>
+</body>
+</html>

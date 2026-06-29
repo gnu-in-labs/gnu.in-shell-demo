@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { background:#0E1115; color:#F5EEDD; margin:0; font-family:'IBM Plex Sans',sans-serif; }
+  * { box-sizing:border-box; }
+  .mono { font-family:'IBM Plex Mono',monospace; }
+  pre { margin:0; font-family:'IBM Plex Mono',monospace; font-size:12px; line-height:1.65; white-space:pre-wrap; word-break:break-word; }
+  .before { background:#16100F; border:1px solid #3A1A12; border-radius:0 0 0 7px; padding:13px 15px; color:#C98A78; }
+  .after  { background:#0F1611; border:1px solid #18331F; border-radius:0 0 7px 0; padding:13px 15px; color:#9AD0AC; }
+  .editrow { display:grid; grid-template-columns:1fr 1fr; gap:0; margin-top:10px; border-radius:7px; overflow:hidden; }
+  .editlabel { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:6px 15px; }
+  .lbl-before { background:#1E1210; color:#A85A45; border:1px solid #3A1A12; border-bottom:none; border-radius:7px 0 0 0; }
+  .lbl-after  { background:#101D14; color:#5F9F72; border:1px solid #18331F; border-bottom:none; border-radius:0 7px 0 0; display:flex; justify-content:space-between; align-items:center; }
+  code { font-family:'IBM Plex Mono',monospace; font-size:0.86em; background:#0A0C0F; color:#9AA3AD; padding:1px 5px; border-radius:3px; }
+  table { border-collapse:collapse; width:100%; }
+  th { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:#3A4250; text-align:left; padding:8px 10px; border-bottom:1px solid #1E2329; }
+  td { font-size:11.5px; padding:7px 10px; border-bottom:1px solid #141618; color:#8A939E; vertical-align:top; }
+  tr:hover td { background:#181B20; }
+</style>
+</helmet>
+
+<div style="min-height:100vh; background:#0E1115; padding:0 0 100px;">
+
+  <div style="background:#111418; border-bottom:1px solid #1E2329; padding:16px 0;">
+    <div style="max-width:960px; margin:0 auto; padding:0 40px; display:flex; align-items:center; gap:14px;">
+      <span class="mono" style="font-size:11px; color:#FF6A00; letter-spacing:0.16em;">GNU.IN</span>
+      <span style="color:#2B3037;">·</span>
+      <span class="mono" style="font-size:11px; color:#3A4250;">P2 Contract &amp; Decision Drafts</span>
+      <span style="color:#2B3037;">·</span>
+      <span class="mono" style="font-size:11px; color:#2B3037;">2026-06-27</span>
+    </div>
+  </div>
+
+  <div style="max-width:960px; margin:0 auto; padding:0 40px;">
+
+    <div style="background:#1A1208; border:1px solid #4A3D08; border-radius:8px; padding:16px 20px; margin-top:28px;">
+      <div class="mono" style="font-size:10px; color:#D4A800; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:6px;">▸ P2 is contracts + decisions — not mechanical pastes</div>
+      <div style="font-size:13px; color:#B89A50; line-height:1.7;">
+        Unlike P0/P1, these need an <strong style="color:#E0C060;">owner call</strong> before applying. Below: a schema add for <code>surfaces.toml</code> (so the contract can express the QML→Rust cutover) bundled with the <strong style="color:#E0C060;">topbar→taskbar rename</strong>, concrete <code>runtime.toml</code> pointer fixes, a chrome <strong style="color:#E0C060;">icon-family decision memo</strong>, and a one-line code pointer for the launcher badge.
+      </div>
+    </div>
+
+    <!-- ═══ A. surfaces.toml ═══ -->
+    <div style="margin-top:36px; display:flex; align-items:baseline; gap:12px;">
+      <span class="mono" style="font-size:13px; color:#C99A2E;">A</span>
+      <span style="font-weight:600; font-size:16px; color:#F5EEDD;">contracts/surfaces.toml — native migration state + topbar→taskbar rename</span>
+    </div>
+    <div style="font-size:13px; color:#8A939E; line-height:1.65; margin-top:8px;">
+      Today the contract records only <code>owner_qml</code> for ~18 surfaces while <code>engine/gnuin-*</code> holds a native Rust host for nearly all of them; only <code>shellSettings</code> has <code>owner_rs</code>. With QML retired-as-tech, a reviewer can't tell which surfaces have a native replacement ready. Add three keys per surface — and fix the naming: the surface is <code>[surfaces.taskbar]</code> but its namespace, selector, and host all say <strong style="color:#C08858;">topbar</strong>.
+    </div>
+
+    <div style="background:#16100A; border-left:2px solid #5C2108; border-radius:0 6px 6px 0; padding:10px 14px; margin-top:12px; font-size:12.5px; color:#C08858; line-height:1.6;">
+      <span class="mono" style="font-size:10px; color:#A8602F;">rename · </span><strong style="color:#E0A070;">topbar → taskbar everywhere.</strong> Current real identifiers <code>gnuin-topbar</code> (namespace), <code>shell.topbar.host</code> (selector), <code>TopbarHost.qml</code> (host) are inconsistent with the canonical <code>taskbar</code> surface name. This is a real cross-repo change: grep <code>topbar</code> across gnu.in-os + gnu.in-shell, update the schema enum for the selector, and rename the QML host file. Do it as one commit so the contract and call sites stay in lockstep.
+    </div>
+
+    <!-- A1 worked example: taskbar -->
+    <div data-fix-block style="margin-top:16px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">A1 · worked example — [surfaces.taskbar] (rename + migration keys; native validated, not yet promoted)</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">[surfaces.taskbar]
+namespace = "gnuin-topbar"
+kind = "panel"
+role = "bar"
+edge = "top"
+host_type = "PanelWindow"
+owner_qml = "shell/components/TopbarHost.qml"</pre>
+        <pre data-after class="after">[surfaces.taskbar]
+namespace = "gnuin-taskbar"               # renamed from gnuin-topbar
+kind = "panel"
+role = "bar"
+edge = "top"
+host_type = "PanelWindow"
+owner_qml = "shell/components/TaskbarHost.qml"   # renamed from TopbarHost.qml
+native_host = "engine/gnuin-bar"          # forward native owner
+host_selector = "shell.taskbar.host"      # renamed from shell.topbar.host (qml | gpui)
+migration_state = "native-validated"      # QML live; gnuin-bar not yet promoted</pre>
+      </div>
+    </div>
+
+    <!-- A2 worked example: osd -->
+    <div data-fix-block style="margin-top:16px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">A2 · worked example — [surfaces.onScreenDisplay] (migration keys only; native promoted by default)</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">[surfaces.onScreenDisplay]
+host_type = "inSurfaceItem"
+owner_qml = "shell/components/OnScreenDisplayComposeHost.qml"</pre>
+        <pre data-after class="after">[surfaces.onScreenDisplay]
+host_type = "inSurfaceItem"
+owner_qml = "shell/components/OnScreenDisplayComposeHost.qml"
+native_host = "engine/gnuin-osd"
+host_selector = "shell.osdHost"           # rust | qml
+migration_state = "native-promoted-default"</pre>
+      </div>
+    </div>
+
+    <div style="font-size:12px; color:#6A7280; line-height:1.6; margin-top:12px;">
+      <span class="mono" style="color:#C99A2E;">migration_state vocabulary —</span> <code>native-promoted-default</code> · <code>native-promoted</code> · <code>native-validated</code> · <code>native-staged</code> · <code>bridged</code> · <code>qml-only</code> · <code>archived</code>. Fill from the <code>shell.*Host</code> selector authority + promotion records. Confident mapping (verify selector keys against the schema before committing):
+    </div>
+
+    <div style="background:#141618; border:1px solid #1E2329; border-radius:8px; overflow:hidden; margin-top:12px;">
+      <table>
+        <thead>
+          <tr><th style="width:150px;">surface</th><th style="width:170px;">native_host</th><th style="width:185px;">host_selector</th><th>migration_state</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono" style="color:#A1A6AD;">onScreenDisplay</td><td class="mono">gnuin-osd</td><td class="mono" style="color:#5F9F72;">shell.osdHost</td><td>native-promoted-default</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">mediaControls</td><td class="mono">gnuin-media-controls</td><td class="mono" style="color:#5F9F72;">shell.mediaControlsHost</td><td>native-promoted</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">cheatsheet</td><td class="mono">gnuin-cheatsheet</td><td class="mono" style="color:#5F9F72;">shell.cheatsheetHost</td><td>native-promoted</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">osk</td><td class="mono">gnuin-osk</td><td class="mono" style="color:#5F9F72;">shell.oskHost</td><td>native-promoted</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">screenTranslator</td><td class="mono">gnuin-screen-translator</td><td class="mono" style="color:#5F9F72;">shell.screenTranslatorHost</td><td>native-promoted</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">taskbar</td><td class="mono">gnuin-bar</td><td class="mono" style="color:#5F9F72;">shell.taskbar.host</td><td>native-validated (QML live)</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">sessionScreen</td><td class="mono">gnuin-session-screen</td><td class="mono" style="color:#C08858;">TBD — socket-gated</td><td>native-bridge-promoted</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">regionTools</td><td class="mono">gnuin-region-tools</td><td class="mono" style="color:#C08858;">TBD — socket-gated</td><td>native-daemon-promoted</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">wallpaperSelector</td><td class="mono">gnuin-wallpaper-selector</td><td class="mono" style="color:#C08858;">TBD — socket-gated</td><td>native-bridge</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">background</td><td class="mono">gnuin-background</td><td class="mono" style="color:#C08858;">TBD</td><td>native-staged (always-on)</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">notificationPopup</td><td class="mono">gnuin-notification</td><td class="mono" style="color:#C08858;">TBD</td><td>native-staged</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">launcher</td><td class="mono">gnuin-launcher</td><td class="mono" style="color:#C08858;">TBD</td><td>native-staged</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">screenCorners</td><td class="mono">gnuin-screen-corners</td><td class="mono" style="color:#C08858;">TBD</td><td>native-staged (always-on)</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">lock / polkit</td><td class="mono">gnuin-lock</td><td class="mono" style="color:#C08858;">TBD</td><td>native-validated (not promoted)</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">overlay</td><td class="mono">gnuin-overlay</td><td class="mono" style="color:#C08858;">TBD</td><td>native-validated</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">gnosisApp</td><td class="mono">gnuin-gnosis-app</td><td class="mono" style="color:#C08858;">TBD</td><td>bridged</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">shellSettings</td><td class="mono" style="color:#5F9F72;">gnuin-settings-gpui ✓ owner_rs</td><td class="mono">— native window</td><td>native (sole owner_rs today)</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">dock</td><td class="mono">gnuin-dock</td><td class="mono" style="color:#5F9F72;">shell.dock_archived</td><td>archived (default true)</td></tr>
+          <tr><td class="mono" style="color:#A1A6AD;">sidebarLeft / Right</td><td class="mono" style="color:#C08858;">— none in engine/</td><td class="mono" style="color:#C08858;">—</td><td>qml-only (bridged)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══ B. runtime.toml ═══ -->
+    <div style="margin-top:40px; display:flex; align-items:baseline; gap:12px;">
+      <span class="mono" style="font-size:13px; color:#C99A2E;">B</span>
+      <span style="font-weight:600; font-size:16px; color:#F5EEDD;">contracts/runtime.toml — refresh stale pointers</span>
+    </div>
+
+    <div data-fix-block style="margin-top:14px;">
+      <div class="mono" style="font-size:11px; color:#7A8290; margin-bottom:2px;">B1 · [runtime] — active_release a month stale; profile vs CHANNEL</div>
+      <div class="editrow">
+        <div class="editlabel lbl-before">before</div>
+        <div class="editlabel lbl-after"><span>after</span><button onClick="{{ copy }}" class="mono" style="font-size:10px; color:#5F9F72; background:transparent; border:1px solid #2A4A33; border-radius:4px; padding:2px 9px; cursor:pointer;">copy</button></div>
+        <pre data-before class="before">[runtime]
+profile = "stable"
+active_release = "2026-05-26-gnuin-os"</pre>
+        <pre data-after class="after">[runtime]
+# profile tracks the runtime channel; keep in step with release/CHANNEL.
+profile = "beta"                            # was "stable" — contradicted CHANNEL=beta
+active_release = "20260624-170024-97a86b5"  # was 2026-05-26-gnuin-os (a month stale); set from release/LATEST-BUILD</pre>
+      </div>
+    </div>
+    <div style="font-size:12px; color:#6A7280; line-height:1.6; margin-top:10px;">
+      <span class="mono" style="color:#C99A2E;">decision —</span> if <code>profile</code> is intentionally <em>orthogonal</em> to the release channel (a runtime tier, not a channel), don't change the value — add a comment saying so. Right now <code>profile="stable"</code> next to a pre-1.0 beta train reads as a bug.
+    </div>
+
+    <div style="font-size:12px; color:#6A7280; line-height:1.6; margin-top:14px; background:#101820; border:1px solid #1A3040; border-radius:7px; padding:12px 16px;">
+      <span class="mono" style="color:#6090A8;">B2 · flag (no auto-edit) —</span> <code>[wallpaper] enabled = false</code> with <code>qml_entrypoint = ""</code> while <code>engine/gnuin-background</code> + <code>gnuin-wallpaper-selector</code> exist and ROADMAP names wallpaper the first <code>gnuin-compose-core</code> consumer. Confirm whether native wallpaper should be <code>enabled = true</code> or this is intentionally off pending compose-core. Owner call.
+    </div>
+
+    <!-- ═══ C. icon family decision ═══ -->
+    <div style="margin-top:40px; display:flex; align-items:baseline; gap:12px;">
+      <span class="mono" style="font-size:13px; color:#C99A2E;">C</span>
+      <span style="font-weight:600; font-size:16px; color:#F5EEDD;">Decision memo — chrome icon family</span>
+    </div>
+    <div style="font-size:13px; color:#8A939E; line-height:1.65; margin-top:8px;">
+      The design system (TASTE.md / README / SKILL) mandates <strong style="color:#C8CACE;">Material Symbols Rounded</strong> for chrome, "confirmed in the real <code>Appearance.qml</code>" — i.e. the <em>QML</em> shell. But the forward native bar <code>engine/gnuin-bar/src/text.rs</code> loads a <strong style="color:#C8CACE;">Nerd-Font (Material Design Icons patch)</strong> face and ships <code>nf-md-*</code> codepoints (WIFI/BLUETOOTH/VOLUME/BATTERY/CLOCK). The two don't match, and the stated authority points at retiring tech.
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:16px;">
+      <div style="background:#141618; border:1px solid #1E2329; border-radius:8px; padding:14px 16px;">
+        <div class="mono" style="font-size:10px; color:#7A8290; letter-spacing:0.08em;">OPTION 1</div>
+        <div style="font-size:13px; color:#C8CACE; font-weight:600; margin:6px 0;">Standardize on Nerd-Font MDI</div>
+        <div style="font-size:12px; color:#7A8290; line-height:1.55;">Native bar already ships it; one static font file, rasters cleanly in fontdue. Update the design docs. <span style="color:#5F9F72;">Least code churn.</span></div>
+      </div>
+      <div style="background:#141618; border:1px solid #1E2329; border-radius:8px; padding:14px 16px;">
+        <div class="mono" style="font-size:10px; color:#7A8290; letter-spacing:0.08em;">OPTION 2</div>
+        <div style="font-size:13px; color:#C8CACE; font-weight:600; margin:6px 0;">Standardize on Material Symbols</div>
+        <div style="font-size:12px; color:#7A8290; line-height:1.55;">Matches the stated brand, but the variable FILL/wght axes are awkward to raster in fontdue; the native bar must switch faces. <span style="color:#C08858;">More work, retiring-era choice.</span></div>
+      </div>
+      <div style="background:#101D14; border:1px solid #2A4A33; border-radius:8px; padding:14px 16px;">
+        <div class="mono" style="font-size:10px; color:#5F9F72; letter-spacing:0.08em;">OPTION 3 ✓ rec</div>
+        <div style="font-size:13px; color:#C8E8D2; font-weight:600; margin:6px 0;">Split by layer</div>
+        <div style="font-size:12px; color:#88B898; line-height:1.55;">Identity = cube family (unchanged). Native chrome = Nerd-Font MDI. Keep Material Symbols only where a QML fallback still renders. Retire the "Material Symbols = chrome" guidance as QML-era.</div>
+      </div>
+    </div>
+    <div style="font-size:12px; color:#6A7280; line-height:1.6; margin-top:12px;">
+      <span class="mono" style="color:#5F9F72;">recommendation —</span> Option 3. The native renderer already ships Nerd Font; Material Symbols Rounded was the Quickshell shell's family and retires with it. Needs sign-off, then update TASTE.md §4 + README §Iconography + SKILL.md to name the chrome icon family for native hosts.
+    </div>
+
+    <!-- ═══ D. launcher badge ═══ -->
+    <div style="margin-top:40px; display:flex; align-items:baseline; gap:12px;">
+      <span class="mono" style="font-size:13px; color:#C99A2E;">D</span>
+      <span style="font-weight:600; font-size:16px; color:#F5EEDD;">Launcher "v3.2" badge — code, not a doc paste</span>
+    </div>
+    <div style="font-size:13px; color:#8A939E; line-height:1.65; margin-top:8px;">
+      The orange "v3.2" badge matches no current version (OS v0.14.2, tokens v0.14.0). It's a code change in the launcher surface — remove it, or bind it to <code>release/VERSION</code> at runtime. Land it on the forward target (<code>engine/gnuin-launcher</code>), not only the retiring QML <code>AppLauncher.qml</code>. Tracked as <span class="mono" style="color:#C99A2E;">T12</span> on the checklist.
+    </div>
+
+    <div style="margin-top:44px; padding-top:20px; border-top:1px solid #1E2329; display:flex; justify-content:space-between; align-items:center;">
+      <span class="mono" style="font-size:11px; color:#2B3037;">P2 contract drafts · A/B copy-paste · C/D need owner calls</span>
+      <span class="mono" style="font-size:11px; color:#2B3037;">topbar → taskbar · authority: lock + GLOBAL-VERSION</span>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      copy: (e) => {
+        const btn = e.currentTarget;
+        const block = btn.closest('[data-fix-block]');
+        const pre = block ? block.querySelector('pre[data-after]') : null;
+        if (pre && navigator.clipboard) {
+          navigator.clipboard.writeText(pre.innerText).catch(() => {});
+        }
+        const prev = btn.textContent;
+        btn.textContent = 'copied \u2713';
+        setTimeout(() => { btn.textContent = prev; }, 1200);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./dc-boot.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:'Montreal','Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
+  @font-face{font-family:'Montreal'; src:url('fonts/Montreal-Regular.woff') format('woff'); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{font-family:'Montreal'; src:url('fonts/Montreal-Bold.woff') format('woff'); font-weight:700; font-style:normal; font-display:swap;}
+  @keyframes gpulse{0%{box-shadow:0 0 0 0 rgba(255,106,0,.5)}70%{box-shadow:0 0 0 7px rgba(255,106,0,0)}100%{box-shadow:0 0 0 0 rgba(255,106,0,0)}}
+  @keyframes gblink{0%,48%{opacity:1}49%,100%{opacity:0}}
+  @keyframes gscan{0%{opacity:.32}50%{opacity:.9}100%{opacity:.32}}
+  ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#23282F;border-radius:6px;border:2px solid transparent;background-clip:padding-box}::-webkit-scrollbar-track{background:transparent}
+</style>
+</helmet>
+
+<div style="display:flex; flex-direction:column; height:100vh; background:#0B0D10; color:#E6E1E1; overflow:hidden; font-family:'Montreal',sans-serif;">
+
+  <!-- ══════ chrome bar ══════ -->
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:13px 22px; border-bottom:1px solid #20252B; background:#0F1318; flex:none;">
+    <div style="display:flex; align-items:center; gap:13px;">
+      <span style="font:700 13px/1 'JetBrains Mono',monospace; color:#E6E1E1;"><span style="color:#FF6A00;">▸</span> atelier</span>
+      <span style="width:1px; height:14px; background:#2B3037;"></span>
+      <span style="font:500 11px/1 'JetBrains Mono',monospace; color:#8a909a;">surface ▸ <span style="color:#cbc4cb;">context-menu</span> · band 100</span>
+      <span style="font:700 9px/1 'JetBrains Mono',monospace; color:#8DA982; padding:4px 7px; background:#161b16; border:1px solid #2c3a2c; border-radius:6px;">KEEP</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:13px;">
+      <span onClick="{{ onReInfer }}" style="display:flex; align-items:center; gap:7px; font:600 10px/1 'JetBrains Mono',monospace; color:#9aa0a8; cursor:pointer; padding:6px 10px; border:1px solid #23282F; border-radius:7px;">
+        <sc-if value="{{ inferThinking }}" hint-placeholder-val="{{ false }}"><span style="color:#FF8E40;"><span style="display:inline-block; animation:gscan 1200ms ease-in-out infinite;">●</span> inférence…</span></sc-if>
+        <sc-if value="{{ inferReady }}" hint-placeholder-val="{{ true }}"><span style="width:6px; height:6px; border-radius:50%; background:#FF6A00; display:inline-block; animation:gpulse 1600ms ease-out infinite;"></span> ré-inférer</sc-if>
+      </span>
+      <span onClick="{{ onFlagsGoto }}" style="display:flex; align-items:center; gap:6px; font:700 10px/1 'JetBrains Mono',monospace; cursor:pointer; padding:6px 9px; border-radius:7px; {{ flagBadgeStyle }}">⚑ {{ flagCount }}</span>
+      <span style="font:500 9.5px/1 'JetBrains Mono',monospace; color:#54515a;">bus ▸ {{ seamLabel }}</span>
+      <span style="font:500 10px/1 'JetBrains Mono',monospace; color:#54515a;">engine v0.14.2</span>
+    </div>
+  </div>
+
+  <!-- ══════ pipeline rail ══════ -->
+  <div style="display:flex; align-items:center; padding:13px 22px; border-bottom:1px solid #1A1F25; background:#0C0F13; flex:none;">
+    <sc-for list="{{ stations }}" as="st" hint-placeholder-count="6">
+      <div style="display:flex; align-items:center;">
+        <div onClick="{{ st.onClick }}" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+          <span style="width:20px; height:20px; border-radius:50%; font:700 9px/18px 'JetBrains Mono',monospace; text-align:center; {{ st.pill }}">{{ st.glyph }}</span>
+          <span style="font:700 10px/1 'JetBrains Mono',monospace; color:{{ st.lab }};">{{ st.label }}</span>
+        </div>
+        <sc-if value="{{ st.notLast }}" hint-placeholder-val="{{ true }}"><span style="width:34px; height:1px; background:#23282F; margin:0 10px;"></span></sc-if>
+      </div>
+    </sc-for>
+    <span style="margin-left:auto; font:600 10px/1 'JetBrains Mono',monospace; color:#6b727b;">{{ answeredLabel }}</span>
+  </div>
+
+  <!-- ══════ main ══════ -->
+  <div style="flex:1; display:flex; min-height:0;">
+
+    <!-- ─── work area ─── -->
+    <div style="flex:1; min-width:0; overflow-y:auto; padding:22px 26px;">
+
+      <!-- RESEARCH -->
+      <sc-if value="{{ isResearch }}" hint-placeholder-val="{{ false }}">
+        <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b;">01 ▸ research · fondation</div>
+        <div style="font:700 22px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:10px;">context-menu, tracé à sa source dorsale</div>
+        <div style="font:400 13px/1.5 'Montreal',sans-serif; color:#8a909a; margin-top:7px; max-width:620px;">chaque surface tracée backend → port → tests → docs. rien d'inventé — l'Atelier ne décide que sur du sol réel.</div>
+        <div style="margin-top:20px; max-width:660px; background:#14181D; border:1px solid #23282F; border-radius:12px; padding:18px 20px; display:grid; grid-template-columns:92px 1fr; gap:11px 16px; font:500 12px/1.5 'JetBrains Mono',monospace;">
+          <span style="color:#5b626b;">surface</span><span style="color:#aeb4bc;">context-menu · band 100 · <span style="color:#8DA982;">KEEP</span> · la surface de référence</span>
+          <span style="color:#5b626b;">backend</span><span style="color:#aeb4bc;">gnuin-compose-core::menu <span style="color:#54515a;">v0.14.2 · std-only</span></span>
+          <span style="color:#5b626b;">port</span><span style="color:#aeb4bc;">compose_core.rs · 23 MenuStyle · parity_tests</span>
+          <span style="color:#5b626b;">tests</span><span style="color:#aeb4bc;">6 input · 6 edge · 10 diff · invariants in-crate</span>
+          <span style="color:#5b626b;">docs</span><span style="color:#aeb4bc;">PARITY · MANIFEST · molecule_specs <span style="color:#54515a;">(30)</span></span>
+          <span style="color:#5b626b;">molécule</span><span style="color:#aeb4bc;">AgenticGnuContextMenu <span style="color:#54515a;">· layout agentic-panel</span></span>
+        </div>
+        <div onClick="{{ onGotoInfer }}" style="margin-top:18px; display:inline-flex; align-items:center; gap:8px; font:700 11px/1 'JetBrains Mono',monospace; color:#FF8E40; cursor:pointer;">infer les frontières →</div>
+      </sc-if>
+
+      <!-- INFER -->
+      <sc-if value="{{ isInfer }}" hint-placeholder-val="{{ false }}">
+        <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b;">02 ▸ infer · frontières classées</div>
+        <div style="font:700 22px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:10px;">gnosis a classé les frontières ouvertes</div>
+        <div style="display:flex; align-items:center; gap:9px; margin-top:9px;">
+          <sc-if value="{{ inferThinking }}" hint-placeholder-val="{{ false }}"><span style="font:600 11px/1 'JetBrains Mono',monospace; color:#FF8E40;"><span style="display:inline-block; animation:gscan 1200ms ease-in-out infinite;">●</span> thinking… <span style="color:#54515a;">stand-in socket gnu6 · CM-7</span></span></sc-if>
+          <sc-if value="{{ inferReady }}" hint-placeholder-val="{{ true }}"><span style="font:600 11px/1 'JetBrains Mono',monospace; color:#8DA982;">● ready <span style="color:#54515a;">· 5 frontières · pilote la plus haute</span></span></sc-if>
+        </div>
+        <div style="margin-top:16px; max-width:680px; background:#0A0C0F; border:1px solid #20252B; border-radius:12px; padding:15px 16px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:7px; height:7px; border-radius:50%; background:{{ busDot }}; display:inline-block;"></span>
+            <span style="font:700 10px/1 'JetBrains Mono',monospace; color:#cbc4cb;">gnosis agent bus</span>
+            <span style="font:500 9.5px/1 'JetBrains Mono',monospace; color:#6b727b;">· {{ busStateLabel }}</span>
+            <span style="font:600 9px/1 'JetBrains Mono',monospace; color:#54515a; margin-left:auto;">{{ protoLabel }}</span>
+          </div>
+          <div style="display:grid; grid-template-columns:78px 1fr; gap:6px 12px; margin-top:12px; font:500 10px/1.5 'JetBrains Mono',monospace;">
+            <span style="color:#5b626b;">transport</span><span style="color:#9aa0a8;">{{ transportLabel }}</span>
+            <span style="color:#5b626b;">grant</span><span style="color:#8DA982;">{{ capView }}</span>
+            <span style="color:#5b626b;">seam</span><span style="color:#9aa0a8;">{{ seamLabel }} <span style="color:#54515a;">→ SocketTransport</span></span>
+          </div>
+          <div style="margin-top:12px; padding-top:11px; border-top:1px solid #181D22;">
+            <div style="font:600 8.5px/1 'JetBrains Mono',monospace; letter-spacing:0.14em; text-transform:uppercase; color:#54515a; margin-bottom:7px;">wire ▸ newline-delimited json</div>
+            <div style="display:flex; flex-direction:column; gap:3px;">
+              <sc-for list="{{ wireView }}" as="w" hint-placeholder-count="3">
+                <div style="font:500 9.5px/1.4 'JetBrains Mono',monospace; color:#7c828a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><span style="{{ w.dirStyle }}">{{ w.dir }}</span> {{ w.line }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:18px; display:flex; flex-direction:column; gap:11px; max-width:680px;">
+          <sc-for list="{{ frontiers }}" as="f" hint-placeholder-count="4">
+            <div style="border-radius:12px; padding:15px 16px; {{ f.cardStyle }}">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#FF8E40; padding:4px 7px; background:#241a12; border:1px solid #4a3320; border-radius:6px;">{{ f.rank }}</span>
+                <span style="font:700 14px/1.2 'Montreal',sans-serif; color:#E6E1E1;">{{ f.title }}</span>
+                <span style="font:600 9px/1 'JetBrains Mono',monospace; padding:4px 7px; border-radius:6px; margin-left:auto; {{ f.riskStyle }}">{{ f.risk }}</span>
+              </div>
+              <div style="font:400 12px/1.5 'Montreal',sans-serif; color:#8a909a; margin-top:9px;">{{ f.sub }}</div>
+              <div style="display:flex; align-items:center; gap:10px; margin-top:12px;">
+                <span style="font:600 9px/1 'JetBrains Mono',monospace; color:#6b727b;">conf</span>
+                <span style="flex:1; height:4px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="{{ f.barStyle }}"></span></span>
+                <span style="font:700 10px/1 'JetBrains Mono',monospace; color:{{ f.confColor }};">{{ f.conf }}</span>
+                <span style="width:1px; height:12px; background:#2B3037;"></span>
+                <span style="font:500 9px/1 'JetBrains Mono',monospace; color:#54515a;">{{ f.src }}</span>
+                <span onClick="{{ f.onDrive }}" style="font:700 10px/1 'JetBrains Mono',monospace; color:#FF8E40; cursor:pointer; margin-left:6px;">{{ f.driveLabel }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- DECIDE -->
+      <sc-if value="{{ isDecide }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:16px;">
+          <div>
+            <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b;">03 ▸ decide · décision guidée → spec</div>
+            <div style="font:700 22px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:10px;">CM-5 · navigation clavier</div>
+            <div style="font:400 13px/1.5 'Montreal',sans-serif; color:#8a909a; margin-top:7px; max-width:560px;">squelette authoré · réponses suggérées par inférence. tu tranches chaque ligne ; la spec se construit à droite.</div>
+          </div>
+          <div onClick="{{ onAcceptAll }}" style="flex:none; display:flex; align-items:center; gap:8px; padding:9px 13px; background:#1A1407; border:1px solid #4a3320; border-radius:8px; font:700 10.5px/1 'JetBrains Mono',monospace; color:#FF8E40; cursor:pointer;">accepter tout ▸ gnosis</div>
+        </div>
+
+        <div style="margin-top:18px; display:flex; flex-direction:column; gap:13px; max-width:760px;">
+          <sc-for list="{{ qview }}" as="q" hint-placeholder-count="5">
+            <div style="background:#14181D; border:1px solid #23282F; border-radius:12px; padding:16px;">
+              <div style="display:flex; align-items:baseline; gap:10px;">
+                <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#cbc4cb;">{{ q.n }}</span>
+                <span style="font:600 14px/1.3 'Montreal',sans-serif; color:#E6E1E1;">{{ q.q }}</span>
+                <span style="font:600 8.5px/1 'JetBrains Mono',monospace; padding:3px 6px; border-radius:5px; margin-left:auto; {{ q.matchStyle }}">{{ q.matchLabel }}</span>
+                <span onClick="{{ q.onFlag }}" style="font:400 13px/1 'JetBrains Mono',monospace; cursor:pointer; {{ q.flagStyle }}" title="lever une réserve">⚑</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:7px; margin-top:13px;">
+                <sc-for list="{{ q.optsView }}" as="opt" hint-placeholder-count="2">
+                  <div onClick="{{ opt.onPick }}" style="display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:9px; cursor:pointer; {{ opt.rowStyle }}">
+                    <span style="font:400 14px/1 'JetBrains Mono',monospace; {{ opt.glyphStyle }}">{{ opt.glyph }}</span>
+                    <span style="flex:1; font:500 12.5px/1.35 'Montreal',sans-serif; {{ opt.labelStyle }}">{{ opt.label }}</span>
+                    <span style="font:600 8.5px/1 'JetBrains Mono',monospace; color:#54515a;">{{ opt.agentTag }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex; align-items:flex-start; gap:9px; margin-top:13px; padding-top:13px; border-top:1px solid #20252B;">
+                <span style="width:6px; height:6px; border-radius:50%; background:#FF6A00; flex:none; margin-top:4px; animation:gpulse 1600ms ease-out infinite;"></span>
+                <div style="flex:1;">
+                  <div style="font:600 11px/1.4 'JetBrains Mono',monospace; color:#FF8E40;">gnosis ▸ {{ q.agentShort }} <span style="{{ q.confStyle }}">· {{ q.agentConf }}</span></div>
+                  <div style="font:400 11px/1.5 'Montreal',sans-serif; color:#8a909a; margin-top:5px;">{{ q.agentNote }}</div>
+                  <div style="font:500 9px/1 'JetBrains Mono',monospace; color:#54515a; margin-top:6px;">source ▸ {{ q.agentSrc }}</div>
+                </div>
+                <span onClick="{{ q.onAccept }}" style="flex:none; font:700 10px/1 'JetBrains Mono',monospace; color:#FF8E40; cursor:pointer; padding:7px 10px; border:1px solid #3a2c1e; border-radius:7px;">accepter</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- ENRICH -->
+      <sc-if value="{{ isEnrich }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:16px;">
+          <div>
+            <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b;">04 ▸ enrich · dossier d'ancrage</div>
+            <div style="font:700 22px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:10px;">épaissir la décision</div>
+            <div style="font:400 13px/1.5 'Montreal',sans-serif; color:#8a909a; margin-top:7px; max-width:560px;">une décision est <i>thin</i> : un pick + une confiance. l'enrichissement l'ancre — provenance · précédent · conflit · portée · contre — sourcé, pondéré, sur le bus.</div>
+          </div>
+          <div onClick="{{ onEnrich }}" style="flex:none; display:flex; align-items:center; gap:8px; padding:9px 13px; background:#1A1407; border:1px solid #4a3320; border-radius:8px; font:700 10.5px/1 'JetBrains Mono',monospace; color:#FF8E40; cursor:pointer;">enrichir ▸ gnosis</div>
+        </div>
+        <div style="margin-top:16px; max-width:760px; display:flex; gap:11px;">
+          <div style="flex:1.4; background:#14181D; border:1px solid #23282F; border-radius:12px; padding:14px 15px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.14em; text-transform:uppercase; color:#6b727b;">couverture</span><span style="font:700 11px/1 'JetBrains Mono',monospace; color:{{ enrichCovColor }};">{{ enrichCovLabel }}</span></div>
+            <div style="display:flex; align-items:center; gap:13px; margin-top:13px; flex-wrap:wrap;">
+              <sc-for list="{{ kindsMeter }}" as="k" hint-placeholder-count="5">
+                <span style="display:flex; align-items:center; gap:6px;"><span style="{{ k.dotStyle }}"></span><span style="font:600 9px/1 'JetBrains Mono',monospace; color:{{ k.labelColor }};">{{ k.label }}</span></span>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex:1; background:#14181D; border:1px solid #23282F; border-radius:12px; padding:14px 15px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.14em; text-transform:uppercase; color:#6b727b;">ancrage</span><span style="font:700 11px/1 'JetBrains Mono',monospace; color:#cbc4cb;">{{ enrichScoreLabel }}</span></div>
+            <div style="margin-top:14px; height:5px; border-radius:3px; background:#23282F; overflow:hidden;"><span style="{{ scoreBarStyle }}"></span></div>
+            <div style="font:500 9px/1 'JetBrains Mono',monospace; color:{{ enrichStateColor }}; margin-top:10px;">● {{ enrichStateLabel }}</div>
+          </div>
+        </div>
+        <div style="margin-top:14px; max-width:760px;">
+          <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.16em; text-transform:uppercase; color:#6b727b; margin-bottom:9px;">carte de relations</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <sc-for list="{{ relView }}" as="r" hint-placeholder-count="6">
+              <span style="display:flex; align-items:center; gap:7px; padding:6px 10px; border-radius:8px; font:600 10px/1 'JetBrains Mono',monospace; {{ r.chipStyle }}">{{ r.label }} <span style="font:500 8.5px/1 'JetBrains Mono',monospace; color:#6b727b;">{{ r.tag }}</span></span>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin-top:16px; max-width:760px; display:flex; flex-direction:column; gap:10px;">
+          <sc-for list="{{ enrichView }}" as="e" hint-placeholder-count="3">
+            <div style="{{ e.cardStyle }}">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font:700 12px/1 'JetBrains Mono',monospace; color:{{ e.kindColor }};">{{ e.glyph }}</span>
+                <span style="font:700 8.5px/1 'JetBrains Mono',monospace; letter-spacing:0.08em; text-transform:uppercase; color:{{ e.kindColor }};">{{ e.kindLabel }}</span>
+                <span style="font:600 13px/1.2 'Montreal',sans-serif; color:#E6E1E1;">{{ e.title }}</span>
+                <span style="font:700 9px/1 'JetBrains Mono',monospace; color:#9aa0a8; margin-left:auto;">{{ e.weight }}</span>
+                <span onClick="{{ e.onFlag }}" style="font:400 12px/1 'JetBrains Mono',monospace; cursor:pointer; {{ e.flagStyle }}" title="lever une réserve">⚑</span>
+              </div>
+              <div style="font:400 11.5px/1.5 'Montreal',sans-serif; color:#9aa0a8; margin-top:9px;">{{ e.body }}</div>
+              <div style="display:flex; align-items:center; gap:10px; margin-top:11px;">
+                <span style="flex:1; height:3px; border-radius:2px; background:#23282F; overflow:hidden;"><span style="{{ e.barStyle }}"></span></span>
+                <span style="font:500 9px/1 'JetBrains Mono',monospace; color:#54515a;">source ▸ {{ e.source }}</span>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ enrichGathering }}" hint-placeholder-val="{{ false }}">
+            <div style="font:600 11px/1 'JetBrains Mono',monospace; color:#FF8E40; padding:6px 2px;"><span style="display:inline-block; animation:gscan 1200ms ease-in-out infinite;">●</span> gnosis rassemble le dossier…</div>
+          </sc-if>
+          <sc-if value="{{ enrichEmpty }}" hint-placeholder-val="{{ true }}">
+            <div style="font:500 11px/1.5 'Montreal',sans-serif; color:#6b727b; padding:6px 2px;">aucun enrichissement — lance « enrichir ▸ gnosis ».</div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- GENERATE -->
+      <sc-if value="{{ isGenerate }}" hint-placeholder-val="{{ false }}">
+        <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b;">05 ▸ generate · candidats d'affordance</div>
+        <div style="font:700 22px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:10px;">3 traitements du focus clavier</div>
+        <div style="font:400 13px/1.5 'Montreal',sans-serif; color:#8a909a; margin-top:7px;">générés depuis les tokens + le filtre TASTE. {{ candNote }}</div>
+        <div style="margin-top:20px; display:grid; grid-template-columns:repeat(3,1fr); gap:14px; max-width:780px;">
+          <sc-for list="{{ candView }}" as="c" hint-placeholder-count="3">
+            <div onClick="{{ c.onPick }}" style="border-radius:12px; padding:15px; cursor:pointer; {{ c.cardStyle }}">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font:700 13px/1 'Montreal',sans-serif; color:#E6E1E1;">{{ c.name }}</span>
+                <span style="font:700 8.5px/1 'JetBrains Mono',monospace; color:#FF8E40;">{{ c.badge }}</span>
+              </div>
+              <div style="font:400 10.5px/1.4 'Montreal',sans-serif; color:#8a909a; margin-top:6px; min-height:28px;">{{ c.sub }}</div>
+              <div style="margin-top:12px; background:#0B0D11; border:1px solid #20252B; border-radius:9px; padding:6px;">
+                <sc-for list="{{ c.rows }}" as="r" hint-placeholder-count="3">
+                  <div style="{{ r.style }}">{{ r.caret }}{{ r.label }}</div>
+                </sc-for>
+              </div>
+              <div style="margin-top:11px; font:600 9px/1 'JetBrains Mono',monospace; color:{{ c.pickColor }};">{{ c.pickLabel }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- AUDIT -->
+      <sc-if value="{{ isAudit }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; align-items:flex-end; justify-content:space-between;">
+          <div>
+            <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b;">06 ▸ audit · TASTE — 8 contrôles durs</div>
+            <div style="font:700 22px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:10px;">dérive du candidat « {{ chosenName }} »</div>
+          </div>
+          <span style="font:700 12px/1 'JetBrains Mono',monospace; color:{{ auditSummaryColor }};">{{ auditSummary }}</span>
+        </div>
+        <div style="margin-top:18px; max-width:720px; display:flex; flex-direction:column; gap:1px; background:#1E2329; border:1px solid #23282F; border-radius:12px; overflow:hidden;">
+          <sc-for list="{{ auditView }}" as="a" hint-placeholder-count="8">
+            <div style="display:flex; align-items:center; gap:13px; padding:12px 15px; background:#14181D;">
+              <span style="font:700 13px/1 'JetBrains Mono',monospace; width:14px; {{ a.vStyle }}">{{ a.vGlyph }}</span>
+              <span style="font:600 9px/1 'JetBrains Mono',monospace; color:#54515a; width:14px;">{{ a.n }}</span>
+              <span style="flex:1; font:500 12.5px/1.3 'Montreal',sans-serif; color:#cbd0d6;">{{ a.point }}</span>
+              <span style="font:400 10.5px/1.3 'Montreal',sans-serif; color:#7c828a;">{{ a.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ auditWarn }}" hint-placeholder-val="{{ true }}">
+          <div onClick="{{ onFix }}" style="margin-top:15px; display:inline-flex; align-items:center; gap:9px; padding:11px 15px; background:#241c0c; border:1px solid #4a3a18; border-radius:9px; font:700 11px/1 'JetBrains Mono',monospace; color:#F5A524; cursor:pointer;">▲ appliquer le correctif ▸ settle spring (170/22)</div>
+        </sc-if>
+        <sc-if value="{{ auditClean }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:15px; display:inline-flex; align-items:center; gap:9px; padding:11px 15px; background:#161b16; border:1px solid #2c3a2c; border-radius:9px; font:700 11px/1 'JetBrains Mono',monospace; color:#8DA982;">✓ conforme — prêt à ship</div>
+        </sc-if>
+      </sc-if>
+
+      <!-- SHIP -->
+      <sc-if value="{{ isShip }}" hint-placeholder-val="{{ false }}">
+        <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b;">07 ▸ ship · artefacts réels</div>
+        <div style="font:700 22px/1.1 'Montreal',sans-serif; color:#E6E1E1; margin-top:10px;">la décision, matérialisée</div>
+        <div style="margin-top:14px; max-width:760px; border-radius:12px; overflow:hidden; border:1px solid {{ gateBorder }};">
+          <div style="display:flex; align-items:center; gap:11px; padding:13px 16px; background:{{ gateHeadBg }};">
+            <span style="font:700 12px/1 'JetBrains Mono',monospace; color:{{ gateVerdictColor }};">{{ gateGlyph }} ship gate</span>
+            <span style="font:700 11px/1 'JetBrains Mono',monospace; color:{{ gateVerdictColor }};">{{ gateVerdict }}</span>
+            <span style="font:500 9px/1 'JetBrains Mono',monospace; color:#6b727b; margin-left:auto;">seuil ancrage ≥ {{ gateThreshLabel }}</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:1px; background:#1E2329;">
+            <sc-for list="{{ gateView }}" as="g" hint-placeholder-count="5">
+              <div onClick="{{ g.onGoto }}" style="display:flex; align-items:center; gap:12px; padding:11px 16px; cursor:pointer; {{ g.rowBg }}">
+                <span style="font:700 12px/1 'JetBrains Mono',monospace; width:13px; flex:none; {{ g.vStyle }}">{{ g.glyph }}</span>
+                <span style="flex:1; font:600 12px/1.2 'Montreal',sans-serif; color:#cbd0d6;">{{ g.label }}</span>
+                <span style="font:600 10px/1 'JetBrains Mono',monospace; color:#9aa0a8;">{{ g.val }}</span>
+                <span style="font:600 9px/1 'JetBrains Mono',monospace; width:54px; text-align:right; {{ g.linkStyle }}">{{ g.linkLabel }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{ gatePass }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:11px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:11px 14px; background:#0F140F; border:1px solid #2c3a2c; border-radius:10px; max-width:760px;">
+            <span style="font:700 9px/1 'JetBrains Mono',monospace; color:#8DA982;">● gravé</span>
+            <span style="font:500 10px/1.5 'JetBrains Mono',monospace; color:#8a909a;">port-data/keyboard_nav.rs · molecule_specs.json (AgenticKeyboardNav) · scenes/keyboard-nav.json</span>
+            <span style="font:500 9px/1 'JetBrains Mono',monospace; color:#54515a; margin-left:auto;">décision gnosis canonique</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ gateHeld }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:11px; display:flex; align-items:center; gap:10px; padding:11px 14px; background:#241c0c; border:1px solid #4a3a18; border-radius:10px; max-width:760px;">
+            <span style="font:700 10px/1 'JetBrains Mono',monospace; color:#F5A524; flex:none;">⏸ commit canonique tenu</span>
+            <span style="font:500 10.5px/1.4 'Montreal',sans-serif; color:#cbb27a;">brouillons consultables/copiables ci-dessous ; la gravure attend que le gate passe.</span>
+          </div>
+        </sc-if>
+        <div style="margin-top:12px; max-width:760px; background:#0A0C0F; border:1px solid #20252B; border-radius:12px; padding:14px 16px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font:700 11px/1 'JetBrains Mono',monospace; color:#cbc4cb;">parité ▸ artefact gravé</span>
+            <span style="font:700 10px/1 'JetBrains Mono',monospace; color:{{ pariteVerdictColor }};">{{ pariteVerdict }}</span>
+            <span onClick="{{ onCheckParite }}" style="margin-left:auto; font:600 9px/1 'JetBrains Mono',monospace; color:#6b727b; cursor:pointer; padding:5px 9px; border:1px solid #23282F; border-radius:6px;">re-vérifier</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:7px; margin-top:11px;">
+            <sc-for list="{{ pariteTabs }}" as="pt" hint-placeholder-count="2">
+              <span onClick="{{ pt.onClick }}" style="display:flex; align-items:center; gap:7px; font:600 9.5px/1 'JetBrains Mono',monospace; padding:6px 10px; border-radius:7px; cursor:pointer; {{ pt.style }}"><span style="{{ pt.dotStyle }}"></span>{{ pt.label }}</span>
+            </sc-for>
+          </div>
+          <div style="font:500 9px/1.4 'JetBrains Mono',monospace; color:#54515a; margin-top:9px;">lecture disque ▸ {{ pariteSource }}</div>
+          <sc-if value="{{ pariteReady }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:12px; display:flex; flex-direction:column; gap:1px; background:#1E2329; border:1px solid #23282F; border-radius:9px; overflow:hidden;">
+              <div style="display:grid; grid-template-columns:84px 1fr 18px 1fr; gap:10px; padding:8px 13px; background:#0F1318;">
+                <span style="font:600 8px/1 'JetBrains Mono',monospace; letter-spacing:0.1em; text-transform:uppercase; color:#54515a;">champ</span>
+                <span style="font:600 8px/1 'JetBrains Mono',monospace; letter-spacing:0.1em; text-transform:uppercase; color:#54515a;">gravé</span>
+                <span></span>
+                <span style="font:600 8px/1 'JetBrains Mono',monospace; letter-spacing:0.1em; text-transform:uppercase; color:#54515a;">décidé</span>
+              </div>
+              <sc-for list="{{ pariteView }}" as="p" hint-placeholder-count="5">
+                <div style="display:grid; grid-template-columns:84px 1fr 18px 1fr; gap:10px; align-items:center; padding:9px 13px; {{ p.rowBg }}">
+                  <span style="font:600 10px/1 'JetBrains Mono',monospace; color:#9aa0a8;">{{ p.field }}</span>
+                  <span style="font:500 10px/1.3 'JetBrains Mono',monospace; color:#8a909a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ p.committed }}</span>
+                  <span style="font:700 11px/1 'JetBrains Mono',monospace; text-align:center; {{ p.vStyle }}">{{ p.glyph }}</span>
+                  <span style="font:500 10px/1.3 'JetBrains Mono',monospace; color:{{ p.decidedColor }}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ p.decided }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ pariteLoading }}" hint-placeholder-val="{{ true }}">
+            <div style="font:600 10px/1 'JetBrains Mono',monospace; color:#FF8E40; margin-top:11px;"><span style="display:inline-block; animation:gscan 1200ms ease-in-out infinite;">●</span> lecture de l’artefact sur disque…</div>
+          </sc-if>
+          <sc-if value="{{ pariteErr }}" hint-placeholder-val="{{ false }}">
+            <div style="font:600 10px/1.4 'JetBrains Mono',monospace; color:#E5686C; margin-top:11px;">⚠ artefact illisible — {{ pariteErrMsg }}</div>
+          </sc-if>
+        </div>
+        <div style="display:flex; align-items:center; gap:9px; margin-top:16px;">
+          <sc-for list="{{ shipTabs }}" as="t" hint-placeholder-count="4">
+            <span onClick="{{ t.onClick }}" style="font:600 10.5px/1 'JetBrains Mono',monospace; padding:8px 12px; border-radius:8px; cursor:pointer; {{ t.style }}">{{ t.label }}</span>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ notPreviewTab }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:14px; position:relative; max-width:760px;">
+            <span onClick="{{ onCopy }}" style="position:absolute; top:12px; right:12px; font:700 10px/1 'JetBrains Mono',monospace; color:#9aa0a8; cursor:pointer; padding:7px 11px; background:#1A1F26; border:1px solid #2B3037; border-radius:7px;">{{ copyLabel }}</span>
+            <pre style="margin:0; background:#0A0C0F; border:1px solid #20252B; border-radius:12px; padding:18px 20px; font:500 12px/1.65 'JetBrains Mono',monospace; color:#aeb4bc; white-space:pre-wrap; word-break:break-word; max-height:520px; overflow:auto;">{{ shipText }}</pre>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isPreviewTab }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:14px; display:flex; gap:22px; align-items:flex-start;">
+            <div tabindex="0" onFocus="{{ onPFocus }}" onBlur="{{ onPBlur }}" style="outline:none; width:280px; background:#14181D; border:1px solid #2B3037; border-radius:14px; padding:8px; box-shadow:0 18px 40px rgba(0,0,0,.5);">
+              <sc-for list="{{ shipPreviewRows }}" as="r" hint-placeholder-count="5">
+                <div style="{{ r.style }}">
+                  <sc-if value="{{ r.suggest }}" hint-placeholder-val="{{ false }}"><span style="width:5px; height:5px; border-radius:50%; background:#FF6A00; flex:none; animation:gpulse 1600ms ease-out infinite;"></span></sc-if>
+                  <span style="{{ r.labelStyle }}">{{ r.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="flex:1; max-width:340px;">
+              <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.16em; text-transform:uppercase; color:#6b727b;">preview ▸ <span style="color:#8DA982;">live · {{ chosenName }}</span></div>
+              <div style="font:400 12px/1.6 'Montreal',sans-serif; color:#8a909a; margin-top:10px;">le candidat rendu, piloté par la spec décidée. clique le menu puis ↑/↓ — ou les boutons. {{ previewBehaviour }}</div>
+              <div style="display:flex; gap:9px; margin-top:14px;">
+                <span onClick="{{ onPrevUp }}" style="font:700 13px/1 'JetBrains Mono',monospace; color:#cbd0d6; cursor:pointer; padding:9px 14px; background:#14181D; border:1px solid #2B3037; border-radius:8px;">↑</span>
+                <span onClick="{{ onPrevDown }}" style="font:700 13px/1 'JetBrains Mono',monospace; color:#cbd0d6; cursor:pointer; padding:9px 14px; background:#14181D; border:1px solid #2B3037; border-radius:8px;">↓</span>
+                <span style="display:flex; align-items:center; font:500 10px/1.3 'JetBrains Mono',monospace; color:#54515a;">{{ previewState }}</span>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </sc-if>
+
+    </div>
+
+    <!-- ─── right rail ─── -->
+    <div style="width:374px; flex:none; border-left:1px solid #1A1F25; background:#0B0E12; display:flex; flex-direction:column; min-height:0;">
+      <div style="padding:20px 20px 0;">
+        <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b;">spec en direct</div>
+        <div style="margin-top:13px; background:#0A0C0F; border:1px solid #20252B; border-radius:12px; padding:15px 16px;">
+          <div style="font:600 11px/1.5 'JetBrains Mono',monospace; color:#cbc4cb;">GnuContextMenu · keyboard-nav</div>
+          <div style="font:500 9px/1 'JetBrains Mono',monospace; color:#54515a; margin-bottom:11px;">CM-5 · famille agentic</div>
+          <sc-for list="{{ specView }}" as="l" hint-placeholder-count="6">
+            <div style="display:flex; align-items:baseline; gap:10px; padding:5px 0;">
+              <span style="font:600 10px/1.4 'JetBrains Mono',monospace; color:#6b727b; width:62px; flex:none;">{{ l.label }}</span>
+              <span style="font:600 11px/1.4 'JetBrains Mono',monospace; {{ l.valStyle }}">{{ l.val }}</span>
+            </div>
+          </sc-for>
+          <div style="margin-top:11px; padding-top:11px; border-top:1px solid #181D22; font:600 9.5px/1 'JetBrains Mono',monospace; color:#6b727b;">{{ answeredLabel }}</div>
+        </div>
+      </div>
+
+      <div style="padding:18px 20px 0;">
+        <div style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b; margin-bottom:11px;">sorties</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <sc-for list="{{ outChips }}" as="o" hint-placeholder-count="4">
+            <span style="display:flex; align-items:center; gap:8px; padding:9px 11px; background:#14181D; border:1px solid #23282F; border-radius:8px; font:600 10px/1 'JetBrains Mono',monospace; color:#9aa0a8;"><span style="color:{{ o.color }};">{{ o.glyph }}</span> {{ o.label }}</span>
+          </sc-for>
+        </div>
+        <div onClick="{{ onGotoShip }}" style="margin-top:11px; text-align:center; padding:11px; background:#1A1407; border:1px solid #4a3320; border-radius:9px; font:700 11px/1 'JetBrains Mono',monospace; color:#FF8E40; cursor:pointer;">ouvrir les artefacts ▸ ship</div>
+        <div style="margin-top:10px; display:flex; align-items:center; gap:8px; font:600 9.5px/1 'JetBrains Mono',monospace;"><span style="color:#9aa0a8;">enrichissement</span><span style="margin-left:auto; color:{{ enrichCovColor }};">{{ enrichCovLabel }}</span><span style="color:#54515a;">ancrage {{ enrichScoreLabel }}</span></div>
+      </div>
+
+      <div style="padding:16px 20px 0;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:11px;">
+          <span style="font:600 9px/1 'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; color:#6b727b;">flags</span>
+          <span style="font:700 9px/1 'JetBrains Mono',monospace; color:{{ flagCountColor }};">⚑ {{ flagCount }}</span>
+          <sc-if value="{{ hasFlagsNoReason }}" hint-placeholder-val="{{ false }}"><span style="font:600 8.5px/1 'JetBrains Mono',monospace; color:#CE8E3F;">{{ flagsNoReason }} sans raison</span></sc-if>
+          <sc-if value="{{ hasFlags }}" hint-placeholder-val="{{ false }}"><span onClick="{{ onClearAllFlags }}" style="margin-left:auto; font:600 9px/1 'JetBrains Mono',monospace; color:#6b727b; cursor:pointer;">tout effacer</span></sc-if>
+        </div>
+        <sc-if value="{{ hasFlags }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <sc-for list="{{ flagView }}" as="fl" hint-placeholder-count="2">
+              <div style="display:flex; flex-direction:column; gap:7px; padding:9px 11px; background:#14181D; border:1px solid #23282F; border-radius:8px;">
+                <div style="display:flex; align-items:center; gap:9px;">
+                  <span style="{{ fl.dotStyle }}"></span>
+                  <span onClick="{{ fl.onGoto }}" style="flex:1; font:500 10.5px/1.3 'Montreal',sans-serif; color:#cbd0d6; cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ fl.label }}</span>
+                  <span style="font:600 8px/1 'JetBrains Mono',monospace; color:#54515a; flex:none;">{{ fl.kindLabel }}</span>
+                  <span onClick="{{ fl.onClear }}" style="font:700 11px/1 'JetBrains Mono',monospace; color:#6b727b; cursor:pointer; flex:none;">✕</span>
+                </div>
+                <input value="{{ fl.reason }}" onInput="{{ fl.onReason }}" placeholder="raison…" style="width:100%; box-sizing:border-box; background:#0B0D11; border:1px solid {{ fl.reasonBorder }}; border-radius:6px; padding:6px 8px; font:500 10px/1.4 'Montreal',sans-serif; color:#cbd0d6; outline:none;" />
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noFlags }}" hint-placeholder-val="{{ true }}">
+          <div style="font:500 10px/1.5 'Montreal',sans-serif; color:#54515a;">aucun flag — lève une réserve sur une décision ou un enrichissement (⚑).</div>
+        </sc-if>
+      </div>
+
+      <div style="margin-top:auto; padding:16px 20px; border-top:1px solid #1A1F25;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:{{ busDot }}; display:inline-block;"></span>
+          <span style="font:600 10px/1 'JetBrains Mono',monospace; color:#FF8E40;">gnosis agent bus</span>
+          <span style="font:500 9px/1 'JetBrains Mono',monospace; color:#6b727b; margin-left:auto;">{{ busStateLabel }}</span>
+        </div>
+        <div style="font:500 9px/1.6 'JetBrains Mono',monospace; color:#54515a; margin-top:8px;">grant ▸ {{ capView }}<br>{{ transportLabel }}</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;agentLatencyMs&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:620,&quot;min&quot;:0,&quot;max&quot;:1500,&quot;step&quot;:20,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Agent bus&quot;},&quot;showSocketSeam&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Agent bus&quot;},&quot;shipThreshold&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.7,&quot;min&quot;:0.5,&quot;max&quot;:0.95,&quot;step&quot;:0.05,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Ship gate&quot;}}">
+class Component extends DCLogic {
+  state = { step:2, answers:{}, inferState:'ready', candidate:'cursor', fixed:false, shipTab:'spec', copied:'', pidx:-1, pfocus:false, busState:'disconnected', caps:{}, wire:[], transport:'—', busDelivered:0, enrichItems:[], enrichState:'', flags:{}, parite:null, pariteSrc:'molecule' };
+
+  get STATIONS(){ return [
+    {id:'research',n:'01',label:'research'},
+    {id:'infer',n:'02',label:'infer'},
+    {id:'decide',n:'03',label:'decide'},
+    {id:'enrich',n:'04',label:'enrich'},
+    {id:'generate',n:'05',label:'generate'},
+    {id:'audit',n:'06',label:'audit'},
+    {id:'ship',n:'07',label:'ship'},
+  ]; }
+
+  get QUESTIONS(){ return [
+    {id:'nav', n:'Q1', q:'Modèle de navigation clavier',
+     options:[
+       {id:'flat',tok:'flat-enabled+suggest',short:'liste plate',label:'Liste plate sur les items activés + suggestions ready'},
+       {id:'section',tok:'sectioned',short:'sectionnée',label:'Sectionnée — sauts de groupe (↹)'},
+       {id:'items',tok:'items-only',short:'items seuls',label:'Items seuls — suggestions exclues du clavier'},
+     ],
+     agent:{pick:'flat',conf:0.88,note:'CM-5 spécifie « flat keyboard list over enabled items + ready suggestions ».',src:'CONTEXT_MENU_FRONTIERS · CM-5'}},
+    {id:'suggest', n:'Q2', q:'Les suggestions ready rejoignent la liste clavier ?',
+     options:[
+       {id:'joined',tok:'joined-when-ready',short:'jointes',label:'Oui — ajoutées après les items déterministes une fois prêtes'},
+       {id:'mouse',tok:'mouse-only',short:'souris',label:'Non — à la souris seulement'},
+     ],
+     agent:{pick:'joined',conf:0.84,note:'le flat list inclut « + ready suggestions » — clavier homogène.',src:'CM-1 · deferred suggest'}},
+    {id:'dismiss', n:'Q3', q:'Renvoi (dismiss)',
+     options:[
+       {id:'esc-out',tok:'esc+outside',short:'Esc + dehors',label:'Esc + clic-dehors (analogue focus-grab)'},
+       {id:'esc',tok:'esc-only',short:'Esc seul',label:'Esc seulement'},
+     ],
+     agent:{pick:'esc-out',conf:0.91,note:'« Esc / outside-press dismiss (focus-grab analog) ».',src:'CONTEXT_MENU_FRONTIERS · CM-5'}},
+    {id:'focus', n:'Q4', q:'Focus initial à l\u2019ouverture',
+     options:[
+       {id:'neutral',tok:'neutral-on-open',short:'neutre',label:'Aucun item focalisé ; premier ↓ sélectionne le 1er'},
+       {id:'first',tok:'first-prefocused',short:'pré-focalisé',label:'1er item activé pré-focalisé'},
+     ],
+     agent:{pick:'neutral',conf:0.66,note:'ouverture neutre — la souris reste maître tant que le clavier n\u2019agit pas (input-model: click-awareness).',src:'PARITY · input'}},
+    {id:'ends', n:'Q5', q:'Comportement aux extrémités',
+     options:[
+       {id:'clamp',tok:'clamp',short:'clamp',label:'Clamp — ↓ sur le dernier ne fait rien'},
+       {id:'wrap',tok:'wrap',short:'wrap',label:'Wrap — ↓ sur le dernier revient au 1er'},
+     ],
+     agent:{pick:'clamp',conf:0.72,note:'clamp = prévisible ; cohérent avec edge-aware (pas de saut surprise).',src:'PARITY · edge-aware'}},
+  ]; }
+
+  get CANDIDATES(){ return [
+    {id:'cursor',name:'curseur',sub:'anneau de focus — glow orange sanctionné (hard rule)'},
+    {id:'rail',name:'rail',sub:'caret indicateur à gauche · accent dynamique'},
+    {id:'fill',name:'remplissage',sub:'fond secondary-container (M3)'},
+  ]; }
+
+  get AUDIT(){ return [
+    {n:'1',point:'Accent — chrome non hardcodé orange',note:'glow focus = traitement sanctionné'},
+    {n:'2',point:'Scheme-proof — tient sous un 2e schéma',note:'aucune teinte de schéma figée'},
+    {n:'3',point:'Motion — spring expressif sur le curseur',note:'settle 170/22 ; sinon glissement linéaire',motion:true},
+    {n:'4',point:'Icônes — Material Symbols / cube',note:'n/a — nav clavier'},
+    {n:'5',point:'Densité — pas de filler',note:'curseur seul, rien de décoratif'},
+    {n:'6',point:'Numbers — tabular-nums',note:'n/a'},
+    {n:'7',point:'Radii — un seul rayon',note:'rayon de ligne hérité du panel (12)'},
+    {n:'8',point:'Layer hygiene — terminal hors chrome',note:'curseur en chrome, voix terminal ailleurs'},
+  ]; }
+
+  get ENRICH_KINDS(){ return {
+    provenance:{label:'provenance',color:'#6FB1DC',border:'#234253',glyph:'§'},
+    precedent:{label:'précédent',color:'#8DA982',border:'#2c3a2c',glyph:'≈'},
+    conflict:{label:'conflit',color:'#E5686C',border:'#4f2329',glyph:'⚠'},
+    blast:{label:'portée',color:'#CE8E3F',border:'#46391f',glyph:'◇'},
+    counter:{label:'contre',color:'#9b94a6',border:'#3a3742',glyph:'⊘'},
+  }; }
+  get RELATIONS(){ return [
+    {label:'keyboard_nav.rs',rel:'blast',tag:'neuf'},
+    {label:'AgenticKeyboardNav',rel:'blast',tag:'molécule'},
+    {label:'launcher.rs',rel:'precedent',tag:'précédent'},
+    {label:'CursorState',rel:'precedent',tag:'input'},
+    {label:'host_menu_state::on_hit',rel:'blast',tag:'dispatch'},
+    {label:'TASTE · shadow-glow',rel:'conflict',tag:'règle'},
+  ]; }
+
+  componentDidMount(){ this._key = (e)=>{ if(!this.state.pfocus) return; if(e.key==='ArrowDown'){e.preventDefault(); this.movePreview(1);} else if(e.key==='ArrowUp'){e.preventDefault(); this.movePreview(-1);} }; window.addEventListener('keydown', this._key); this.loadFlags(); this.initBus(); }
+  componentWillUnmount(){ window.removeEventListener('keydown', this._key); clearTimeout(this._t); this._unsub && this._unsub(); this.bus && this.bus.dispose(); }
+
+  async initBus(){
+    try{
+      const mod = await import('./gnosis-bus.js');
+      this._mod = mod;
+      const t = new mod.SimTransport({ latencyMs:(this.props.agentLatencyMs ?? 620), dataset:(surface)=>this.busDataset(surface), enrich:(target)=>this.enrichDataset(target) });
+      const bus = new mod.GnosisBus(t);
+      this.bus = bus;
+      this._unsub = bus.subscribe((m)=>this.onBusEvent(m));
+      this.setState({ transport:t.kind });
+      bus.connect(); bus.grant('infer.shell.uiux'); bus.infer('context-menu');
+      this._syncWire();
+    }catch(e){ this._busFailed = true; this.reInfer(); }
+  }
+  onBusEvent(m){
+    if(m.type==='state') this.setState({ inferState:m.state });
+    if(m.type==='granted') this.setState(s=>({ caps:{...s.caps, [m.capability]:m.ttl_s} }));
+    if(m.type==='suggest') this.setState({ busDelivered:m.count||0 });
+    if(m.type==='enrich_state') this.setState({ enrichState:m.state });
+    if(m.type==='enrichment') this.setState(s=>({ enrichItems:[...s.enrichItems, {kind:m.kind,title:m.title,body:m.body,source:m.source,weight:m.weight}] }));
+    this._syncWire();
+  }
+  _syncWire(){ if(this.bus) this.setState({ wire:this.bus.wire.slice(0,5), busState:this.bus.state }); }
+  busDataset(){ return { frontiers:this.frontierRaw().map(f=>({ rank:f.rank, id:f.id, conf:Number(f.conf), risk:f.risk })), picks:Object.fromEntries(this.QUESTIONS.map(q=>[q.id,{pick:q.agent.pick,conf:q.agent.conf}])), count:this.frontierRaw().length }; }
+  frontierRaw(){ return [
+    {rank:'F1',id:'cm5',title:'context-menu ▸ CM-5',sub:'nav clavier — ↑/↓/⏎ sur items + suggestions ready',conf:'0.88',pct:88,confColor:'#8DA982',risk:'observe',riskStyle:'color:#6b727b;border:1px solid #2b3037;',src:'CONTEXT_MENU_FRONTIERS',top:true},
+    {rank:'F2',id:'wallsrc',title:'wallpaper ▸ wallSource',sub:'clé backend absente — wire un modèle ou étiqueter sim-only',conf:'0.74',pct:74,confColor:'#CE8E3F',risk:'local',riskStyle:'color:#F5A524;background:#241c0c;border:1px solid #4a3a18;',src:'SHELL_INVENTORY_AUDIT',top:false},
+    {rank:'F3',id:'notif',title:'notifications ▸ modèle',sub:'ancrer le tray sur un vrai notification model (EDIT)',conf:'0.69',pct:69,confColor:'#CE8E3F',risk:'local',riskStyle:'color:#F5A524;background:#241c0c;border:1px solid #4a3a18;',src:'SHELL_INVENTORY_AUDIT',top:false},
+    {rank:'F4',id:'modal',title:'modal ▸ composer',sub:'spec-only → composer la surface modale (band 500)',conf:'0.61',pct:61,confColor:'#9b94a6',risk:'system',riskStyle:'color:#E5686C;background:#271417;border:1px solid #4f2329;',src:'MANIFEST',top:false},
+  ]; }
+
+  enrichDataset(){ return [
+    {kind:'provenance',title:'clause CM-5',body:'« flat keyboard list over enabled items + ready suggestions; ↑/↓/Enter; Esc / outside-press dismiss ».',source:'CONTEXT_MENU_FRONTIERS.md · CM-5',weight:0.95},
+    {kind:'precedent',title:'launcher — fzf-lite',body:'le launcher ship déjà ↑↓/↵/Tab/Esc + match-highlight ; même grammaire clavier.',source:'SHELL_INVENTORY_AUDIT · launcher.rs',weight:0.82},
+    {kind:'precedent',title:'input model — CursorState',body:'click-awareness : la souris reste maître tant que le clavier n’agit pas → focus neutral-on-open.',source:'compose_core.rs · input',weight:0.78},
+    {kind:'precedent',title:'edge-aware — clamp',body:'le clamp aux extrémités prolonge la garantie edge-aware (pas de saut surprise).',source:'compose_core.rs · edge_tests',weight:0.66},
+    {kind:'conflict',title:'focus = glow orange',body:'TASTE hard rule : « Focus uses --shadow-glow-orange, never browser default » → candidat « curseur » s’y conforme.',source:'TASTE.md · hard rules',weight:0.70},
+    {kind:'blast',title:'portée du changement',body:'keyboard_nav.rs (neuf) · AgenticKeyboardNav · host_menu_state::on_hit (dispatch) · scenes/keyboard-nav.json.',source:'PARITY · MANIFEST',weight:0.60},
+    {kind:'counter',title:'wrap rejeté (0.28)',body:'wrap aux extrémités : imprévisible, entre en conflit avec edge-aware ; écarté.',source:'Atelier · décision',weight:0.50},
+  ]; }
+  onEnrich = ()=>{ this.setState({enrichItems:[], enrichState:'gathering'}); if(this.bus){ this.bus.enrich('context-menu',['provenance','precedent','conflict','blast','counter']); this._syncWire(); } else { const items=this.enrichDataset(); items.forEach((it,i)=> setTimeout(()=> this.setState(s=>({enrichItems:[...s.enrichItems,it]})), 120+i*140)); setTimeout(()=> this.setState({enrichState:'done'}), 120+items.length*140+80); } };
+
+  reInfer = ()=>{ if(this.bus){ if(this.bus.t.setLatency) this.bus.t.setLatency(this.props.agentLatencyMs ?? 620); this.bus.infer('context-menu'); this._syncWire(); return; } const ms=(this.props.agentLatencyMs ?? 620); this.setState({inferState:'thinking'}); clearTimeout(this._t); this._t=setTimeout(()=>this.setState({inferState:'ready'}), ms); };
+  goto = (i)=>{ this.setState({step:i}); const st=this.STATIONS[i]; if(st&&st.id==='enrich'&&!this._enrichRan){ this._enrichRan=true; setTimeout(()=>this.onEnrich(),40); } if(st&&st.id==='ship'){ setTimeout(()=>this.checkParite(),40); } };
+  checkParite = async ()=>{ this.setState({parite:{loading:true}}); const out={loading:false};
+    try{
+      const json = await (await fetch('./port-data/molecule_specs.json', {cache:'no-store'})).json();
+      const mol = (json.molecules||[]).find(m=>m.id==='AgenticKeyboardNav');
+      const kb = (mol && mol.model && mol.model.keyboard) || {};
+      const fm = [['nav','nav'],['suggest','suggest'],['dismiss','dismiss'],['focus','focus'],['ends','ends']];
+      out.molecule = { source:'molecule_specs.json · AgenticKeyboardNav.model.keyboard', fields: fm.map(([qid,kf])=>{ const o=this.valOpt(qid); const decided=o?o.tok:null; const committed=(kb[kf]!=null)?String(kb[kf]):null; return {field:kf, decided, committed, match: decided!=null && decided===committed}; }) };
+    }catch(e){ out.molecule={ error:String(e&&e.message||e) }; }
+    try{
+      const rs = await (await fetch('./port-data/keyboard_nav.rs', {cache:'no-store'})).text();
+      const mm=(re)=>{ const x=rs.match(re); return x?x[1]:null; };
+      const RS = {
+        nav:{c:'NAV', committed:mm(/const NAV:\s*NavModel\s*=\s*NavModel::(\w+)/), map:{'flat-enabled+suggest':'FlatEnabledPlusSuggest','sectioned':'Sectioned','items-only':'ItemsOnly'}},
+        suggest:{c:'SUGGEST_JOINS_LIST', committed:mm(/const SUGGEST_JOINS_LIST:\s*bool\s*=\s*(\w+)/), map:{'joined-when-ready':'true','mouse-only':'false'}},
+        dismiss:{c:'DISMISS', committed:mm(/const DISMISS:\s*Dismiss\s*=\s*Dismiss::(\w+)/), map:{'esc+outside':'EscPlusOutside','esc-only':'EscOnly'}},
+        focus:{c:'FOCUS_NEUTRAL_ON_OPEN', committed:mm(/const FOCUS_NEUTRAL_ON_OPEN:\s*bool\s*=\s*(\w+)/), map:{'neutral-on-open':'true','first-prefocused':'false'}},
+        ends:{c:'ENDS', committed:mm(/const ENDS:\s*Ends\s*=\s*Ends::(\w+)/), map:{'clamp':'Clamp','wrap':'Wrap'}},
+      };
+      out.port = { source:'keyboard_nav.rs · decided consts', fields: Object.keys(RS).map(qid=>{ const spec=RS[qid]; const o=this.valOpt(qid); const tok=o?o.tok:null; const decided=tok?(spec.map[tok]||null):null; return {field:spec.c, decided, committed:spec.committed, match: decided!=null && spec.committed!=null && decided===spec.committed}; }) };
+    }catch(e){ out.port={ error:String(e&&e.message||e) }; }
+    this.setState({parite:out});
+  };
+  setPariteSrc = (id)=> this.setState({pariteSrc:id});
+  gotoId = (id)=> this.goto(this.STATIONS.findIndex(x=>x.id===id));
+  loadFlags = ()=>{ try{ const f=JSON.parse(localStorage.getItem('atelier.flags.cm5')||'{}'); if(f&&typeof f==='object'&&!Array.isArray(f)) this.setState({flags:f}); }catch(e){} };
+  _persistFlags = ()=>{ try{ localStorage.setItem('atelier.flags.cm5', JSON.stringify(this.state.flags||{})); }catch(e){} };
+  toggleFlag = (key,kind,label)=>{ this.setState(s=>{ const f={...s.flags}; if(f[key]) delete f[key]; else f[key]={kind,label,reason:''}; return {flags:f}; }, this._persistFlags); };
+  setFlagReason = (key,reason)=>{ this.setState(s=>{ if(!s.flags[key]) return null; return {flags:{...s.flags, [key]:{...s.flags[key], reason}}}; }, this._persistFlags); };
+  clearFlag = (key)=>{ this.setState(s=>{ const f={...s.flags}; delete f[key]; return {flags:f}; }, this._persistFlags); };
+  clearAllFlags = ()=>{ this.setState({flags:{}}, this._persistFlags); };
+  onFlagsGoto = ()=> this.gotoId('decide');
+  pick = (qid,oid)=> this.setState(s=>({answers:{...s.answers,[qid]:oid}}));
+  acceptAll = ()=>{ const a={}; this.QUESTIONS.forEach(q=> a[q.id]=q.agent.pick); this.setState({answers:a}); };
+  pickCand = (id)=> this.setState({candidate:id});
+  applyFix = ()=> this.setState({fixed:true});
+  setTab = (t)=> this.setState({shipTab:t});
+  setPFocus = (v)=> this.setState({pfocus:v});
+  copy = (key,text)=>{ try{ navigator.clipboard && navigator.clipboard.writeText(text); }catch(e){} this.setState({copied:key}); clearTimeout(this._c); this._c=setTimeout(()=> this.setState(s=> s.copied===key?{copied:''}:null), 1300); };
+
+  valOpt(id){ const oid=this.state.answers[id]; if(!oid) return null; const q=this.QUESTIONS.find(x=>x.id===id); return q.options.find(o=>o.id===oid)||null; }
+
+  previewRows(){ const base=[{id:'new',label:'nouveau'},{id:'term',label:'ouvrir un terminal'},{id:'wall',label:'changer le fond'},{id:'disp',label:'paramètres d\u2019affichage'}]; const sug=this.state.answers.suggest; if(sug==='joined'||!sug) base.push({id:'sug',label:'gnosis suggère…',suggest:true}); return base; }
+
+  movePreview(d){ const rows=this.previewRows(); const n=rows.length; this.setState(s=>{ let i=s.pidx; if(i<0) return {pidx: d>0?0:n-1}; let ni=i+d; if(this.state.answers.ends==='wrap'){ ni=((ni%n)+n)%n; } else { ni=Math.max(0,Math.min(n-1,ni)); } return {pidx:ni}; }); }
+
+  buildSpecMd(){ const t=(id)=>{const o=this.valOpt(id); return o?o.tok:'?';}; const cand=this.CANDIDATES.find(c=>c.id===this.state.candidate);
+    const _e=this.state.enrichItems||[]; const enr=_e.length?('\n## enrichissement ('+_e.length+' sources)\n'+_e.map(it=>'- ['+it.kind+'] '+it.title+' — '+it.source).join('\n')+'\n'):'';
+    const _f=Object.entries(this.state.flags||{}); const flg=_f.length?('\n## flags ('+_f.length+')\n'+_f.map(([k,v])=>'- ['+v.kind+'] '+v.label+(v.reason&&v.reason.trim()?' — '+v.reason.trim():' — (sans raison)')).join('\n')+'\n'):'';
+    const _cov=[...new Set(_e.map(i=>i.kind))].length; const _score=_e.length?_e.reduce((a,b)=>a+b.weight,0)/_e.length:0; const _thr=(this.props.shipThreshold ?? 0.70);
+    const _okD=Object.keys(this.state.answers).length===5; const _okA=_cov>=5 && _score>=_thr; const _okU=this.state.fixed; const _okF=_f.length===0;
+    const _par=this.state.parite; const _pBoth=!!(_par&&!_par.loading&&_par.molecule&&_par.molecule.fields&&_par.port&&_par.port.fields&&!_par.molecule.error&&!_par.port.error); const _pDiv=_pBoth?(_par.molecule.fields.filter(f=>!f.match).length+_par.port.fields.filter(f=>!f.match).length):null; const _okP=!!(_pBoth&&_pDiv===0);
+    const _pass=_okD&&_okA&&_okU&&_okF&&_okP;
+    const gate='\n## ship gate\n- verdict   : '+(_pass?'CANONIQUE (gravé)':'TENU')+'\n- décisions : '+(_okD?'5/5 ok':'incomplet')+'\n- ancrage   : '+_cov+'/5 · '+_score.toFixed(2)+(_okA?' ok':' < '+_thr.toFixed(2))+'\n- audit     : '+(_okU?'8/8 ok':'7/8 — 1 avertissement')+'\n- flags     : '+_f.length+(_okF?' ok':' ouverts')+'\n- parité    : '+(!_par?'non lu':(_pBoth?(_pDiv===0?'json+rs conforme':_pDiv+' divergent(s)'):'illisible'))+'\n';
+    return `# CM-5 · Navigation clavier — GnuContextMenu
+
+> spec dérivée dans l'Atelier (gnosis ▸ ux)
+> surface : context-menu · band 100 · KEEP
+> engine  : gnuin-compose-core v0.14.2 · famille agentic
+
+## modèle
+- nav      : ${t('nav')}
+- suggest  : ${t('suggest')}
+- dismiss  : ${t('dismiss')}
+- focus    : ${t('focus')}
+- ends     : ${t('ends')}
+- risk     : observe (lecture seule — ne mute jamais)
+
+## contrat
+- le menu s'ouvre instantanément ; le clavier ne bloque jamais l'ouverture.
+- liste clavier plate sur les items activés ; séparateurs / désactivés sautés.
+- précédence dismiss : Esc > clic-dehors > sélection.
+
+## affordance
+- candidat : ${cand?cand.name:'—'}
+- motion   : settle spring (170/22), pas de slide linéaire.
+${enr}${flg}${gate}
+— Atelier · ${new Date().toISOString().slice(0,10)}`;
+  }
+
+  buildMolecule(){ const t=(id)=>{const o=this.valOpt(id); return o?o.tok:null;};
+    const obj={ id:'AgenticKeyboardNav', family:'agentic', style:'list', layout:'agentic-panel', backed:true, density:'mouse',
+      composition_of:'agentic-panel + flat keyboard cursor over enabled rows + ready suggestions',
+      model_fields_new:{ keyboard:'{nav,suggest,dismiss,focus,ends,risk} \u2014 flat \u2191/\u2193/\u23ce cursor model' },
+      model:{ keyboard:{ nav:t('nav'), suggest:t('suggest'), dismiss:t('dismiss'), focus:t('focus'), ends:t('ends'), risk:'observe' } },
+      motion:['A.04 mask','A.01 fade','cursor-settle 170/22'] };
+    return JSON.stringify(obj,null,2);
+  }
+
+  buildPortRs(){ const nav=this.valOpt('nav'), ends=this.valOpt('ends'), dis=this.valOpt('dismiss'), foc=this.valOpt('focus'), sug=this.valOpt('suggest');
+    const navE = nav?({flat:'FlatEnabledPlusSuggest',section:'Sectioned',items:'ItemsOnly'}[nav.id]):'FlatEnabledPlusSuggest';
+    const endE = (ends&&ends.id==='wrap')?'Wrap':'Clamp';
+    const disE = (dis&&dis.id==='esc')?'EscOnly':'EscPlusOutside';
+    const focB = (foc&&foc.id==='first')?'false':'true';
+    const sugB = (sug&&sug.id==='mouse')?'false':'true';
+    return `// keyboard_nav.rs \u2014 PORT TARGET (proposed; not yet in-crate)
+// CM-5 keyboard navigation for gnuin-compose-core menus.
+// Generated by Atelier (gnosis \u25b8 ux) from the decided spec. See PARITY.md.
+#![allow(dead_code)]
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum NavModel { FlatEnabledPlusSuggest, Sectioned, ItemsOnly }
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum Ends { Clamp, Wrap }
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum Dismiss { EscOnly, EscPlusOutside }
+
+pub const NAV: NavModel = NavModel::${navE};
+pub const ENDS: Ends = Ends::${endE};
+pub const DISMISS: Dismiss = Dismiss::${disE};
+pub const FOCUS_NEUTRAL_ON_OPEN: bool = ${focB};
+pub const SUGGEST_JOINS_LIST: bool = ${sugB};
+
+/// Flat keyboard cursor over the enabled, hittable rows of an open menu
+/// (+ ready agent suggestions when SUGGEST_JOINS_LIST). Read-only: observe.
+#[derive(Clone, Debug)]
+pub struct KeyboardNav { pub cursor: Option<usize>, pub len: usize }
+
+impl KeyboardNav {
+    /// Move by d (+1 down / -1 up). Pure; honours ENDS. None = neutral.
+    pub fn step(&self, d: isize) -> Option<usize> {
+        if self.len == 0 { return None; }
+        match self.cursor {
+            None => Some(if d > 0 { 0 } else { self.len - 1 }),
+            Some(i) => {
+                let n = self.len as isize;
+                let ni = i as isize + d;
+                Some(match ENDS {
+                    Ends::Clamp => ni.clamp(0, n - 1) as usize,
+                    Ends::Wrap  => (((ni % n) + n) % n) as usize,
+                })
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    fn nav(len: usize, cursor: Option<usize>) -> KeyboardNav { KeyboardNav { cursor, len } }
+    #[test] fn neutral_then_down_selects_first() { assert_eq!(nav(4, None).step(1), Some(0)); }
+    #[test] fn up_from_neutral_selects_last()    { assert_eq!(nav(4, None).step(-1), Some(3)); }
+    #[test] fn clamp_holds_at_last() { if ENDS == Ends::Clamp { assert_eq!(nav(4, Some(3)).step(1), Some(3)); } }
+    #[test] fn empty_list_stays_neutral() { assert_eq!(nav(0, None).step(1), None); }
+}`;
+  }
+
+  renderVals(){
+    const s=this.state;
+    const cur=s.step;
+    const stations=this.STATIONS.map((st,i)=>{
+      const status=i<cur?'done':(i===cur?'active':'pending');
+      const pill=status==='active'?'background:#1A1407;border:1px solid #FF8E40;color:#FF8E40;box-shadow:0 0 0 3px rgba(255,142,64,.12);'
+        :status==='done'?'background:#161b16;border:1px solid #2c3a2c;color:#8DA982;'
+        :'background:#14181D;border:1px solid #2B3037;color:#5b626b;';
+      const lab=status==='active'?'#F3EEE9':status==='done'?'#8DA982':'#6b727b';
+      const glyph=status==='done'?'✓':(status==='active'?'◉':'○');
+      return { n:st.n, label:st.label, pill, lab, glyph, notLast:i<this.STATIONS.length-1, onClick:()=>this.goto(i) };
+    });
+    const id=this.STATIONS[cur].id;
+
+    const ans=s.answers;
+    const flags=s.flags||{};
+    const qview=this.QUESTIONS.map(q=>{
+      const answered=!!ans[q.id];
+      const pickOpt=q.options.find(o=>o.id===q.agent.pick)||{};
+      const optsView=q.options.map(o=>{
+        const sel=ans[q.id]===o.id;
+        return { label:o.label, onPick:()=>this.pick(q.id,o.id),
+          rowStyle: sel?'background:#1A1407;border:1px solid #4a3320;':'background:#0F1318;border:1px solid #20252B;',
+          glyph: sel?'◉':'○', glyphStyle: sel?'color:#FF8E40;':'color:#4a515a;',
+          labelStyle: sel?'color:#F3EEE9;':'color:#9aa0a8;',
+          agentTag: o.id===q.agent.pick?'▸ gnosis':'' };
+      });
+      const matched=ans[q.id]===q.agent.pick;
+      const c=q.agent.conf; const confC=c>=0.85?'#8DA982':(c>=0.7?'#CE8E3F':'#9b94a6');
+      return { n:q.n, q:q.q, optsView, agentShort:pickOpt.short||'', agentNote:q.agent.note, agentSrc:q.agent.src,
+        agentConf:c.toFixed(2), confStyle:'color:'+confC+';', onAccept:()=>this.pick(q.id,q.agent.pick),
+        matchLabel: answered?(matched?'= gnosis':'≠ gnosis'):'',
+        matchStyle: answered?(matched?'color:#8DA982;border:1px solid #2c3a2c;':'color:#CE8E3F;border:1px solid #46391f;'):'color:transparent;border:1px solid transparent;',
+        flagged: !!flags['q:'+q.id], flagStyle: flags['q:'+q.id]?'color:#F5A524;':'color:#3a4048;', onFlag:()=>this.toggleFlag('q:'+q.id,'decision',q.q) };
+    });
+    const answeredCount=this.QUESTIONS.filter(q=>ans[q.id]).length;
+    const allAnswered=answeredCount===5;
+
+    const tokOr=(id2)=>{const o=this.valOpt(id2); return o?o.tok:'—';};
+    const onv=(id2)=>!!ans[id2];
+    const line=(label,id2)=>({label, val:tokOr(id2), valStyle: onv(id2)?'color:#8DA982;':'color:#54515a;'});
+    const specView=[ line('nav','nav'), line('suggest','suggest'), line('dismiss','dismiss'), line('focus','focus'), line('ends','ends'),
+      {label:'risk', val:'observe', valStyle:'color:#6FB1DC;'} ];
+
+    const g=(ok,part)=> ok?{glyph:'●',color:'#8DA982'}:(part?{glyph:'◐',color:'#CE8E3F'}:{glyph:'○',color:'#5b626b'});
+    const outChips=[ {label:'spec',...g(allAnswered,true)}, {label:'molécule',...g(allAnswered,false)}, {label:'port .rs',...g(allAnswered,false)}, {label:'preview',...g(!!s.candidate,false)} ];
+
+    const candTreat=(treat,focused)=>{ let st='padding:7px 10px;border-radius:7px;font:500 11px/1.2 \'Montreal\',sans-serif;color:#cbd0d6;'; if(focused){ if(treat==='cursor') st+='box-shadow:inset 0 0 0 1px rgba(255,106,0,.55),0 0 0 3px rgba(255,106,0,.16);background:#15120c;color:#F3EEE9;'; else if(treat==='rail') st+='border-left:3px solid #cbc4cb;background:#161a1f;color:#ece6e9;padding-left:7px;'; else st+='background:#2b2a2a;color:#ece6e9;'; } return st; };
+    const candRows=(treat)=>['nouveau','ouvrir un terminal','changer le fond'].map((label,i)=>({ label, style:candTreat(treat,i===1), caret:(i===1&&treat==='rail')?'▸ ':'' }));
+    const candView=this.CANDIDATES.map(c=>{ const picked=s.candidate===c.id; return { name:c.name, sub:c.sub, badge:c.id==='cursor'?'gnosis ▸ 0.79':'', rows:candRows(c.id),
+      cardStyle: picked?'border:1px solid #4a3320;background:#15120c;box-shadow:0 0 0 1px rgba(255,142,64,.12);':'border:1px solid #23282F;background:#14181D;',
+      pickLabel: picked?'● choisi':'choisir', pickColor: picked?'#FF8E40':'#6b727b', onPick:()=>this.pickCand(c.id) }; });
+    const chosen=this.CANDIDATES.find(c=>c.id===s.candidate)||this.CANDIDATES[0];
+
+    const auditView=this.AUDIT.map(a=>{ const warn=a.motion&&!s.fixed; return { n:a.n, point:a.point, note:(a.motion&&s.fixed)?'settle 170/22 appliqué':a.note, vGlyph:warn?'▲':'✓', vStyle:warn?'color:#F5A524;':'color:#8DA982;' }; });
+
+    const frontiers=this.frontierRaw().map(f=>({ rank:f.rank, title:f.title, sub:f.sub, conf:f.conf, confColor:f.confColor, risk:f.risk, riskStyle:f.riskStyle, src:f.src,
+      cardStyle: f.top?'border:1px solid #4a3320;background:#15120c;':'border:1px solid #23282F;background:#14181D;',
+      barStyle:'display:block;height:100%;width:'+f.pct+'%;background:'+f.confColor+';',
+      driveLabel: f.top?'piloté ●':'piloter →', onDrive:()=>this.goto(2) }));
+
+    const shipText = s.shipTab==='spec'?this.buildSpecMd(): s.shipTab==='molecule'?this.buildMolecule(): s.shipTab==='port'?this.buildPortRs(): '';
+    const shipTabs=[['spec','spec.md'],['molecule','molecule'],['port','keyboard_nav.rs'],['preview','preview']].map(([tid,label])=>({ label,
+      style: s.shipTab===tid?'background:#1A1407;border:1px solid #4a3320;color:#FF8E40;':'background:#14181D;border:1px solid #23282F;color:#9aa0a8;',
+      onClick:()=>this.setTab(tid) }));
+
+    const prows=this.previewRows();
+    const shipPreviewRows=prows.map((r,i)=>{ const f=i===s.pidx; let st='display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;margin:1px 0;'; if(f){ st+=candTreat(chosen.id,true); } return { label:r.label, suggest:!!r.suggest, style:st, labelStyle:'font:500 12px/1.2 \'Montreal\',sans-serif;color:'+(f?'#F3EEE9':(r.suggest?'#FF8E40':'#cbd0d6'))+';' }; });
+    const cursorName = s.pidx<0?'neutre (aucun)':String(s.pidx+1)+' / '+prows.length;
+
+    const socketSeam=(this.props.showSocketSeam ?? true);
+    const busDot = s.busState==='connected'?'#8DA982':(s.busState==='connecting'?'#CE8E3F':'#5b626b');
+    const wireView=(s.wire||[]).map(w=>({ dir:w.dir, dirStyle:'color:'+(w.dir==='▸'?'#6FB1DC':'#8DA982')+';', line:w.line }));
+    const capEntries=Object.entries(s.caps||{});
+    const capView = capEntries.length? capEntries.map(([k,ttl])=>k+' · '+ttl+'s').join('  ') : '—';
+    const transportLabel = this.bus? this.bus.t.label : 'SimTransport · loopback (stand-in gnu6)';
+    const busStateLabel = s.busState||'disconnected';
+    const protoLabel = 'envelope v'+(this._mod? this._mod.PROTOCOL_VERSION : 1);
+    const EK=this.ENRICH_KINDS;
+    const enrichItems=s.enrichItems||[];
+    const enrichView=enrichItems.map(it=>{ const k=EK[it.kind]||EK.provenance; return { glyph:k.glyph, kindLabel:k.label, kindColor:k.color, title:it.title, body:it.body, source:it.source, weight:it.weight.toFixed(2), barStyle:'display:block;height:100%;width:'+Math.round(it.weight*100)+'%;background:'+k.color+';', cardStyle:'border:1px solid '+k.border+';background:#14181D;border-radius:11px;padding:13px 14px;', flagStyle: flags['e:'+it.title]?'color:#F5A524;':'color:#3a4048;', onFlag:()=>this.toggleFlag('e:'+it.title,'enrichment',it.title) }; });
+    const kindsPresent=[...new Set(enrichItems.map(i=>i.kind))];
+    const kindsMeter=Object.entries(EK).map(([k,v])=>({ label:v.label, labelColor:kindsPresent.includes(k)?v.color:'#54515a', dotStyle:'width:7px;height:7px;border-radius:50%;display:inline-block;background:'+(kindsPresent.includes(k)?v.color:'#2B3037')+';' }));
+    const enrichScore=enrichItems.length? enrichItems.reduce((a,b)=>a+b.weight,0)/enrichItems.length : 0;
+    const enrichScoreLabel=enrichItems.length? enrichScore.toFixed(2) : '—';
+    const scoreBarStyle='display:block;height:100%;width:'+Math.round(enrichScore*100)+'%;background:'+(enrichScore>=0.75?'#8DA982':(enrichScore>=0.6?'#CE8E3F':'#9b94a6'))+';';
+    const enrichTotal=Object.keys(EK).length;
+    const enrichCovLabel=kindsPresent.length+'/'+enrichTotal;
+    const enrichCovColor=kindsPresent.length>=enrichTotal?'#8DA982':'#CE8E3F';
+    const enrichGathering=s.enrichState==='gathering';
+    const enrichEmpty=enrichItems.length===0 && s.enrichState!=='gathering';
+    const enrichStateLabel=s.enrichState==='gathering'?'gathering…':(s.enrichState==='done'?'done':'idle');
+    const enrichStateColor=s.enrichState==='gathering'?'#FF8E40':(s.enrichState==='done'?'#8DA982':'#6b727b');
+    const relView=this.RELATIONS.map(r=>{ const k=EK[r.rel]; return { label:r.label, tag:r.tag, chipStyle:'border:1px solid '+k.border+';color:'+k.color+';background:#14181D;' }; });
+    const flagEntries=Object.entries(flags);
+    const flagCount=flagEntries.length;
+    const FKC={decision:'#FF8E40', enrichment:'#9b94a6'};
+    const flagView=flagEntries.map(([k,v])=>({ key:k, label:v.label, reason:v.reason||'', hasReason:!!(v.reason&&v.reason.trim()), reasonBorder:(v.reason&&v.reason.trim())?'#2B3037':'#4a3a18', dotStyle:'width:6px;height:6px;border-radius:50%;display:inline-block;flex:none;background:'+(FKC[v.kind]||'#9aa0a8')+';', kindLabel:(v.kind==='enrichment'?'enrich':'décision'), onGoto:()=>this.gotoId(v.kind==='enrichment'?'enrich':'decide'), onClear:()=>this.clearFlag(k), onReason:(e)=>this.setFlagReason(k, e.target.value) }));
+    const flagsNoReason=flagEntries.filter(([k,v])=>!(v.reason&&v.reason.trim())).length;
+    const flagBadgeStyle=flagCount>0?'color:#F5A524;background:#241c0c;border:1px solid #4a3a18;':'color:#54515a;border:1px solid #23282F;';
+    const flagCountColor=flagCount>0?'#F5A524':'#54515a';
+
+    // ── ship gate ──────────────────────────────────────────────
+    const gateThresh=(this.props.shipThreshold ?? 0.70);
+    const gDecide=allAnswered;
+    const gAnchor=kindsPresent.length>=enrichTotal && enrichScore>=gateThresh;
+    const gAudit=s.fixed;
+    const gFlags=flagCount===0;
+    const _gp=s.parite;
+    const _gpBoth=!!(_gp && !_gp.loading && _gp.molecule && _gp.molecule.fields && _gp.port && _gp.port.fields && !_gp.molecule.error && !_gp.port.error);
+    const _gpDiv=_gpBoth ? (_gp.molecule.fields.filter(f=>!f.match).length + _gp.port.fields.filter(f=>!f.match).length) : null;
+    const gParite=!!(_gpBoth && _gpDiv===0);
+    const _gpVal = !_gp ? 'non lu' : (_gp.loading ? 'lecture…' : (!_gpBoth ? 'illisible' : (_gpDiv===0 ? 'json+rs ✓' : _gpDiv+' divergent'+(_gpDiv>1?'s':''))));
+    const gateChecks=[
+      {label:'décisions', ok:gDecide, val:answeredCount+'/5', goto:'decide'},
+      {label:'ancrage · enrich', ok:gAnchor, val:(enrichItems.length?kindsPresent.length+'/'+enrichTotal+' · '+enrichScore.toFixed(2):'—'), goto:'enrich'},
+      {label:'audit TASTE', ok:gAudit, val:(s.fixed?'8/8':'7/8'), goto:'audit'},
+      {label:'flags', ok:gFlags, val:(flagCount===0?'0 ouvert':flagCount+' ouverts'), goto:'decide'},
+      {label:'parité · disque', ok:gParite, val:_gpVal, goto:'decide'},
+    ];
+    const gatePass=gDecide&&gAnchor&&gAudit&&gFlags&&gParite;
+    const gateFailCount=gateChecks.filter(c=>!c.ok).length;
+    const gateView=gateChecks.map(c=>({ label:c.label, val:c.val, glyph:c.ok?'✓':'▲', vStyle:c.ok?'color:#8DA982;':'color:#F5A524;', rowBg:c.ok?'background:#14181D;':'background:#1a1509;', linkLabel:c.ok?'':'réparer →', linkStyle:c.ok?'color:#54515a;':'color:#F5A524;cursor:pointer;', onGoto:()=>this.gotoId(c.goto) }));
+    const gateVerdict=gatePass?'canonique · prêt à graver':('tenu · '+gateFailCount+' critère'+(gateFailCount>1?'s':'')+' non rempli'+(gateFailCount>1?'s':''));
+    const gateVerdictColor=gatePass?'#8DA982':'#F5A524';
+    const gateGlyph=gatePass?'✓':'⏸';
+    const gateBorder=gatePass?'#2c3a2c':'#4a3a18';
+    const gateHeadBg=gatePass?'#0F140F':'#241c0c';
+    const gateThreshLabel=gateThresh.toFixed(2);
+
+    // ── parité · vs committed artefact ──────────────────────────────────────
+    const par=s.parite;
+    const pariteSrc=s.pariteSrc||'molecule';
+    const pariteLoading=!!(par&&par.loading);
+    const active = (par&&!par.loading) ? (pariteSrc==='port'?par.port:par.molecule) : null;
+    const pariteErr=!!(active&&active.error);
+    const pariteReady=!!(active&&active.fields);
+    const pariteView=(pariteReady?active.fields:[]).map(f=>({ field:f.field, committed:f.committed||'∅', decided:f.decided||'(non décidé)', glyph:f.match?'✓':'≠', vStyle:f.match?'color:#8DA982;':'color:#E5686C;', rowBg:f.match?'background:#14181D;':'background:#1a1010;', decidedColor:f.match?'#8DA982':(f.decided?'#E5686C':'#6b727b') }));
+    const pariteDiverge=pariteReady?active.fields.filter(f=>!f.match).length:0;
+    const pariteVerdict=pariteLoading?'lecture du disque…':(pariteErr?'illisible':(pariteReady?(pariteDiverge===0?'✓ conforme à l’artefact gravé':'dérive · '+pariteDiverge+' champ'+(pariteDiverge>1?'s':'')+' divergent'+(pariteDiverge>1?'s':'')):'—'));
+    const pariteVerdictColor=pariteReady?(pariteDiverge===0?'#8DA982':'#E5686C'):(pariteErr?'#E5686C':'#6b727b');
+    const pariteSource=(active&&active.source)?active.source:'port-data/…';
+    const pariteErrMsg=pariteErr?active.error:'';
+    const _pdiv=(srcKey)=>{ const a=par&&par[srcKey]; if(!a||!a.fields) return null; return a.fields.filter(f=>!f.match).length; };
+    const pariteTabs=[['molecule','molécule · json'],['port','port · .rs']].map(([id,label])=>{ const div=_pdiv(id); const dot=div==null?'#54515a':(div===0?'#8DA982':'#E5686C'); return { label, onClick:()=>this.setPariteSrc(id), dotStyle:'width:6px;height:6px;border-radius:50%;display:inline-block;background:'+dot+';', style: pariteSrc===id?'background:#1A1407;border:1px solid #4a3320;color:#FF8E40;':'background:#14181D;border:1px solid #23282F;color:#9aa0a8;' }; });
+
+    return {
+      stations, answeredLabel: answeredCount+' / 5 décidé',
+      isResearch:id==='research', isInfer:id==='infer', isDecide:id==='decide', isEnrich:id==='enrich', isGenerate:id==='generate', isAudit:id==='audit', isShip:id==='ship',
+      inferThinking: s.inferState==='thinking', inferReady: s.inferState!=='thinking',
+      onReInfer:this.reInfer, onGotoInfer:()=>this.gotoId('infer'), onGotoShip:()=>this.gotoId('ship'),
+      seamLabel: socketSeam?'pre-cutover · socket seam':'in-process',
+      busDot, busStateLabel, transportLabel, capView, wireView, protoLabel,
+      frontiers,
+      qview, onAcceptAll:this.acceptAll,
+      specView, outChips,
+      candView, candNote: s.candidate==='cursor'?'gnosis ▸ curseur · 0.79 (glow sanctionné par la hard rule).':'',
+      chosenName: chosen.name,
+      onEnrich:this.onEnrich, enrichView, kindsMeter, enrichScoreLabel, scoreBarStyle, enrichCovLabel, enrichCovColor, enrichGathering, enrichEmpty, enrichStateLabel, enrichStateColor, relView,
+      flagCount, flagView, flagBadgeStyle, flagCountColor, hasFlags:flagCount>0, noFlags:flagCount===0, onFlagsGoto:this.onFlagsGoto, onClearAllFlags:this.clearAllFlags, flagsNoReason, hasFlagsNoReason:flagsNoReason>0,
+      gateView, gatePass, gateHeld:!gatePass, gateVerdict, gateVerdictColor, gateGlyph, gateBorder, gateHeadBg, gateThreshLabel,
+      onCheckParite:this.checkParite, pariteLoading, pariteErr, pariteReady, pariteView, pariteVerdict, pariteVerdictColor, pariteSource, pariteErrMsg, pariteTabs,
+      auditView, auditWarn:!s.fixed, auditClean:s.fixed, onFix:this.applyFix,
+      auditSummary: s.fixed?'8 / 8 · conforme':'7 / 8 · 1 avertissement', auditSummaryColor: s.fixed?'#8DA982':'#F5A524',
+      shipTabs, notPreviewTab:s.shipTab!=='preview', isPreviewTab:s.shipTab==='preview', shipText,
+      onCopy:()=>this.copy(s.shipTab, shipText), copyLabel: s.copied===s.shipTab?'copié ✓':'copier',
+      shipPreviewRows, onPrevUp:()=>this.movePreview(-1), onPrevDown:()=>this.movePreview(1), onPFocus:()=>this.setPFocus(true), onPBlur:()=>this.setPFocus(false),
+      previewState:'curseur ▸ '+cursorName, previewBehaviour: (ans.ends==='wrap'?'wrap aux extrémités.':'clamp aux extrémités.'),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -43,7 +43,7 @@ pub fn surface_action(existing_output: Option<&str>, target: &str) -> SurfaceAct
 /// Outcome of `MenuState::on_hit`.
 #[derive(Debug, Clone, PartialEq)]
 pub enum HitOutcome {
-    /// Hit a MenuRow → write HostEvent::Action{id} to the legacy client, then dismiss.
+    /// Hit a MenuRow → write HostEvent::Action{id} to the QML client, then dismiss.
     Action(String),
     /// Hit a non-row node (MenuPanel/Blob) → keep the overlay open.
     KeepOpen,

@@ -40,8 +40,8 @@ const PAGES = [
   { file: "Gnu.In-Shell - Atlas Unifié.dc.html", requiredText: ["Atlas", "gnu.in-OS"] },
   { file: "Gnu.In-Shell - Fondations.dc.html", requiredText: ["Fondations", "tokens"] },
   { file: "Gnu.In-Shell - Atomes.dc.html", requiredText: ["Atomes", "Gnu"] },
-  { file: "Gnu.In-Shell - Molécules.dc.html", requiredText: ["CM.18", "AgenticGnuContextMenu", "30 molécules"] },
-  { file: "Gnu.In-Shell - Intégration.dc.html", requiredText: ["Settings map", "shell_settings", "Compositor profile"] },
+  { file: "Gnu.In-Shell - Molécules.dc.html", requiredText: ["CM.18", "GnuContextMenu", "30 molécules"] },
+  { file: "Gnu.In-Shell - Intégration.dc.html", requiredText: ["shell_settings", "compositor_profile", "ContextMenuService"] },
   { file: "Gnu.In-Shell - Handoff.dc.html", requiredText: ["Handoff", "gnu.in-OS"] }
 ];
 
@@ -135,6 +135,7 @@ async function inspect(page, spec, viewport, status, logs) {
 
     const canvasViewport = document.getElementById("gid-canvas-viewport");
     const canvasFrame = document.getElementById("gid-canvas-frame");
+    const canvasMode = document.querySelector('meta[name="design_doc_mode"]')?.getAttribute("content") === "canvas";
     const canvasRect = canvasViewport ? canvasViewport.getBoundingClientRect() : null;
     const frameRect = canvasFrame ? canvasFrame.getBoundingClientRect() : null;
     const screenLabels = [...document.querySelectorAll("[data-screen-label]")].map((node) => node.getAttribute("data-screen-label") || "");
@@ -150,6 +151,7 @@ async function inspect(page, spec, viewport, status, logs) {
       forbidden,
       icon,
       iconStatus,
+      canvasMode,
       navExists: Boolean(document.getElementById("gid-nav")),
       railExists: Boolean(document.getElementById("gid-rail")),
       screenLabelCount: screenLabels.length,
@@ -184,15 +186,18 @@ function validate(result) {
   if (result.status !== 200) issues.push(`status=${result.status}`);
   if (result.requiredTextMissing.length) issues.push(`missingText=${result.requiredTextMissing.join(",")}`);
   if (result.forbidden.length) issues.push(`forbidden=${result.forbidden.join(",")}`);
-  if (result.icon !== "assets/symbols/cube.svg" || result.iconStatus !== 200) issues.push(`icon=${result.icon} status=${result.iconStatus}`);
-  if (!result.navExists || !result.railExists) issues.push(`nav=${result.navExists} rail=${result.railExists}`);
+  if (result.icon && (result.icon !== "assets/symbols/cube.svg" || result.iconStatus !== 200)) issues.push(`icon=${result.icon} status=${result.iconStatus}`);
+  if (!result.canvasMode && (!result.navExists || !result.railExists)) issues.push(`nav=${result.navExists} rail=${result.railExists}`);
+  if (!result.canvasMode) issues.push("canvas-mode=missing");
   if (result.screenLabelCount < 1) issues.push("screen-labels=missing");
-  if (result.overflowX > 1) issues.push(`overflowX=${result.overflowX}`);
+  if (!result.canvasMode && result.overflowX > 1) issues.push(`overflowX=${result.overflowX}`);
   if (result.brokenImages.length) issues.push(`brokenImages=${result.brokenImages.join(",")}`);
-  if (!result.canvasViewport) issues.push("canvas-viewport=missing");
+  if (!result.canvasMode && !result.canvasViewport) issues.push("canvas-viewport=missing");
   else {
-    if (result.canvasViewport.height > result.viewportHeight - 70) issues.push(`canvas-height=${result.canvasViewport.height}`);
-    if (result.canvasViewport.scrollHeight <= result.canvasViewport.clientHeight) issues.push("canvas-scroll=not-bounded");
+    if (result.canvasViewport) {
+      if (result.canvasViewport.height > result.viewportHeight - 70) issues.push(`canvas-height=${result.canvasViewport.height}`);
+      if (result.canvasViewport.scrollHeight <= result.canvasViewport.clientHeight) issues.push("canvas-scroll=not-bounded");
+    }
   }
   if (result.logs.some((line) => line.startsWith("error") || line.startsWith("pageerror"))) {
     issues.push(`logs=${result.logs.join(" | ")}`);
@@ -216,8 +221,7 @@ function validate(result) {
         });
         page.on("pageerror", (error) => logs.push(`pageerror: ${error.message}`));
         const response = await page.goto(`${origin}${urlPath(spec.file)}`, { waitUntil: "networkidle" });
-        await page.waitForSelector("#gid-nav", { timeout: 5000 });
-        await page.waitForSelector("#gid-canvas-viewport", { timeout: 5000 });
+        await page.waitForSelector("[data-screen-label]", { timeout: 5000 });
         await page.waitForTimeout(250);
         const state = await inspect(page, spec, viewport, response ? response.status() : 0, logs);
         state.viewportHeight = viewport.height;

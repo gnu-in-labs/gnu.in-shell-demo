@@ -106,7 +106,8 @@
     "scenes/wire-protocol.json",
     "scenes/compositor-profile.json",
     "scenes/panel-family.json",
-    "scenes/settings-pages.json"
+    "scenes/settings-pages.json",
+    "scenes/keyboard-nav.json"
   ],
   "files": {
     "types": "scene_types.rs",
@@ -117,8 +118,17 @@
     "compositor_profile": "compositor_profile.rs",
     "panel_family": "panel_family.rs",
     "settings_pages": "settings_pages.rs",
+    "keyboard_nav": "keyboard_nav.rs",
     "dock_affordance": "dock_affordance.rs",
     "dock_settings": "dock_settings.rs",
+    "dock_items": "dock_items.rs",
+    "launcher": "launcher.rs",
+    "quick_settings": "quick_settings.rs",
+    "media_player": "media_player.rs",
+    "resources": "resources.rs",
+    "authority": "authority.rs",
+    "theme": "theme.rs",
+    "material": "material.rs",
     "shell_settings": "shell_settings.json",
     "compose": "compose_core.rs",
     "motion_core": "motion_core.rs",
@@ -135,7 +145,7 @@
     "files": { "motion_driver": "host_motion_driver.rs", "menu_state": "host_menu_state.rs", "protocol": "host_protocol.rs" },
     "motion_driver": "per-surface frame-tick adoption of the engine motion: MotionDriver{ open/dismiss (retarget via interrupt_motion), tick(dt), sample(), is_animating() } — exactly Central's menu-lifecycle wiring; 5 tests",
     "menu_state": "pure overlay lifecycle SM enforcing AT-MOST-ONE surface: open(replace)/configure(promote;no-op-if-dismissed)/dismiss(zero-all)/on_hit(MenuRow->Action,Panel/Blob->KeepOpen,None->Dismiss)/surface_action(Reuse same-output|Recreate) — 8 tests",
-    "protocol": "newline-delimited JSON over a Unix socket (legacy UI ContextMenuService ↔ Rust host): HostMessage{Open{request,screen}|Close} · Envelope{version,#[flatten] message} (version-negotiated, is_supported) · HostEvent{Action{id}}; canonical wire frames in scenes/wire-protocol.json (TRANSITIONAL — bridge cutover; the destination is in-process: the host links compose-core directly, no bridge / no socket)",
+    "protocol": "newline-delimited JSON over a Unix socket (QML ContextMenuService ↔ Rust host): HostMessage{Open{request,screen}|Close} · Envelope{version,#[flatten] message} (version-negotiated, is_supported) · HostEvent{Action{id}}; canonical wire frames in scenes/wire-protocol.json (TRANSITIONAL — QML-cutover bridge; the destination is in-process: the host links compose-core directly, no QML / no socket)",
     "ties_to_central": "MotionDriver == cmMotion + advanceCmMotion + openK-interrupt; MenuState.on_hit == Central input-model click intents; surface_action == per-output Reuse/Recreate"
   },
   "compose_engine": {
@@ -200,8 +210,61 @@
       "note": "Central's context menu is driven by the motion engine (advance_motion) — cm.p IS visible_progress; openK retargets in-flight via interrupt_motion so closing mid-open reverses without a jump (easeOut 220ms). Other surfaces keep the physical spring solver (velocity-carrying, also interruption-smooth)."
     }
   },
+  "theming": {
+    "owner": "foundational — Theme selects a Palette; SurfaceRole materials resolve from it",
+    "files": ["theme.rs", "material.rs"],
+    "theme": "Theme { Dark, Light } -> Palette { bg_base, bg_raised, bg_inset, text, subtext, line, scrim, on_accent }",
+    "material": "SurfaceRole { Chrome, Surface, Inset, Scrim }.resolve(theme) -> Material { fill, border, text, elevation }; follows_theme() — Chrome is a persistent dark material in both themes, Surface/Inset/Scrim flip",
+    "wired": "theme toggle in General CC + a Materials legend; applied this pass to the DESKTOP wallpaper and the LAUNCHER surface (full dark<->light). Chrome (bar/dock) + sidebar + CC inspector stay dark by design; broader rollout incremental",
+    "proof": "theme toggle round-trips · palettes differ on every role · on_accent stable · chrome theme-invariant · surface follows + most elevated · inset from palette · 7 tests"
+  },
+  "context_menu_delegation": {
+    "owner": "reuses authority.rs",
+    "wired": "context-menu items with risk=system no longer run under ambient authority — they route through requestAuthorizedAction(System) -> the same polkit-style authorization modal (remember 5-min grant). Non-system items unchanged. e.g. 'Full Burn', 'redémarrer le compositeur'"
+  },
+  "control_center": {
+    "owner": "GnuSettingsApp + ShellSettingsService (Quick page projects live session state)",
+    "file": "quick_settings.rs",
+    "model": "QuickToggle { Wifi, Bluetooth, Dnd, NightShift } · clamp_brightness + brightness_dim (live backlight overlay) · volume_icon tiers · PowerAction { Lock, Logout, Restart, Shutdown }.needs_confirm()",
+    "page": "new first CC section 'Quick' — now-playing media card · connectivity tiles · volume + brightness sliders (brightness dims a real screen overlay) · workspace switcher · session/power row with confirm dialog",
+    "media": {
+      "file": "media_player.rs",
+      "model": "MediaPlayer { tracks, index, playing, pos_s } · advance(dt) auto-wraps · toggle/next/prev (prev restarts within 3s else steps) · seek_fraction clamp · progress + fmt_time",
+      "wire": "advanced from the RAF step(dt); ONE model feeds BOTH the Quick now-playing card AND the bar media widget — the latter is now a live chip (equalizer glyph when playing + track title + play/pause toggle; click opens Quick), enabled by default",
+      "proof": "advance auto-wraps · paused holds · prev restart-then-step · prev wraps to last · seek clamps · m:ss formatting · 6 tests"
+    },
+    "resources_monitor": {
+      "file": "resources.rs",
+      "surface": "bar `resources` widget + EXPERT system-monitor popover",
+      "model": "RingBuffer { data, cap } (push evicts oldest · last/peak/avg · bars(n) sparkline) · walk_step (bounded EWMA walk) · cpu_target(open_windows, settings_open)",
+      "wire": "sampled ~5 Hz from the RAF step(dt); CPU/RAM correlated to live window load. Bar chip = live CPU sparkline + CPU·RAM readout; click opens a popover with CPU/RAM/Network sparklines + current/peak. Enabled by default",
+      "proof": "ring caps + drops oldest · bars floor 6 + clamp 100 · bars last-n · walk toward target + clamps · cpu_target tracks load · 5 tests"
+    },
+    "nav_search": "CC nav has a fuzzy section filter reusing gnuin-launcher::fuzzy_match (matched glyphs highlighted)",
+    "services": {
+      "file": "authority.rs",
+      "principle": "PROPER DELEGATION OF AUTHORITY — every service has exactly ONE owning authority; a privileged action never runs under ambient authority, it is delegated to the owner via an explicit polkit-style authorization step (optionally remembered for a 5-min TTL)",
+      "model": "Authority { Session(ambient), System, Compositor } · Service { owner, risk, status } · authorize(svc, grants, now) -> Granted | NeedsDelegation(authority) · GrantTable { holds, grant, revoke, ttl_secs } · status_after",
+      "page": "Services CC section pulled out of the generic app-page renderer into a bespoke authority manager: 3-authority legend (owned count + live delegated-grant countdown + revoke) · service registry (risk badge · authority badge · status · start/stop/restart) · authorization prompt modal (service/action/risk/authority + remember toggle + grant/deny)",
+      "risk_vocab": "reuses the context-menu observe/local/system blast-radius vocabulary",
+      "proof": "session granted w/o delegation · privileged needs delegation · remembered grant passes until expiry · revoke drops immediately · ttl counts down (session=0) · status_after · 6 tests"
+    },
+    "proof": "brightness clamps 10..100 · dim zero at full + rises as brightness drops · volume glyph tiers · toggle states per kind · every power action confirms + labelled · 5 tests"
+  },
+  "launcher": {
+    "owner": "gnuin-launcher (algorithmic core) + host calculator",
+    "file": "launcher.rs",
+    "model": "fuzzy_match(query, target) -> Option<FuzzyMatch { score, positions }> · Provider { Apps, Commands, Calc } + route(raw) · looks_like_math(body) · FrecencyEntry { count, last_ms }.score(now)",
+    "providers": {
+      "apps": "fuzzy over name + keyword aliases; empty query -> frecency-ranked recents",
+      "commands": "> prefix · shell command registry wired to real Central actions (Control Center, sidebar, terminal, night-shift, reduce-motion, DND, close-all, capture)",
+      "calc": "= prefix or auto-detected arithmetic -> guarded host evaluator; Enter copies result"
+    },
+    "interaction": "↑↓ select · ↵ run active · Tab cycles provider · Esc closes; matched glyphs bolded from FuzzyMatch.positions",
+    "proof": "non-subsequence rejected · positions correct · consecutive beats scattered · prefix + word-boundary bonuses · routing strips/trims · math autodetect · frecency recent+frequent ranks higher · 10 tests"
+  },
   "dock": {
-    "note": "the dock has two real, orthogonal backend layers — both kept, neither subsumes the other",
+    "note": "the dock has three real, orthogonal backend layers — visibility · layout · live app-state — none subsumes another; APPEARANCE personalization (DockAppearance) resolves the ShellPage dock pending_parity (now fully closed)",
     "visibility_layer": {
       "owner": "ShellSettingsService + DockService (ShellIpc dock.*)",
       "file": "dock_settings.rs",
@@ -214,6 +277,22 @@
       "owner": "gnuin-dock::affordance (plan gnu.in.dock-affordance-plan.v1, planned by asset-core)",
       "file": "dock_affordance.rs",
       "model": "DockAffordanceConfig { deck_style: Row|Stack|Fan, card_px, fan_arc_deg, spread, items }"
+    },
+    "items_layer": {
+      "owner": "foreign-toplevel list + NotificationService, joined against ShellSettingsService.dockPinned",
+      "file": "dock_items.rs",
+      "model": "DockItems { pinned } + DockItem { app, pinned, windows, badge, attention } + Magnify { enabled, strength, reach }",
+      "resolve": "slots(running, state) -> [Slot::App | Slot::Separator] (pinned, then transient running apps after a separator); Magnify::scale_at(index, hovered) -> per-slot Row magnification (falloff over slot distance)",
+      "indicators": ["running", "window-count dots (cap 3)", "notification badge (9+)", "attention bounce", "pinned vs transient"],
+      "proof": "transient apps follow a separator · no separator without transient · badge saturates 9+ · dots cap 3 · magnify peaks at cursor and decays to rest · disabled/no-hover is flat · window previewable + WindowPreview · 7 tests"
+    },
+    "appearance": {
+      "owner": "Central personalization, resolving ShellPage.qml dock pending_parity",
+      "file": "dock_settings.rs (DockAppearance)",
+      "model": "DockAppearance { indicator: Dot|Line|None, labels: Hover|Always|Never, separators, margin_px, opacity, radius_px, elevation: Flat|Lifted|Floating }",
+      "resolves_pending_parity": ["grouped app indicators", "persistent pin/unpin", "separators / shadows / elevation margins", "window preview popups"],
+      "remaining": [],
+      "proof": "card radius tracks tray + floors · dot/line/none indicator · elevation tokens grow · tray rgba uses opacity · 4 tests"
     }
   },
   "dock_affordance": {

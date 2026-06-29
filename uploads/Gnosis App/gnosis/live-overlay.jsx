@@ -63,37 +63,35 @@ function LassoLayer({ active, onRegion, onPoint, onBackground }) {
   }, []);
 
   const up = useCallback((e) => {
-    // Capture the in-flight drag out of state WITHOUT emitting from inside the
-    // updater — calling a parent setState during React's render phase is the
-    // "update a component while rendering a different component" violation.
-    let d = null;
-    setDrag((prev) => { d = prev; return null; });
-    if (!d) return;
-    const r = norm(d);
-    if (r.w < 8 && r.h < 8) {
-      // point: walk the stack under the cursor for a deictic target
-      const els = document.elementsFromPoint(e.clientX, e.clientY);
-      let hit = null;
-      for (const el of els) {
-        const t = el.closest && el.closest("[data-gx]");
-        if (t) { hit = t; break; }
-      }
-      if (hit) {
-        const tr = hit.getBoundingClientRect();
-        const win = hit.closest("[data-win]");
-        onPoint && onPoint({
-          id: hit.getAttribute("data-gx"),
-          label: hit.getAttribute("data-gx-label") || hit.getAttribute("data-gx"),
-          winId: win ? win.getAttribute("data-win") : null,
-          winTitle: win ? win.getAttribute("data-win-title") : null,
-          rect: { x: tr.left, y: tr.top, w: tr.width, h: tr.height },
-        });
+    setDrag((d) => {
+      if (!d) return null;
+      const r = norm(d);
+      if (r.w < 8 && r.h < 8) {
+        // point: walk the stack under the cursor for a deictic target
+        const els = document.elementsFromPoint(e.clientX, e.clientY);
+        let hit = null;
+        for (const el of els) {
+          const t = el.closest && el.closest("[data-gx]");
+          if (t) { hit = t; break; }
+        }
+        if (hit) {
+          const tr = hit.getBoundingClientRect();
+          const win = hit.closest("[data-win]");
+          onPoint && onPoint({
+            id: hit.getAttribute("data-gx"),
+            label: hit.getAttribute("data-gx-label") || hit.getAttribute("data-gx"),
+            winId: win ? win.getAttribute("data-win") : null,
+            winTitle: win ? win.getAttribute("data-win-title") : null,
+            rect: { x: tr.left, y: tr.top, w: tr.width, h: tr.height },
+          });
+        } else {
+          onBackground && onBackground({ x: e.clientX, y: e.clientY });
+        }
       } else {
-        onBackground && onBackground({ x: e.clientX, y: e.clientY });
+        onRegion && onRegion(r);
       }
-    } else {
-      onRegion && onRegion(r);
-    }
+      return null;
+    });
   }, [onRegion, onPoint, onBackground]);
 
   if (!active) return null;

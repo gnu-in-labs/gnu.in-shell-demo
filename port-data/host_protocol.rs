@@ -2,19 +2,19 @@
 // ============================================================================
 // Faithful mirror of gnu.in-os/engine/gnuin-compose-host/src/protocol.rs.
 //
-// Wire protocol for the Unix-socket IPC bridge between the legacy UI ContextMenuService
+// Wire protocol for the Unix-socket IPC bridge between the QML ContextMenuService
 // and the Rust composition host. Transport: NEWLINE-DELIMITED JSON over a Unix
 // domain socket (the hyprconfd pattern) — one message per line.
-//   client -> host:  HostMessage::Open { request, screen }  /  HostMessage::Close
-//   host -> client:  HostEvent::Action { id }   (one line, after the host dismisses)
+//   QML → host:  HostMessage::Open { request, screen }  /  HostMessage::Close
+//   host → QML:  HostEvent::Action { id }   (one line, after the host dismisses)
 //
 // Only compiled with the `serde` feature; in-process users link the engine
 // directly and bypass this. The canonical wire strings live in
-// scenes/wire-protocol.json (the cross-language contract the client side must match).
+// scenes/wire-protocol.json (the cross-language contract the QML side must match).
 
 use crate::compose::MenuRequest; // engine request type (compose_core.rs)
 
-/// client -> host. `#[serde(tag="type", rename_all="snake_case")]` →
+/// QML → host. `#[serde(tag="type", rename_all="snake_case")]` →
 /// `"type":"open"` / `"type":"close"`. `screen` names the Wayland output
 /// (e.g. "DP-1"); None = focused/default.
 #[derive(Debug, Clone, PartialEq /*, Serialize, Deserialize */)]
@@ -55,9 +55,9 @@ impl Envelope {
     pub fn is_supported(&self) -> bool { self.version == PROTOCOL_VERSION }
 }
 
-/// host -> client, same `tag="type"` convention. `Action{id}` → legacy UI
+/// host → QML, same `tag="type"` convention. `Action{id}` → QML
 /// `ContextMenuService.actionTriggered(id)`. The host dismisses the menu BEFORE
-/// sending, so legacy UI never sees an Action while a menu is still live.
+/// sending, so QML never sees an Action while a menu is still live.
 /// Wire: `{"type":"action","id":"copy"}\n`
 #[derive(Debug, Clone, PartialEq /*, Serialize, Deserialize */)]
 pub enum HostEvent {
@@ -98,11 +98,11 @@ mod tests {
         assert_eq!(future.message, HostMessage::Close); // still structurally parsed
     }
     // CANONICAL WIRE CONTRACT (see scenes/wire-protocol.json):
-    //   client→host open:  {"type":"open","request":{"style":"List",...},"screen":"DP-1"}\n
-    //   client→host close: {"type":"close"}\n
+    //   QML→host open:  {"type":"open","request":{"style":"List",...},"screen":"DP-1"}\n
+    //   QML→host close: {"type":"close"}\n
     //   enveloped:      {"version":1,"type":"open",...}\n   (inner flattens)
-    //   host→client:       {"type":"action","id":"copy"}\n
+    //   host→QML:       {"type":"action","id":"copy"}\n
     // Enum variant strings are snake_case (HostMessage/HostEvent) but the nested
     // MenuRequest enums are PascalCase: MenuStyle "List", RowKind "Item",
-    // Density "Mouse", NodeState "Open". If a string changes, update Rust + client together.
+    // Density "Mouse", NodeState "Open". If a string changes, update Rust + QML together.
 }

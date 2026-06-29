@@ -1,0 +1,30 @@
+{
+  "id": "scene.keyboard-nav",
+  "label": "CM-5 keyboard cursor over an open context-menu",
+  "frame": 6701,
+  "renderer": "tiny-skia",
+  "density": "mouse",
+  "seed": "orange",
+  "keyboard": {
+    "nav": "flat-enabled+suggest",
+    "suggest": "joined-when-ready",
+    "dismiss": "esc+outside",
+    "focus": "neutral-on-open",
+    "ends": "clamp",
+    "risk": "observe"
+  },
+  "nodes": [
+    { "id": 0, "kind": "Background", "interactive": false, "layer": 0, "bounds": [0, 0, 1280, 800], "payload": { "Fill": "0x141313FF" } },
+    { "id": 1, "kind": "Wallpaper", "interactive": false, "layer": 1, "bounds": [0, 0, 1280, 800], "payload": { "Wallpaper": { "generation": 1, "source": "Matugen" } } },
+    { "id": 2, "kind": "Bar", "interactive": true, "layer": 30, "bounds": [0, 0, 1280, 34], "payload": { "Bar": { "modules": 5 } } },
+    { "id": 3, "kind": "ContextMenu", "interactive": true, "layer": 100, "bounds": [360, 230, 224, 212], "payload": { "Menu": { "rows": 5, "cursor": null, "nav": "flat-enabled+suggest" } } }
+  ],
+  "cases": [
+    { "name": "neutral_then_down_selects_first", "len": 5, "cursor": null, "key": "Down", "expect": 0 },
+    { "name": "up_from_neutral_selects_last", "len": 5, "cursor": null, "key": "Up", "expect": 4 },
+    { "name": "down_advances", "len": 5, "cursor": 0, "key": "Down", "expect": 1 },
+    { "name": "clamp_holds_at_last", "len": 5, "cursor": 4, "key": "Down", "expect": 4 },
+    { "name": "suggestion_row_reachable", "len": 5, "cursor": 3, "key": "Down", "expect": 4, "note": "row 4 is the ready agent suggestion, joined into the flat list" }
+  ],
+  "damage": []
+}

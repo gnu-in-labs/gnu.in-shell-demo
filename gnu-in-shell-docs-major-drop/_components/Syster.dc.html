@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../assets/symbols/cube.svg">
+<script src="./support.js"></script>
+  <script src="nav.js" defer></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@font-face{font-family:'Montreal';src:url('fonts/Montreal-Bold.woff') format('woff');font-weight:700;font-style:normal;font-display:swap;}
+@font-face{font-family:'Montreal';src:url('fonts/Montreal-Regular.woff') format('woff');font-weight:400;font-style:normal;font-display:swap;}
+@keyframes sysIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.2%)}}
+@keyframes sysRun{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-2.2%) rotate(-1.4deg)}75%{transform:translateY(0.4%) rotate(1.4deg)}}
+@keyframes sysJump{0%,100%{transform:translateY(2%)}42%{transform:translateY(-8%)}}
+@keyframes sysShake{0%,100%{transform:translateX(0) rotate(0)}20%{transform:translateX(-2.4%) rotate(-1deg)}40%{transform:translateX(2.4%) rotate(1deg)}60%{transform:translateX(-1.6%) rotate(-1deg)}80%{transform:translateX(1.6%) rotate(1deg)}}
+@keyframes sysBeretLift{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7%) rotate(-2.5deg)}}
+@keyframes sysSway{0%,100%{transform:rotate(0deg)}50%{transform:rotate(1.6deg)}}
+@keyframes sysBlink{0%,72%{opacity:1}77%,94%{opacity:0}100%{opacity:1}}
+@keyframes sysBlinkSlow{0%,62%{opacity:1}68%,96%{opacity:0}100%{opacity:1}}
+@keyframes sysPing{0%{transform:scale(.3);opacity:.9}100%{transform:scale(2.3);opacity:0}}
+@keyframes sysDot{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes sysCue{0%,100%{transform:scale(.82);opacity:.6}50%{transform:scale(1.12);opacity:1}}
+@keyframes sysSlideR{0%,100%{transform:translate(-0.12em,0.20em)}50%{transform:translate(0.12em,0.20em)}}
+@keyframes sysSlideL{0%,100%{transform:translate(0.12em,0.20em)}50%{transform:translate(-0.12em,0.20em)}}
+@keyframes sysSpin{to{transform:rotate(360deg)}}
+@keyframes sysPop{0%{transform:translateY(0.20em) scale(0.5);opacity:0}55%{transform:translateY(0.20em) scale(1.12);opacity:1}100%{transform:translateY(0.20em) scale(1);opacity:1}}
+@keyframes sysZ{0%{opacity:0;transform:translateY(0.2em) scale(.7)}30%{opacity:1}100%{opacity:0;transform:translateY(-1.1em) scale(1.1)}}
+</style>
+</helmet>
+<div aria-hidden="true" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+  <div style="position:relative;width:100%;max-width:100%;aspect-ratio:852/971;">
+    <div style="position:absolute;inset:0;{{ bodyStyle }}">
+
+      <!-- 10 shadow -->
+      <img src="mascot/rig-shadow.png" alt="" style="position:absolute;left:-3.40%;top:87.10%;width:106.80%;height:11.70%;object-fit:fill;{{ shadowStyle }}"></img>
+
+      <!-- 30 screen plate -->
+      <img src="mascot/rig-screen.png" alt="" style="position:absolute;left:18.19%;top:28.75%;width:63.62%;height:51.91%;object-fit:fill;"></img>
+
+      <!-- 60 antenna -->
+      <div style="position:absolute;left:83.75%;top:8.90%;width:14.40%;height:48.20%;transform-origin:33.50% 93.50%;{{ antennaStyle }}">
+        <img src="mascot/rig-antenna.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;"></img>
+
+        <!-- emitter anchored to the antenna TIP center (61.8% , 5.18% of the antenna box) -->
+        <sc-if value="{{ showPing }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;left:61.8%;top:5.18%;width:82%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:60;pointer-events:none;">
+            <svg viewBox="0 0 60 60" width="100%" height="100%" style="overflow:visible;">
+              <circle cx="30" cy="30" r="12" fill="none" stroke="{{ cueColor }}" stroke-width="4" style="transform-box:fill-box;transform-origin:center;animation:sysPing 1700ms ease-out infinite;"></circle>
+              <circle cx="30" cy="30" r="12" fill="none" stroke="{{ cueColor }}" stroke-width="4" style="transform-box:fill-box;transform-origin:center;animation:sysPing 1700ms ease-out 850ms infinite;"></circle>
+            </svg>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showCue }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;left:61.8%;top:5.18%;width:48%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:61;pointer-events:none;">
+            <div style="width:100%;height:100%;border-radius:50%;background:{{ cueColor }};box-shadow:0 0 0 2px rgba(255,255,255,0.25),0 0 14px 2px {{ cueGlow }};{{ cueAnim }}"></div>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- 20 shell -->
+      <img src="mascot/rig-shell.png" alt="" style="position:absolute;left:8.38%;top:23.00%;width:83.25%;height:63.50%;object-fit:fill;"></img>
+
+      <!-- 50 beret -->
+      <img src="mascot/rig-beret.png" alt="Sys.ter" style="position:absolute;left:16.75%;top:-1.25%;width:66.00%;height:26.25%;object-fit:fill;transform-origin:15.50% 94.50%;{{ beretStyle }}"></img>
+
+      <!-- 40 face (Montreal, centered on the screen) -->
+      <div style="position:absolute;left:21.90%;top:33.20%;width:56.20%;height:41.70%;container-type:size;{{ faceDim }}">
+        <div style="position:absolute;inset:0;font-family:'Montreal','Inter',system-ui,sans-serif;font-weight:700;font-size:50cqh;line-height:1;color:{{ glyph }};">
+
+          <span style="position:absolute;left:30%;top:50%;width:0.62em;height:1em;display:grid;place-items:center;transform:translate(-50%,-50%);">{{ noseGlyph }}</span>
+
+          <div style="position:absolute;left:58%;top:50%;width:1.05em;height:1em;display:grid;place-items:center;transform:translate(-50%,-50%);">
+
+          <sc-if value="{{ showCaret }}" hint-placeholder-val="{{ true }}">
+            <span style="display:block;width:0.38em;height:0.08em;border-radius:999px;background:{{ glyph }};transform:translateY(0.24em);{{ caretStyle }}"></span>
+          </sc-if>
+
+          <sc-if value="{{ isHello }}" hint-placeholder-val="{{ false }}">
+            <span style="display:inline-grid;place-items:center;transform:translateY(0.20em);">
+              <span style="width:0.28em;height:0.28em;border-radius:50%;background:#3DDA6A;transform-box:fill-box;transform-origin:center;animation:sysCue 1300ms ease-in-out infinite;"></span>
+            </span>
+          </sc-if>
+
+          <sc-if value="{{ isWork }}" hint-placeholder-val="{{ false }}">
+            <span style="display:inline-flex;gap:0.13em;align-items:center;transform:translateY(0.24em);">
+              <span style="width:0.17em;height:0.17em;border-radius:50%;background:#FF6A00;animation:sysDot 1000ms ease-in-out infinite;"></span>
+              <span style="width:0.17em;height:0.17em;border-radius:50%;background:#FF6A00;animation:sysDot 1000ms ease-in-out 200ms infinite;"></span>
+              <span style="width:0.17em;height:0.17em;border-radius:50%;background:#FF6A00;animation:sysDot 1000ms ease-in-out 400ms infinite;"></span>
+            </span>
+          </sc-if>
+
+          <sc-if value="{{ isWait }}" hint-placeholder-val="{{ false }}">
+            <span style="display:inline-flex;gap:0.13em;align-items:center;transform:translateY(0.24em);">
+              <span style="width:0.17em;height:0.17em;border-radius:50%;background:{{ glyph }};animation:sysDot 1300ms ease-in-out infinite;"></span>
+              <span style="width:0.17em;height:0.17em;border-radius:50%;background:{{ glyph }};animation:sysDot 1300ms ease-in-out 220ms infinite;"></span>
+              <span style="width:0.17em;height:0.17em;border-radius:50%;background:{{ glyph }};animation:sysDot 1300ms ease-in-out 440ms infinite;"></span>
+            </span>
+          </sc-if>
+
+          <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+            <span style="display:inline-grid;place-items:center;transform:translateY(0.20em);">
+              <span style="width:0.5em;height:0.5em;border-radius:50%;border:0.09em solid rgba(243,236,220,0.28);border-top-color:#F3ECDC;box-sizing:border-box;animation:sysSpin 850ms linear infinite;"></span>
+            </span>
+          </sc-if>
+
+          <sc-if value="{{ isSuccess }}" hint-placeholder-val="{{ false }}">
+            <span style="display:inline-flex;align-items:center;color:#3DDA6A;font-weight:700;animation:sysPop 1300ms ease-in-out infinite;">O</span>
+          </sc-if>
+
+          <sc-if value="{{ isDriveR }}" hint-placeholder-val="{{ false }}">
+            <span style="display:inline-flex;align-items:center;color:#FF6A00;font-weight:700;animation:sysSlideR 1100ms ease-in-out infinite;">&#8594;</span>
+          </sc-if>
+          <sc-if value="{{ isDriveL }}" hint-placeholder-val="{{ false }}">
+            <span style="display:inline-flex;align-items:center;color:#FF6A00;font-weight:700;animation:sysSlideL 1100ms ease-in-out infinite;">&#8592;</span>
+          </sc-if>
+
+          <sc-if value="{{ isFail }}" hint-placeholder-val="{{ false }}">
+            <span style="display:inline-flex;align-items:center;color:#E5484D;transform:translateY(0.20em);">&times;&times;</span>
+          </sc-if>
+          </div>
+        </div>
+
+        <sc-if value="{{ isVeille }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;right:12%;top:10%;font-family:'Montreal',sans-serif;font-weight:700;font-size:20cqh;color:{{ glyph }};opacity:0.6;animation:sysZ 2800ms ease-in-out infinite;">z</div>
+        </sc-if>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 300, &quot;height&quot;: 342 },
+  &quot;state&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;idle&quot;, &quot;hello&quot;, &quot;work&quot;, &quot;wait&quot;, &quot;review&quot;, &quot;drive-r&quot;, &quot;drive-l&quot;, &quot;success&quot;, &quot;fail&quot;, &quot;veille&quot;, &quot;static&quot;], &quot;default&quot;: &quot;idle&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;glyph&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#F3ECDC&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props || {};
+    const state = (p.state || "idle").toLowerCase();
+    const glyph = p.glyph || "#F3ECDC";
+    const isStatic = state === "static";
+
+    const isIdle = state === "idle" || isStatic;
+    const isHello = state === "hello" || state === "listening";
+    const isWork = state === "work" || state === "transmit";
+    const isWait = state === "wait" || state === "waiting";
+    const isDriveR = state === "drive-r" || state === "running-right" || state === "running";
+    const isDriveL = state === "drive-l" || state === "running-left";
+    const isSuccess = state === "success" || state === "jump" || state === "jumping";
+    const isFail = state === "fail" || state === "failed";
+    const isReview = state === "review";
+    const isVeille = state === "veille" || state === "sleep";
+
+    const noseGlyph = ">";
+    const showCaret = isIdle || isVeille;
+    const caretStyle = isStatic ? ""
+      : (isVeille ? "animation:sysBlinkSlow 2600ms steps(1) infinite;"
+        : "animation:sysBlink 1100ms steps(1) infinite;");
+
+    const faceDim = isVeille ? "opacity:0.6;" : "";
+
+    // antenna cue
+    let cueColor = "#FF6A00", cueGlow = "rgba(255,106,0,0.55)";
+    if (isFail) { cueColor = "#E5484D"; cueGlow = "rgba(229,72,77,0.55)"; }
+    else if (isHello || isSuccess) { cueColor = "#3DDA6A"; cueGlow = "rgba(61,218,106,0.5)"; }
+    const showCue = isHello || isWork || isFail || isSuccess;
+    const showPing = isHello || isWork;
+    const cueAnim = (isFail || isWork) ? "animation:sysCue 900ms ease-in-out infinite;" : "animation:sysCue 1300ms ease-in-out infinite;";
+
+    // Cube base is INVARIANT across every state — no transforms, no per-state
+    // locomotion. The only things that change are the faceplate content and the
+    // emitter (antenna-tip light). Motion lives inside the faceplate / emitter.
+    const bodyStyle = "transform-box:fill-box;transform-origin:center bottom;";
+    const shadowStyle = "";
+    const beretStyle = "";
+    const antennaStyle = "";
+
+    return {
+      glyph, noseGlyph, showCaret, caretStyle, faceDim,
+      isHello, isWork, isWait, isDriveR, isDriveL, isSuccess, isFail, isReview, isVeille,
+      cueColor, cueGlow, showCue, showPing, cueAnim,
+      bodyStyle, shadowStyle, beretStyle, antennaStyle
+    };
+  }
+}
+</script>
+</body>
+</html>
